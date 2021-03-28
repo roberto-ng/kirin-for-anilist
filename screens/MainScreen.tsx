@@ -1,4 +1,5 @@
 import React, { FC } from 'react'
+import { StyleSheet, View } from 'react-native'
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import HomeTabScreen from './tabs/HomeTabScreen'
@@ -11,6 +12,7 @@ const backgroundColor = '#151F2E';
 const MainScreen: FC = () => {
     return (
         <Tab.Navigator
+            initialRouteName="Home"
             barStyle={{ backgroundColor }}
         >
             <Tab.Screen 
@@ -44,7 +46,7 @@ const MainScreen: FC = () => {
             />
 
             <Tab.Screen 
-                name="<Manga>" 
+                name="Manga" 
                 component={MangaTabScreen}
                 options={{
                     tabBarLabel: 'Manga',
