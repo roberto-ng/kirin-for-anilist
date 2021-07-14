@@ -6,24 +6,21 @@ import {
     View, 
     FlatList, 
     ListRenderItem, 
-    Image 
+    Image,
+    Platform,
 } from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler'
 import { Text } from 'react-native-paper'
+import * as AuthSession from 'expo-auth-session'
 
 interface MediaData {
-    data: {
-        Media: {
-            id: string;
-            title: {
-                romaji: string;
-                english: string;
-                native: string;
-            };
-            coverImage: {
-                medium: string;
-            };
-        };
+    id: string;
+    title: {
+        romaji: string;
+        english: string;
+        native: string;
+    };
+    coverImage: {
+        medium: string;
     };
 }
 
@@ -41,22 +38,27 @@ const HomeTabScreen: FC = () => {
     const renderItem: ListRenderItem<MediaData> = ({ item, index }) => {
         // check if this is the last item on the list
         const isLast = index == (mediaDataList.length - 1);
-
-        const media = item.data.Media;
         
         return (
             <ItemCard 
-                title={media.title.romaji} 
-                coverImage={media.coverImage.medium} 
+                title={item.title.romaji} 
+                coverImage={item.coverImage.medium} 
                 isLast={isLast}
             />
         );
     };
 
     useEffect(() => {
+        console.log(AuthSession.makeRedirectUri())
+
         fetchMediaData(IDS)
-            .then(dataList => setMediaDataList(dataList));
+            .then(dataList => setMediaDataList(dataList))
+            .catch(e => console.error(e));
     }, []);
+
+    const flatListWebStyle = {
+        overflow: 'auto',
+    };
 
     return (
         <View style={styles.container}>
@@ -64,13 +66,13 @@ const HomeTabScreen: FC = () => {
                 Airing
             </Text>
 
-            <View style={{ height: 115, marginRight: 10, marginLeft: 10 }}>
-                <FlatList
-                    data={mediaDataList}
-                    renderItem={renderItem}
-                    keyExtractor={item => item.data.Media.id.toString()}
-                    horizontal={true}
-                />
+            <View style={styles.cardListWrapper}>
+                    <FlatList
+                        data={mediaDataList}
+                        renderItem={renderItem}
+                        keyExtractor={item => item.id.toString()}
+                        horizontal={true}
+                    />
             </View>
 
             <StatusBar style="light" />
@@ -125,25 +127,26 @@ async function fetchMediaData(ids: number[]): Promise<MediaData[]> {
         }
     `;
 
-    const responsePromises = ids.map(id => {
-        const variables = { id };
-        const options = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
-            body: JSON.stringify({
-                query,
-                variables,
-            }),
-        };
+    const responses = await Promise.all(
+        ids.map(id => {
+            const variables = { id };
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    query,
+                    variables,
+                }),
+            };
 
-        return fetch(url, options);
-    });
+            return fetch(url, options);
+        })
+    );
 
-    const responses = await Promise.all(responsePromises);
-    const jsonArray: MediaData[] = await Promise.all(
+    const jsonArray = await Promise.all(
         responses.map((res) => {
             if (!res.ok) {
                 throw new Error(res.statusText);
@@ -152,8 +155,8 @@ async function fetchMediaData(ids: number[]): Promise<MediaData[]> {
             return res.json();
         })
     );
-
-    return jsonArray;
+    const medias = jsonArray.map(item => item.data.Media);
+    return medias;
 }
 
 const backgroundColor = '#0B1622';
@@ -169,6 +172,12 @@ const styles = StyleSheet.create({
     text: {
         color: 'white',
         fontSize: 20,
+    },
+    cardListWrapper: { 
+        height: (Platform.OS === 'web') ? 135 : 115,
+        width: '100%', 
+        marginRight: 10, 
+        marginLeft: 10, 
     },
     itemCard: {
         backgroundColor: '#151F2E',
