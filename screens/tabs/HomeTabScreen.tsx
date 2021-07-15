@@ -38,13 +38,15 @@ const HomeTabScreen: FC = () => {
 
     const renderItem: ListRenderItem<MediaData> = ({ item, index }) => {
         // check if this is the last item on the list
-        const isLast = index == (mediaDataList.length - 1);
+        const isLast = index === (mediaDataList.length - 1);
+        const isFirst = index === 0;
         
         return (
             <ItemCard 
                 title={item.title.romaji} 
                 coverImage={item.coverImage.medium} 
                 isLast={isLast}
+                isFirst={isFirst}
             />
         );
     };
@@ -81,11 +83,12 @@ const HomeTabScreen: FC = () => {
     );
 };
 
-const ItemCard: FC<any> = ({ title, isLast, coverImage }) => {
+const ItemCard: FC<any> = ({ title, isLast, isFirst, coverImage }) => {
     return (
         <View 
             style={[styles.itemCard, { 
-                marginRight: (isLast) ? 0 : 25,
+                marginRight: (isLast) ? 10 : 25,
+                marginLeft: (isFirst) ? 10 : 0,
             }]}
         >
             <Image 
@@ -182,7 +185,6 @@ const styles = StyleSheet.create({
         height: (Platform.OS === 'web') ? 135 : 115,
         width: '100%', 
         marginRight: 10, 
-        marginLeft: 10, 
     },
     itemCard: {
         backgroundColor: '#151F2E',
