@@ -30,6 +30,7 @@ const IDS = [
     124845, // wonder egg
     21507,  // mob 100
     20722,  // baraka
+    21202,  // kono suba
 ];
 
 const HomeTabScreen: FC = () => {
@@ -62,7 +63,7 @@ const HomeTabScreen: FC = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={[styles.text, { marginBottom: 10, marginLeft: 15 }]}>
+            <Text style={[styles.text, { margin: 15, color: 'rgb(159,173,189)', }]}>
                 Airing
             </Text>
 
@@ -95,7 +96,10 @@ const ItemCard: FC<any> = ({ title, isLast, coverImage }) => {
             />
 
             <View style={styles.cardContent}>
-                <Text style={[styles.cardContentText, styles.cardContentTitle]}>
+                <Text 
+                    style={[styles.cardContentText, styles.cardContentTitle]}
+                    numberOfLines={1}
+                >
                     {title}
                 </Text>
             
@@ -172,6 +176,7 @@ const styles = StyleSheet.create({
     text: {
         color: 'white',
         fontSize: 20,
+        fontFamily: 'Roboto',
     },
     cardListWrapper: { 
         height: (Platform.OS === 'web') ? 135 : 115,
