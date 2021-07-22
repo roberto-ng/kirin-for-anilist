@@ -16,41 +16,50 @@ import {
 } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 
-interface MediaData {
-    id: string;
+interface Media {
+    id: string,
+    episodes: number,
     title: {
-        romaji: string;
-        english: string;
-        native: string;
-    };
+        romaji: string,
+        english: string,
+        native: string,
+    },
     coverImage: {
-        medium: string;
-    };
+        medium: string,
+    },
+}
+
+interface MediaList {
+    progress: number,
+    media: Media,
 }
 
 interface User {
-    id: string;
-    name: string;
+    id: string,
+    name: string,
+}
+
+interface Page {
+    mediaList: MediaList[],
+    pageInfo: {
+        currentPage: number,
+        hasNextPage: boolean,
+        lastPage: number,
+        perPage: number,
+        total: number,
+    },
 }
 
 WebBrowser.maybeCompleteAuthSession();
 
 const url = 'https://graphql.anilist.co';
-const IDS = [
-    232,    // sakura
-    124845, // wonder egg
-    21507,  // mob 100
-    20722,  // baraka
-    21202,  // kono suba
-];
-
 
 const clientId: string = Constants.manifest?.extra?.anilistClientId;
 const authUrl = `https://anilist.co/api/v2/oauth/authorize`;
 
 export default function HomeTabScreen() {
     const { getItem, setItem } = useAsyncStorage('anilist_token');
-    const [mediaDataList, setMediaDataList] = useState<MediaData[]>([]);
+    const [mediaList, setMediaList] = useState<MediaList[]>([]);
     const [anilistToken, setAnilistToken] = useState<string | null>(null);
     const [viewer, setViewer] = useState<User | null>(null);
     
@@ -63,7 +72,6 @@ export default function HomeTabScreen() {
                     throw new Error('Redirect URL does not contain an access_token param\n' + typeof accessToken);
                 }
                 
-                console.log(accessToken);
                 setAnilistToken(accessToken);
                 setItem(accessToken).catch(err => console.error(err));
             }
@@ -77,27 +85,32 @@ export default function HomeTabScreen() {
     useEffect(() => {
         if (anilistToken !== null) {
             fetchViewer(anilistToken)
-            .then(user => {
+                .then(async (user) => {
                     setViewer(user)
-                    console.log(user);
+
+                    try {
+                        const newMediaList = await fetchMediaData(anilistToken, user.id);
+                        setMediaList(newMediaList)
+                    } catch (err) {
+                        console.error(err);
+                    }
                 })
                 .catch(err => console.error(err));
 
-            fetchMediaData(anilistToken)
-                .then(dataList => setMediaDataList(dataList))
-                .catch(err => console.error(err));
         }
     }, [anilistToken]);
 
-    const RenderItem: ListRenderItem<MediaData> = ({ item, index }) => {
+    const RenderItem: ListRenderItem<MediaList> = ({ item, index }) => {
         // check if this is the last item on the list
-        const isLast = index === (mediaDataList.length - 1);
+        const isLast = index === (mediaList.length - 1);
         const isFirst = index === 0;
         
         return (
             <ItemCard 
-                title={item.title.romaji} 
-                coverImage={item.coverImage.medium} 
+                title={item.media.title.romaji} 
+                coverImage={item.media.coverImage.medium}
+                progress={item.progress}
+                episodes={item.media.episodes}
                 isLast={isLast}
                 isFirst={isFirst}
             />
@@ -111,10 +124,6 @@ export default function HomeTabScreen() {
 
     return (
         <View style={styles.container}>
-            <Text style={[styles.text, { margin: 15, color: 'rgb(159,173,189)', }]}>
-                Airing
-            </Text>
-
             {(anilistToken === null) ? (
                 <Button 
                     mode="contained"
@@ -123,17 +132,22 @@ export default function HomeTabScreen() {
                     Log in
                 </Button>
             ) : (
-                <View style={styles.cardListWrapper}>
-                        <FlatList
-                            data={mediaDataList}
-                            renderItem={RenderItem}
-                            keyExtractor={item => item.id.toString()}
-                            horizontal={true}
-                        />
-                </View>
+                <>
+                    <Text style={[styles.text, { margin: 15, color: 'rgb(159,173,189)', }]}>
+                        Anime in Progress
+                    </Text>
+                    <View style={styles.cardListWrapper}>
+                            <FlatList
+                                data={mediaList}
+                                renderItem={RenderItem}
+                                keyExtractor={item => item.media.id.toString()}
+                                horizontal={true}
+                            />
+                    </View>
+                </>
             )}
 
-            <Text style={{ color: 'white' }}>
+            <Text style={{ color: 'white', marginTop: 20 }}>
                 {viewer == null ? 'Nada' : viewer.name}
             </Text>
 
@@ -142,7 +156,7 @@ export default function HomeTabScreen() {
     );
 };
 
-function ItemCard({ title, isLast, isFirst, coverImage }: any) {
+function ItemCard({ title, isLast, isFirst, coverImage, progress, episodes }: any) {
     return (
         <View 
             style={[styles.itemCard, { 
@@ -167,7 +181,7 @@ function ItemCard({ title, isLast, isFirst, coverImage }: any) {
             
                 <View style={styles.cardContentInfo}>
                     <Text style={[styles.cardContentText, styles.cardContentInfoText]}>
-                        Progress: 0/0 +
+                        Progress: {progress}/{episodes} +
                     </Text>
                 </View>
             </View>
@@ -177,7 +191,7 @@ function ItemCard({ title, isLast, isFirst, coverImage }: any) {
 };
 
 async function fetchViewer(accessToken: string): Promise<User> {
-    const userQuery = `
+    const query = `
         query {
             Viewer {
                 id
@@ -194,7 +208,7 @@ async function fetchViewer(accessToken: string): Promise<User> {
             'Accept': 'application/json',
         },
         body: JSON.stringify({
-            query: userQuery,
+            query,
             variables: {},
         }),
     };
@@ -204,59 +218,57 @@ async function fetchViewer(accessToken: string): Promise<User> {
     return user;
 }
 
-async function fetchMediaData(accessToken: string): Promise<MediaData[]> {
-
-    return [];
-
-    /*
+async function fetchMediaData(accessToken: string, userId: string): Promise<MediaList[]> {
     const query = `
-        query ($id: Int) {
-            Media (id: $id, type: ANIME) {
-                id
-                title {
-                    romaji
-                    english
-                    native
+        query ($id: Int, $page: Int, $perPage: Int) {
+            Page (page: $page, perPage: $perPage) {
+                pageInfo {
+                    total
+                    currentPage
+                    lastPage
+                    hasNextPage
+                    perPage
                 }
-                coverImage {
-                    medium
+                mediaList (userId: $id, type: ANIME, status: CURRENT, sort: UPDATED_TIME_DESC) {
+                    progress
+                    media {
+                        id
+                        episodes
+                        title {
+                            romaji
+                            english
+                            native
+                        }
+                        coverImage {
+                            medium
+                        }
+                    }
                 }
             }
         }
     `;
 
-    const responses = await Promise.all(
-        ids.map(id => {
-            const variables = { id };
-            const options = {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer ' + accessToken,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({
-                    query,
-                    variables,
-                }),
-            };
+    const options = {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+            query,
+            variables: {
+                id: userId,
+                page: 1,
+                perPage: 50,
+            },
+        }),
+    };
 
-            return fetch(url, options);
-        })
-    );
-
-    const jsonArray = await Promise.all(
-        responses.map((res) => {
-            if (!res.ok) {
-                throw new Error(res.statusText);
-            }
-
-            return res.json();
-        })
-    );
-    const medias = jsonArray.map(item => item.data.Media);
-    return medias;
-    */
+    const res = await fetch(url, options);
+    const json = await res.json();
+    const page = json.data.Page as Page;
+    return page.mediaList;
 }
 
 const backgroundColor = '#0B1622';
