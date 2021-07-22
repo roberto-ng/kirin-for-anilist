@@ -1,15 +1,15 @@
-import React, { FC } from 'react'
-import { StyleSheet, View } from 'react-native'
-import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import HomeTabScreen from './tabs/HomeTabScreen'
-import AnimeTabScreen from './tabs/AnimeTabScreen'
-import MangaTabScreen from './tabs/MangaTabScreen'
+import React, { FC } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import HomeTabScreen from './tabs/HomeTabScreen';
+import AnimeTabScreen from './tabs/AnimeTabScreen';
+import MangaTabScreen from './tabs/MangaTabScreen';
 
 const Tab = createMaterialBottomTabNavigator();
 const backgroundColor = '#151F2E';
 
-const MainScreen: FC = () => {
+export default function MainScreen() {
     return (
         <Tab.Navigator
             initialRouteName="Home"
@@ -62,7 +62,3 @@ const MainScreen: FC = () => {
         </Tab.Navigator>
     );
 };
-
-
-
-export default MainScreen;

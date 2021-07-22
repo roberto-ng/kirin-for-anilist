@@ -4,7 +4,7 @@ import React, { FC } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { Text } from 'react-native-paper'
 
-const AnimeTabScreen: FC = () => {
+export default function AnimeTabScreen() {
     return (
         <View style={styles.container}>
             <Text style={styles.text}>
@@ -31,5 +31,3 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
 });
-
-export default AnimeTabScreen;

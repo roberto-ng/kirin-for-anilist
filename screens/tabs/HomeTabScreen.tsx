@@ -1,6 +1,11 @@
-import Constants from 'expo-constants'
-import { StatusBar } from 'expo-status-bar'
-import React, { FC, useEffect, useState } from 'react'
+import Constants from 'expo-constants';
+import { StatusBar } from 'expo-status-bar';
+import React, { FC, useEffect, useState } from 'react';
+import { useAsyncStorage } from '@react-native-async-storage/async-storage';
+import * as AuthSession from 'expo-auth-session';
+import * as WebBrowser from 'expo-web-browser';
+import * as Linking from 'expo-linking';
+import * as QueryString from 'query-string';
 import { 
     StyleSheet, 
     View, 
@@ -8,9 +13,8 @@ import {
     ListRenderItem, 
     Image,
     Platform,
-} from 'react-native'
-import { Text } from 'react-native-paper'
-import * as AuthSession from 'expo-auth-session'
+} from 'react-native';
+import { Button, Text } from 'react-native-paper';
 
 interface MediaData {
     id: string;
@@ -24,6 +28,13 @@ interface MediaData {
     };
 }
 
+interface User {
+    id: string;
+    name: string;
+}
+
+WebBrowser.maybeCompleteAuthSession();
+
 const url = 'https://graphql.anilist.co';
 const IDS = [
     232,    // sakura
@@ -33,10 +44,52 @@ const IDS = [
     21202,  // kono suba
 ];
 
-const HomeTabScreen: FC = () => {
-    const [mediaDataList, setMediaDataList] = useState<MediaData[]>([]);
 
-    const renderItem: ListRenderItem<MediaData> = ({ item, index }) => {
+const clientId: string = Constants.manifest?.extra?.anilistClientId;
+const authUrl = `https://anilist.co/api/v2/oauth/authorize`;
+
+export default function HomeTabScreen() {
+    const { getItem, setItem } = useAsyncStorage('anilist_token');
+    const [mediaDataList, setMediaDataList] = useState<MediaData[]>([]);
+    const [anilistToken, setAnilistToken] = useState<string | null>(null);
+    const [viewer, setViewer] = useState<User | null>(null);
+    
+    useEffect(() => {
+        Linking.addEventListener('url', (e) => {
+            if (anilistToken === null) {
+                const params = QueryString.parse(e.url.replace('#', '?'));
+                const accessToken = params['access_token'];
+                if (typeof accessToken !== 'string') {
+                    throw new Error('Redirect URL does not contain an access_token param\n' + typeof accessToken);
+                }
+                
+                console.log(accessToken);
+                setAnilistToken(accessToken);
+                setItem(accessToken).catch(err => console.error(err));
+            }
+        });
+
+        getItem().then(token => {
+            setAnilistToken(token);
+        });
+    }, []);
+
+    useEffect(() => {
+        if (anilistToken !== null) {
+            fetchViewer(anilistToken)
+            .then(user => {
+                    setViewer(user)
+                    console.log(user);
+                })
+                .catch(err => console.error(err));
+
+            fetchMediaData(anilistToken)
+                .then(dataList => setMediaDataList(dataList))
+                .catch(err => console.error(err));
+        }
+    }, [anilistToken]);
+
+    const RenderItem: ListRenderItem<MediaData> = ({ item, index }) => {
         // check if this is the last item on the list
         const isLast = index === (mediaDataList.length - 1);
         const isFirst = index === 0;
@@ -51,17 +104,10 @@ const HomeTabScreen: FC = () => {
         );
     };
 
-    useEffect(() => {
-        console.log(AuthSession.makeRedirectUri())
-
-        fetchMediaData(IDS)
-            .then(dataList => setMediaDataList(dataList))
-            .catch(e => console.error(e));
-    }, []);
-
-    const flatListWebStyle = {
-        overflow: 'auto',
+    const handleLogInBtnPress = () => {
+        Linking.openURL(authUrl + '?client_id=' + clientId + '&response_type=token');
     };
+
 
     return (
         <View style={styles.container}>
@@ -69,21 +115,34 @@ const HomeTabScreen: FC = () => {
                 Airing
             </Text>
 
-            <View style={styles.cardListWrapper}>
-                    <FlatList
-                        data={mediaDataList}
-                        renderItem={renderItem}
-                        keyExtractor={item => item.id.toString()}
-                        horizontal={true}
-                    />
-            </View>
+            {(anilistToken === null) ? (
+                <Button 
+                    mode="contained"
+                    onPress={handleLogInBtnPress}
+                >
+                    Log in
+                </Button>
+            ) : (
+                <View style={styles.cardListWrapper}>
+                        <FlatList
+                            data={mediaDataList}
+                            renderItem={RenderItem}
+                            keyExtractor={item => item.id.toString()}
+                            horizontal={true}
+                        />
+                </View>
+            )}
+
+            <Text style={{ color: 'white' }}>
+                {viewer == null ? 'Nada' : viewer.name}
+            </Text>
 
             <StatusBar style="light" />
         </View>
     );
 };
 
-const ItemCard: FC<any> = ({ title, isLast, isFirst, coverImage }) => {
+function ItemCard({ title, isLast, isFirst, coverImage }: any) {
     return (
         <View 
             style={[styles.itemCard, { 
@@ -117,7 +176,39 @@ const ItemCard: FC<any> = ({ title, isLast, isFirst, coverImage }) => {
     );
 };
 
-async function fetchMediaData(ids: number[]): Promise<MediaData[]> {
+async function fetchViewer(accessToken: string): Promise<User> {
+    const userQuery = `
+        query {
+            Viewer {
+                id
+                name
+            }
+        }
+    `;
+    
+    const options = {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+            query: userQuery,
+            variables: {},
+        }),
+    };
+    
+    const res = await fetch(url, options);
+    const user = (await res.json()).data.Viewer as User;
+    return user;
+}
+
+async function fetchMediaData(accessToken: string): Promise<MediaData[]> {
+
+    return [];
+
+    /*
     const query = `
         query ($id: Int) {
             Media (id: $id, type: ANIME) {
@@ -140,6 +231,7 @@ async function fetchMediaData(ids: number[]): Promise<MediaData[]> {
             const options = {
                 method: 'POST',
                 headers: {
+                    'Authorization': 'Bearer ' + accessToken,
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
                 },
@@ -164,6 +256,7 @@ async function fetchMediaData(ids: number[]): Promise<MediaData[]> {
     );
     const medias = jsonArray.map(item => item.data.Media);
     return medias;
+    */
 }
 
 const backgroundColor = '#0B1622';
@@ -216,5 +309,3 @@ const styles = StyleSheet.create({
         fontSize: 14,
     },
 });
-
-export default HomeTabScreen;
