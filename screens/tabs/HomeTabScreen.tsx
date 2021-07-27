@@ -53,9 +53,9 @@ interface Page {
 WebBrowser.maybeCompleteAuthSession();
 
 const url = 'https://graphql.anilist.co';
+const authUrl = `https://anilist.co/api/v2/oauth/authorize`;
 
 const clientId: string = Constants.manifest?.extra?.anilistClientId;
-const authUrl = `https://anilist.co/api/v2/oauth/authorize`;
 
 export default function HomeTabScreen() {
     const { getItem, setItem } = useAsyncStorage('anilist_token');
@@ -69,7 +69,7 @@ export default function HomeTabScreen() {
                 const params = QueryString.parse(e.url.replace('#', '?'));
                 const accessToken = params['access_token'];
                 if (typeof accessToken !== 'string') {
-                    throw new Error('Redirect URL does not contain an access_token param\n' + typeof accessToken);
+                    throw new Error('Redirect URL does not contain an access_token param\n');
                 }
                 
                 setAnilistToken(accessToken);
@@ -83,21 +83,22 @@ export default function HomeTabScreen() {
     }, []);
 
     useEffect(() => {
-        if (anilistToken !== null) {
-            fetchViewer(anilistToken)
-                .then(async (user) => {
-                    setViewer(user)
-
-                    try {
-                        const newMediaList = await fetchMediaData(anilistToken, user.id);
-                        setMediaList(newMediaList)
-                    } catch (err) {
-                        console.error(err);
-                    }
-                })
-                .catch(err => console.error(err));
-
+        if (anilistToken === null) {
+            return;            
         }
+
+        fetchViewer(anilistToken)
+            .then(async (user) => {
+                setViewer(user);
+
+                try {
+                    const newMediaList = await fetchMediaData(anilistToken, user.id);
+                    setMediaList(newMediaList);
+                } catch (err) {
+                    console.error(err);
+                }
+            })
+            .catch(err => console.error(err));
     }, [anilistToken]);
 
     const RenderItem: ListRenderItem<MediaList> = ({ item, index }) => {
@@ -120,7 +121,6 @@ export default function HomeTabScreen() {
     const handleLogInBtnPress = () => {
         Linking.openURL(authUrl + '?client_id=' + clientId + '&response_type=token');
     };
-
 
     return (
         <View style={styles.container}>
