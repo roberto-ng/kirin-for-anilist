@@ -5,7 +5,7 @@ import { useAsyncStorage } from '@react-native-async-storage/async-storage';
 import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
 import * as Linking from 'expo-linking';
-import * as QueryString from 'query-string';
+import { useSelector, useDispatch } from 'react-redux';
 import { 
     StyleSheet, 
     View, 
@@ -15,42 +15,13 @@ import {
     Platform,
 } from 'react-native';
 import { Button, Text } from 'react-native-paper';
-
-interface Media {
-    id: string,
-    episodes: number,
-    title: {
-        romaji: string,
-        english: string,
-        native: string,
-    },
-    coverImage: {
-        medium: string,
-    },
-}
-
-interface MediaList {
-    progress: number,
-    media: Media,
-}
-
-interface User {
-    id: string,
-    name: string,
-}
-
-interface Page {
-    mediaList: MediaList[],
-    pageInfo: {
-        currentPage: number,
-        hasNextPage: boolean,
-        lastPage: number,
-        perPage: number,
-        total: number,
-    },
-}
-
-WebBrowser.maybeCompleteAuthSession();
+import { 
+    Media, 
+    MediaList, 
+    User, 
+    Page, 
+} from '../../model/anilist';
+import { StoreState, anilistSlice } from '../../store/store';
 
 const url = 'https://graphql.anilist.co';
 const authUrl = `https://anilist.co/api/v2/oauth/authorize`;
@@ -58,52 +29,12 @@ const authUrl = `https://anilist.co/api/v2/oauth/authorize`;
 const clientId: string = Constants.manifest?.extra?.anilistClientId;
 
 export default function HomeTabScreen() {
-    const { getItem, setItem } = useAsyncStorage('anilist_token');
-    const [mediaList, setMediaList] = useState<MediaList[]>([]);
-    const [anilistToken, setAnilistToken] = useState<string | null>(null);
-    const [viewer, setViewer] = useState<User | null>(null);
-    
-    useEffect(() => {
-        Linking.addEventListener('url', (e) => {
-            if (anilistToken === null) {
-                const params = QueryString.parse(e.url.replace('#', '?'));
-                const accessToken = params['access_token'];
-                if (typeof accessToken !== 'string') {
-                    throw new Error('Redirect URL does not contain an access_token param\n');
-                }
-                
-                setAnilistToken(accessToken);
-                setItem(accessToken).catch(err => console.error(err));
-            }
-        });
-
-        getItem().then(token => {
-            setAnilistToken(token);
-        });
-    }, []);
-
-    useEffect(() => {
-        if (anilistToken === null) {
-            return;            
-        }
-
-        fetchViewer(anilistToken)
-            .then(async (user) => {
-                setViewer(user);
-
-                try {
-                    const newMediaList = await fetchMediaData(anilistToken, user.id);
-                    setMediaList(newMediaList);
-                } catch (err) {
-                    console.error(err);
-                }
-            })
-            .catch(err => console.error(err));
-    }, [anilistToken]);
+    const dispatch = useDispatch();
+    const state = useSelector((state: StoreState) => state);
 
     const RenderItem: ListRenderItem<MediaList> = ({ item, index }) => {
         // check if this is the last item on the list
-        const isLast = index === (mediaList.length - 1);
+        const isLast = index === (state.anilist.mediaList.length - 1);
         const isFirst = index === 0;
         
         return (
@@ -124,7 +55,7 @@ export default function HomeTabScreen() {
 
     return (
         <View style={styles.container}>
-            {(anilistToken === null) ? (
+            {(state.anilist.token == null) ? (
                 <Button 
                     mode="contained"
                     onPress={handleLogInBtnPress}
@@ -138,7 +69,7 @@ export default function HomeTabScreen() {
                     </Text>
                     <View style={styles.cardListWrapper}>
                             <FlatList
-                                data={mediaList}
+                                data={state.anilist.mediaList}
                                 renderItem={RenderItem}
                                 keyExtractor={item => item.media.id.toString()}
                                 horizontal={true}
@@ -148,7 +79,7 @@ export default function HomeTabScreen() {
             )}
 
             <Text style={{ color: 'white', marginTop: 20 }}>
-                {viewer == null ? 'Nada' : viewer.name}
+                {state.anilist.user == null ? 'Nada' : state.anilist.user.name}
             </Text>
 
             <StatusBar style="light" />
@@ -166,9 +97,7 @@ function ItemCard({ title, isLast, isFirst, coverImage, progress, episodes }: an
         >
             <Image 
                 style={styles.cardCoverImage} 
-                source={{
-                    uri: coverImage,
-                }} 
+                source={{ uri: coverImage }} 
             />
 
             <View style={styles.cardContent}>
@@ -185,91 +114,9 @@ function ItemCard({ title, isLast, isFirst, coverImage, progress, episodes }: an
                     </Text>
                 </View>
             </View>
-
         </View>
     );
 };
-
-async function fetchViewer(accessToken: string): Promise<User> {
-    const query = `
-        query {
-            Viewer {
-                id
-                name
-            }
-        }
-    `;
-    
-    const options = {
-        method: 'POST',
-        headers: {
-            'Authorization': 'Bearer ' + accessToken,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        },
-        body: JSON.stringify({
-            query,
-            variables: {},
-        }),
-    };
-    
-    const res = await fetch(url, options);
-    const user = (await res.json()).data.Viewer as User;
-    return user;
-}
-
-async function fetchMediaData(accessToken: string, userId: string): Promise<MediaList[]> {
-    const query = `
-        query ($id: Int, $page: Int, $perPage: Int) {
-            Page (page: $page, perPage: $perPage) {
-                pageInfo {
-                    total
-                    currentPage
-                    lastPage
-                    hasNextPage
-                    perPage
-                }
-                mediaList (userId: $id, type: ANIME, status: CURRENT, sort: UPDATED_TIME_DESC) {
-                    progress
-                    media {
-                        id
-                        episodes
-                        title {
-                            romaji
-                            english
-                            native
-                        }
-                        coverImage {
-                            medium
-                        }
-                    }
-                }
-            }
-        }
-    `;
-
-    const options = {
-        method: 'POST',
-        headers: {
-            'Authorization': 'Bearer ' + accessToken,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        },
-        body: JSON.stringify({
-            query,
-            variables: {
-                id: userId,
-                page: 1,
-                perPage: 50,
-            },
-        }),
-    };
-
-    const res = await fetch(url, options);
-    const json = await res.json();
-    const page = json.data.Page as Page;
-    return page.mediaList;
-}
 
 const backgroundColor = '#0B1622';
 
