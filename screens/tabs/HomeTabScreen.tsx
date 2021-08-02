@@ -30,25 +30,20 @@ const clientId: string = Constants.manifest?.extra?.anilistClientId;
 
 export default function HomeTabScreen() {
     const dispatch = useDispatch();
-    const state = useSelector((state: StoreState) => state);
+    const anilist = useSelector((state: StoreState) => state.anilist);
     // filter the items that are still airing
     const animeAiring = useSelector((state: StoreState) => {
-        // clone the list
-        const list = [...state.anilist.animeInProgress];
-        
-        return list.filter(m => m.media.status === 'RELEASING')
+        return state.anilist.animeInProgress.filter(m => m.media.status === 'RELEASING');
     });
     // filter the items that finished airing
     const animeFinishedAiring = useSelector((state: StoreState) => {
-        // clone the list
-        const list = [...state.anilist.animeInProgress];
-        
-        return list.filter(m => m.media.status === 'FINISHED');
+        return state.anilist.animeInProgress.filter(m => m.media.status === 'FINISHED');
     });
+    const mangaInProgress = useSelector((state: StoreState) => state.anilist.mangaInProgress);
 
     const RenderItem: ListRenderItem<MediaList> = ({ item, index }) => {
         // check if this is the last item on the list
-        const isLast = index === (state.anilist.animeInProgress.length - 1);
+        const isLast = index === (anilist.animeInProgress.length - 1);
         const isFirst = index === 0;
         
         return (
@@ -69,7 +64,7 @@ export default function HomeTabScreen() {
 
     return (
         <View style={styles.container}>
-            {(state.anilist.token == null) ? (
+            {(anilist.token == null) ? (
                 <Button 
                     mode="contained"
                     onPress={handleLogInBtnPress}
@@ -101,12 +96,20 @@ export default function HomeTabScreen() {
                                 horizontal={true}
                             />
                     </View>
+
+                    <Text style={[styles.text, { margin: 15, color: 'rgb(159,173,189)', }]}>
+                        Manga in Progress
+                    </Text>
+                    <View style={styles.cardListWrapper}>
+                            <FlatList
+                                data={mangaInProgress}
+                                renderItem={RenderItem}
+                                keyExtractor={item => item.media.id.toString()}
+                                horizontal={true}
+                            />
+                    </View>
                 </>
             )}
-
-            <Text style={{ color: 'white', marginTop: 20 }}>
-                {state.anilist.user == null ? 'Nada' : state.anilist.user.name}
-            </Text>
 
             <StatusBar style="light" />
         </View>
@@ -143,11 +146,6 @@ function ItemCard({ title, isLast, isFirst, coverImage, progress, episodes }: an
         </View>
     );
 };
-
-function sortMediaList(list: MediaList[]): MediaList[] {
-    let listCopy = [...list];
-    return listCopy.sort((a, b) => new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime());
-}
 
 const backgroundColor = '#0B1622';
 

@@ -3,6 +3,7 @@ import { Media, MediaList, User } from '../model/anilist';
 
 export interface AnilistSlice {
     animeInProgress: MediaList[],
+    mangaInProgress: MediaList[],
     isLoggedIn: boolean,
     token?: string,
     user?: User,
@@ -15,6 +16,7 @@ interface ActionEditMediaList {
 
 const initialState: AnilistSlice = {
     animeInProgress: [],
+    mangaInProgress: [],
     isLoggedIn: false,
     token: undefined,
 };
@@ -27,12 +29,20 @@ export const anilistSlice = createSlice({
             return initialState;
         },
 
-        clearMediaList(state) {
+        clearanimeInProgress(state) {
             state.animeInProgress = [];
         },
 
-        addToMediaList(state, action: PayloadAction<MediaList[]>) {
+        clearMangaInProgress(state) {
+            state.animeInProgress = [];
+        },
+
+        addToAnimeInProgressList(state, action: PayloadAction<MediaList[]>) {
             state.animeInProgress = state.animeInProgress.concat(action.payload);
+        },
+
+        addToMangaInProgressList(state, action: PayloadAction<MediaList[]>) {
+            state.mangaInProgress = state.mangaInProgress.concat(action.payload);
         },
 
         changeMediaList(state, action: PayloadAction<ActionEditMediaList>) {

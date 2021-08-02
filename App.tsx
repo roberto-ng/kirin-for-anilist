@@ -41,11 +41,15 @@ function AppContent() {
 
     const fetchData = async (accessToken: string) => {
         const user = await fetchViewer(accessToken);
-        const newMediaList = await fetchMediaData(accessToken, user.id);
-        if (state.anilist.animeInProgress.length == 0) {
+        const animeInProgress = await fetchAnimeInProgress(accessToken, user.id);
+        const mangaInProgress = await fetchMangaInProgress(accessToken, user.id);
+        if (state.anilist.animeInProgress.length === 0) {
             dispatch(anilistSlice.actions.setToken(accessToken));
             dispatch(anilistSlice.actions.setUser(user));
-            dispatch(anilistSlice.actions.addToMediaList(newMediaList));
+            dispatch(anilistSlice.actions.addToAnimeInProgressList(animeInProgress));
+        }
+        if (state.anilist.mangaInProgress.length === 0) {
+            dispatch(anilistSlice.actions.addToMangaInProgressList(mangaInProgress));
         }
     };
 
@@ -133,7 +137,7 @@ async function fetchViewer(accessToken: string): Promise<User> {
     return user;
 }
 
-async function fetchMediaData(accessToken: string, userId: string): Promise<MediaList[]> {
+async function fetchAnimeInProgress(accessToken: string, userId: string): Promise<MediaList[]> {
     const query = `
         query ($id: Int, $page: Int, $perPage: Int) {
             Page (page: $page, perPage: $perPage) {
@@ -145,6 +149,61 @@ async function fetchMediaData(accessToken: string, userId: string): Promise<Medi
                     perPage
                 }
                 mediaList (userId: $id, type: ANIME, status: CURRENT, sort: UPDATED_TIME_DESC) {
+                    progress
+                    updatedAt
+                    media {
+                        id
+                        episodes
+                        status
+                        title {
+                            romaji
+                            english
+                            native
+                        }
+                        coverImage {
+                            medium
+                        }
+                    }
+                }
+            }
+        }
+    `;
+
+    const options = {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+            query,
+            variables: {
+                id: userId,
+                page: 1,
+                perPage: 50,
+            },
+        }),
+    };
+
+    const res = await fetch(url, options);
+    const json = await res.json();
+    const page = json.data.Page as Page;
+    return page.mediaList;
+}
+
+async function fetchMangaInProgress(accessToken: string, userId: string): Promise<MediaList[]> {
+    const query = `
+        query ($id: Int, $page: Int, $perPage: Int) {
+            Page (page: $page, perPage: $perPage) {
+                pageInfo {
+                    total
+                    currentPage
+                    lastPage
+                    hasNextPage
+                    perPage
+                }
+                mediaList (userId: $id, type: MANGA, status: CURRENT, sort: UPDATED_TIME_DESC) {
                     progress
                     updatedAt
                     media {
