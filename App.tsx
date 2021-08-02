@@ -40,10 +40,9 @@ function AppContent() {
     const { getItem, setItem } = useAsyncStorage('anilist_token');
 
     const fetchData = async (accessToken: string) => {
-        const user = await fetchViewer(accessToken)
-                    
+        const user = await fetchViewer(accessToken);
         const newMediaList = await fetchMediaData(accessToken, user.id);
-        if (state.anilist.mediaList.length == 0) {
+        if (state.anilist.animeInProgress.length == 0) {
             dispatch(anilistSlice.actions.setToken(accessToken));
             dispatch(anilistSlice.actions.setUser(user));
             dispatch(anilistSlice.actions.addToMediaList(newMediaList));
@@ -106,7 +105,6 @@ export default function App() {
     );
 }
 
-
 async function fetchViewer(accessToken: string): Promise<User> {
     const query = `
         query {
@@ -148,9 +146,11 @@ async function fetchMediaData(accessToken: string, userId: string): Promise<Medi
                 }
                 mediaList (userId: $id, type: ANIME, status: CURRENT, sort: UPDATED_TIME_DESC) {
                     progress
+                    updatedAt
                     media {
                         id
                         episodes
+                        status
                         title {
                             romaji
                             english

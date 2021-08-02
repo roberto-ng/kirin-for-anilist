@@ -31,10 +31,24 @@ const clientId: string = Constants.manifest?.extra?.anilistClientId;
 export default function HomeTabScreen() {
     const dispatch = useDispatch();
     const state = useSelector((state: StoreState) => state);
+    // filter the items that are still airing
+    const animeAiring = useSelector((state: StoreState) => {
+        // clone the list
+        const list = [...state.anilist.animeInProgress];
+        
+        return list.filter(m => m.media.status === 'RELEASING')
+    });
+    // filter the items that finished airing
+    const animeFinishedAiring = useSelector((state: StoreState) => {
+        // clone the list
+        const list = [...state.anilist.animeInProgress];
+        
+        return list.filter(m => m.media.status === 'FINISHED');
+    });
 
     const RenderItem: ListRenderItem<MediaList> = ({ item, index }) => {
         // check if this is the last item on the list
-        const isLast = index === (state.anilist.mediaList.length - 1);
+        const isLast = index === (state.anilist.animeInProgress.length - 1);
         const isFirst = index === 0;
         
         return (
@@ -65,11 +79,23 @@ export default function HomeTabScreen() {
             ) : (
                 <>
                     <Text style={[styles.text, { margin: 15, color: 'rgb(159,173,189)', }]}>
+                        Airing
+                    </Text>
+                    <View style={styles.cardListWrapper}>
+                            <FlatList
+                                data={animeAiring}
+                                renderItem={RenderItem}
+                                keyExtractor={item => item.media.id.toString()}
+                                horizontal={true}
+                            />
+                    </View>
+
+                    <Text style={[styles.text, { margin: 15, color: 'rgb(159,173,189)', }]}>
                         Anime in Progress
                     </Text>
                     <View style={styles.cardListWrapper}>
                             <FlatList
-                                data={state.anilist.mediaList}
+                                data={animeFinishedAiring}
                                 renderItem={RenderItem}
                                 keyExtractor={item => item.media.id.toString()}
                                 horizontal={true}
@@ -117,6 +143,11 @@ function ItemCard({ title, isLast, isFirst, coverImage, progress, episodes }: an
         </View>
     );
 };
+
+function sortMediaList(list: MediaList[]): MediaList[] {
+    let listCopy = [...list];
+    return listCopy.sort((a, b) => new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime());
+}
 
 const backgroundColor = '#0B1622';
 

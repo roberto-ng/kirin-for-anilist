@@ -1,6 +1,9 @@
+export type MediaStatus = 'FINISHED' | 'RELEASING' | 'NOT_YET_RELEASED' | 'CANCELLED' | 'HIATUS';
+
 export interface Media {
     id: string,
     episodes: number,
+    status: MediaStatus,
     title: {
         romaji: string,
         english: string,
@@ -13,6 +16,7 @@ export interface Media {
 
 export interface MediaList {
     progress: number,
+    updatedAt: number,
     media: Media,
 }
 
