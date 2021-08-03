@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Media, MediaList, User } from '../model/anilist';
+import { ActivityUnion, Media, MediaList, User } from '../model/anilist';
 
 export interface AnilistSlice {
     animeInProgress: MediaList[],
     mangaInProgress: MediaList[],
+    activities: ActivityUnion[],
     isLoggedIn: boolean,
     token?: string,
     user?: User,
@@ -17,12 +18,13 @@ interface ActionEditMediaList {
 const initialState: AnilistSlice = {
     animeInProgress: [],
     mangaInProgress: [],
+    activities: [],
     isLoggedIn: false,
     token: undefined,
 };
 
 export const anilistSlice = createSlice({
-    name: 'media',
+    name: 'anilist',
     initialState: initialState,
     reducers: {
         reset() {
@@ -48,6 +50,10 @@ export const anilistSlice = createSlice({
         changeMediaList(state, action: PayloadAction<ActionEditMediaList>) {
             const { index, newMediaListItem } = action.payload;
             state.animeInProgress[index] = newMediaListItem;
+        },
+
+        setActivities(state, action: PayloadAction<ActivityUnion[]>) {
+            state.activities = [...action.payload];
         },
 
         setIsLoggedIn(state, action: PayloadAction<boolean>) {

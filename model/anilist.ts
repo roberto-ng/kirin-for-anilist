@@ -28,6 +28,7 @@ export interface User {
 
 export interface Page {
     mediaList?: MediaList[],
+    activities?: ActivityUnion[],
     pageInfo: {
         currentPage: number,
         hasNextPage: boolean,
@@ -74,3 +75,5 @@ export interface MessageActivity {
     likeCount: number,
     replyCount: number,
 }
+
+export type ActivityUnion = TextActivity | ListActivity | MessageActivity;

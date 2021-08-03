@@ -16,7 +16,8 @@ import {
     Media, 
     MediaList, 
     User, 
-    Page, 
+    Page,
+    ActivityUnion, 
 } from './model/anilist';
 
 WebBrowser.maybeCompleteAuthSession();
@@ -43,6 +44,8 @@ function AppContent() {
         const user = await fetchViewer(accessToken);
         const animeInProgress = await fetchAnimeInProgress(accessToken, user.id);
         const mangaInProgress = await fetchMangaInProgress(accessToken, user.id);
+        const activities = await fetchActivities(accessToken);
+
         if (state.anilist.animeInProgress.length === 0) {
             dispatch(anilistSlice.actions.setToken(accessToken));
             dispatch(anilistSlice.actions.setUser(user));
@@ -50,6 +53,10 @@ function AppContent() {
         }
         if (state.anilist.mangaInProgress.length === 0) {
             dispatch(anilistSlice.actions.addToMangaInProgressList(mangaInProgress));
+        }
+        if (state.anilist.activities.length === 0) {
+            console.log(activities);
+            //dispatch(anilistSlice.actions.setActivities(activities));
         }
     };
 
@@ -255,29 +262,64 @@ async function fetchMangaInProgress(accessToken: string, userId: string): Promis
     return page.mediaList;
 }
 
-async function fetchActivities(accessToken: string) {
+async function fetchActivities(accessToken: string): Promise<ActivityUnion[]> {
     const query = `
         query ($page: Int, $perPage: Int) {
             Page (page: $page, perPage: $perPage) {
-                activities (isFollowing: true) {
-                    id
-                    userId
-                    type
-                    text(asHtml: false)
+                pageInfo {
+                    total
+                    currentPage
+                    lastPage
+                    hasNextPage
+                    perPage
+                }
+                activities (isFollowing: true, sort: ID_DESC) {
+                    ...on TextActivity {
+                        id
+                        userId
+                        type
+                        text
+                        isLocked
+                        likeCount
+                        replyCount
+                        siteUrl
+                        isSubscribed
+                    }
 
-                    status
-                    progress
-                    media
+                    ...on ListActivity {
+                        id
+                        userId
+                        type
+                        status
+                        progress
+                        media {
+                            id
+                            episodes
+                            status
+                            title {
+                                romaji
+                                english
+                                native
+                            }
+                            coverImage {
+                                medium
+                            }    
+                        }
+                        isLocked
+                        likeCount
+                        replyCount
+                        siteUrl
+                        isSubscribed
+                    }
 
-                    recipientId
-                    messengerId     
-                    message(asHtml: false)
-
-                    siteUrl
-                    isLocked
-                    isSubscribed
-                    likeCount
-                    replyCount
+                    ...on MessageActivity {
+                        id
+                        recipientId
+                        messengerId     
+                        message(asHtml: false)
+                        siteUrl
+                        isSubscribed
+                    }
                 }
             }
         }
@@ -302,5 +344,9 @@ async function fetchActivities(accessToken: string) {
     const res = await fetch(url, options);
     const json = await res.json();
     const page = json.data.Page as Page;
-    return page.mediaList;
+    if (page.activities == null) {
+        throw new Error('The Page object has no \'activities\' member');
+    }
+
+    return page.activities;
 }
