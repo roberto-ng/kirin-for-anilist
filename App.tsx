@@ -189,6 +189,10 @@ async function fetchAnimeInProgress(accessToken: string, userId: string): Promis
     const res = await fetch(url, options);
     const json = await res.json();
     const page = json.data.Page as Page;
+    if (page.mediaList == null) {
+        throw new Error('The Page object has no mediaList member');
+    }
+
     return page.mediaList;
 }
 
@@ -237,6 +241,60 @@ async function fetchMangaInProgress(accessToken: string, userId: string): Promis
                 id: userId,
                 page: 1,
                 perPage: 50,
+            },
+        }),
+    };
+
+    const res = await fetch(url, options);
+    const json = await res.json();
+    const page = json.data.Page as Page;
+    if (page.mediaList == null) {
+        throw new Error('The Page object has no mediaList member');
+    }
+
+    return page.mediaList;
+}
+
+async function fetchActivities(accessToken: string) {
+    const query = `
+        query ($page: Int, $perPage: Int) {
+            Page (page: $page, perPage: $perPage) {
+                activities (isFollowing: true) {
+                    id
+                    userId
+                    type
+                    text(asHtml: false)
+
+                    status
+                    progress
+                    media
+
+                    recipientId
+                    messengerId     
+                    message(asHtml: false)
+
+                    siteUrl
+                    isLocked
+                    isSubscribed
+                    likeCount
+                    replyCount
+                }
+            }
+        }
+    `;
+
+    const options = {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+            query,
+            variables: {
+                page: 1,
+                perPage: 15,
             },
         }),
     };

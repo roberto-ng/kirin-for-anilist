@@ -13,6 +13,7 @@ import {
     ListRenderItem, 
     Image,
     Platform,
+    ScrollView,
 } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import { 
@@ -22,6 +23,7 @@ import {
     Page, 
 } from '../../model/anilist';
 import { StoreState, anilistSlice } from '../../store/store';
+import MediaListItemCard from '../../components/MediaListItemCard';
 
 const url = 'https://graphql.anilist.co';
 const authUrl = `https://anilist.co/api/v2/oauth/authorize`;
@@ -41,29 +43,26 @@ export default function HomeTabScreen() {
     });
     const mangaInProgress = useSelector((state: StoreState) => state.anilist.mangaInProgress);
 
-    const RenderItem: ListRenderItem<MediaList> = ({ item, index }) => {
+    const handleLogInBtnPress = () => {
+        Linking.openURL(authUrl + '?client_id=' + clientId + '&response_type=token');
+    };
+
+    const renderItem: ListRenderItem<MediaList> = ({ item, index }) => {
         // check if this is the last item on the list
         const isLast = index === (anilist.animeInProgress.length - 1);
         const isFirst = index === 0;
         
         return (
-            <ItemCard 
-                title={item.media.title.romaji} 
-                coverImage={item.media.coverImage.medium}
-                progress={item.progress}
-                episodes={item.media.episodes}
+            <MediaListItemCard 
+                mediaListItem={item} 
                 isLast={isLast}
                 isFirst={isFirst}
             />
         );
-    };
-
-    const handleLogInBtnPress = () => {
-        Linking.openURL(authUrl + '?client_id=' + clientId + '&response_type=token');
-    };
+    }
 
     return (
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}>
             {(anilist.token == null) ? (
                 <Button 
                     mode="contained"
@@ -79,9 +78,9 @@ export default function HomeTabScreen() {
                     <View style={styles.cardListWrapper}>
                             <FlatList
                                 data={animeAiring}
-                                renderItem={RenderItem}
                                 keyExtractor={item => item.media.id.toString()}
                                 horizontal={true}
+                                renderItem={renderItem}
                             />
                     </View>
 
@@ -91,7 +90,7 @@ export default function HomeTabScreen() {
                     <View style={styles.cardListWrapper}>
                             <FlatList
                                 data={animeFinishedAiring}
-                                renderItem={RenderItem}
+                                renderItem={renderItem}
                                 keyExtractor={item => item.media.id.toString()}
                                 horizontal={true}
                             />
@@ -103,7 +102,7 @@ export default function HomeTabScreen() {
                     <View style={styles.cardListWrapper}>
                             <FlatList
                                 data={mangaInProgress}
-                                renderItem={RenderItem}
+                                renderItem={renderItem}
                                 keyExtractor={item => item.media.id.toString()}
                                 horizontal={true}
                             />
@@ -112,38 +111,7 @@ export default function HomeTabScreen() {
             )}
 
             <StatusBar style="light" />
-        </View>
-    );
-};
-
-function ItemCard({ title, isLast, isFirst, coverImage, progress, episodes }: any) {
-    return (
-        <View 
-            style={[styles.itemCard, { 
-                marginRight: (isLast) ? 10 : 25,
-                marginLeft: (isFirst) ? 10 : 0,
-            }]}
-        >
-            <Image 
-                style={styles.cardCoverImage} 
-                source={{ uri: coverImage }} 
-            />
-
-            <View style={styles.cardContent}>
-                <Text 
-                    style={[styles.cardContentText, styles.cardContentTitle]}
-                    numberOfLines={1}
-                >
-                    {title}
-                </Text>
-            
-                <View style={styles.cardContentInfo}>
-                    <Text style={[styles.cardContentText, styles.cardContentInfoText]}>
-                        Progress: {progress}/{episodes} +
-                    </Text>
-                </View>
-            </View>
-        </View>
+        </ScrollView>
     );
 };
 
@@ -153,7 +121,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: backgroundColor,
-        alignItems: 'flex-start',
+        //alignItems: 'flex-start',
         //justifyContent: 'center',
         paddingTop: Constants.statusBarHeight,
     },
@@ -166,34 +134,5 @@ const styles = StyleSheet.create({
         height: (Platform.OS === 'web') ? 135 : 115,
         width: '100%', 
         marginRight: 10, 
-    },
-    itemCard: {
-        backgroundColor: '#151F2E',
-        height: 115,
-        width: 255,
-        borderRadius: 3,
-        flexDirection: 'row',
-    },
-    cardCoverImage: {
-        height: 115,
-        width: 85,
-    },
-    cardContent: {
-        flex: 1,
-        padding: 12,
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-    },
-    cardContentText: {
-        color: 'rgb(159,173,189)',
-    },
-    cardContentTitle: {
-        fontSize: 16,
-    },
-    cardContentInfo: {
-        marginBottom: 1,
-    },
-    cardContentInfoText: {
-        fontSize: 14,
     },
 });
