@@ -122,6 +122,10 @@ async function fetchViewer(accessToken: string): Promise<User> {
             Viewer {
                 id
                 name
+                avatar {
+                    medium
+                    large
+                }
             }
         }
     `;
@@ -284,6 +288,14 @@ async function fetchActivities(accessToken: string): Promise<ActivityUnion[]> {
                         replyCount
                         siteUrl
                         isSubscribed
+                        user {
+                            id
+                            name
+                            avatar {
+                                medium
+                                large
+                            }
+                        }
                     }
 
                     ...on ListActivity {
@@ -310,6 +322,14 @@ async function fetchActivities(accessToken: string): Promise<ActivityUnion[]> {
                         replyCount
                         siteUrl
                         isSubscribed
+                        user {
+                            id
+                            name
+                            avatar {
+                                medium
+                                large
+                            }
+                        }
                     }
 
                     ...on MessageActivity {

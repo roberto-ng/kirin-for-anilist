@@ -24,6 +24,10 @@ export interface MediaList {
 export interface User {
     id: string,
     name: string,
+    avatar: {
+        medium: string,
+        large: string,
+    },
 }
 
 export interface Page {
@@ -41,6 +45,7 @@ export interface Page {
 export interface TextActivity {
     id: number,
     userId: number,
+    user: User,
     type: ActivityType,
     text: string,
     siteUrl: string,
@@ -53,6 +58,7 @@ export interface TextActivity {
 export interface ListActivity {
     id: number,
     userId: number,
+    user: User,
     type: ActivityType,
     status: string,
     progress: string,
