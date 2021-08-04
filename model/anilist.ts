@@ -1,5 +1,18 @@
-export type MediaStatus = 'FINISHED' | 'RELEASING' | 'NOT_YET_RELEASED' | 'CANCELLED' | 'HIATUS';
-export type ActivityType = 'TEXT' | 'ANIME_LIST' | 'MANGA_LIST' | 'MESSAGE' | 'MEDIA_LIST';
+export enum MediaStatus {
+    FINISHED = 'FINISHED',
+    RELEASING = 'RELEASING',
+    NOT_YET_RELEASED = 'NOT_YET_RELEASED',
+    CANCELLED = 'CANCELLED',
+    HIATUS = 'HIATUS',
+} 
+
+export enum ActivityType {
+    TEXT = 'TEXT',
+    ANIME_LIST = 'ANIME_LIST',
+    MANGA_LIST = 'MANGA_LIST',
+    MESSAGE = 'MESSAGE',
+    MEDIA_LIST = 'MEDIA_LIST',
+}
 
 export interface Media {
     id: string,
@@ -74,6 +87,8 @@ export interface MessageActivity {
     id: number,
     recipientId: number,
     messengerId: number,
+    message: string,
+    messenger: User,
     type: ActivityType,
     siteUrl: string,
     isLocked: boolean,

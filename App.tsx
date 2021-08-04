@@ -56,7 +56,7 @@ function AppContent() {
         }
         if (state.anilist.activities.length === 0) {
             console.log(activities);
-            //dispatch(anilistSlice.actions.setActivities(activities));
+            dispatch(anilistSlice.actions.setActivities(activities));
         }
     };
 
@@ -336,9 +336,17 @@ async function fetchActivities(accessToken: string): Promise<ActivityUnion[]> {
                         id
                         recipientId
                         messengerId     
-                        message(asHtml: false)
+                        message
                         siteUrl
                         isSubscribed
+                        messenger {
+                            id
+                            name
+                            avatar {
+                                medium
+                                large
+                            }
+                        }
                     }
                 }
             }

@@ -43,7 +43,7 @@ export default function MediaListItemCard({
             
                 <View style={styles.cardContentInfo}>
                     <Text style={[styles.cardContentText, styles.cardContentInfoText]}>
-                        Progress: {mediaListItem.progress}/{media.episodes} +
+                        Progress: {mediaListItem.progress}/{media.episodes || '?'} +
                     </Text>
                 </View>
             </View>
