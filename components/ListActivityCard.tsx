@@ -13,8 +13,47 @@ interface ListActivityCardProps {
 }
 
 export default function ListActivityCard({ activity }: ListActivityCardProps) {
-    const episodes = activity.media.episodes || '?';
+    const episodes = activity.media.episodes ?? '?';
     const title = activity.media.title.romaji;
+
+    let text = null;
+    switch (activity.status) {
+        case 'read chapter':
+            text = `Read chapter ${activity.progress} of ${title}`;
+            break;
+        
+        case 'watched episode':
+            text = `Watched episode ${activity.progress} of ${title}`;
+            break;
+        
+        case 'plans to watch':
+            text = `Plans to watch ${title}`;
+            break;
+
+        case 'plans to read':
+            text = `Plans to read ${title}`;
+            break;
+        
+        case 'paused watching':
+            text = `Paused watching ${title}`;
+            break;
+        
+        case 'paused reading':
+            text = `Paused reading ${title}`;
+            break;
+        
+        case 'dropped':
+            text = `Dropped ${title}`;
+            break;
+
+        case 'completed':
+            text = `Completed ${title}`;
+            break;
+
+        default:
+            text = '';
+            break;
+    }
 
     return (
         <View style={styles.card}>
@@ -34,7 +73,7 @@ export default function ListActivityCard({ activity }: ListActivityCardProps) {
                         style={[styles.cardContentText, styles.cardContentInfoText]}
                         numberOfLines={3}
                     >
-                        Progress: {activity.progress}/{episodes || '?'} of {title}
+                        {text}
                     </Text>
                 </View>
             </View>
@@ -46,7 +85,7 @@ const styles = StyleSheet.create({
     card: {
         backgroundColor: '#151F2E',
         height: 115,
-        width: 255,
+        //width: 255,
         borderRadius: 3,
         flexDirection: 'row',
         margin: 6,

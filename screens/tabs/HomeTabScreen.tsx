@@ -154,7 +154,9 @@ const styles = StyleSheet.create({
     },
     activities: {
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'stretch',
+        marginRight: 15,
+        marginLeft: 15,
     },
     text: {
         color: 'white',

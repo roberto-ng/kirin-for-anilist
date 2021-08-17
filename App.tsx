@@ -55,7 +55,6 @@ function AppContent() {
             dispatch(anilistSlice.actions.addToMangaInProgressList(mangaInProgress));
         }
         if (state.anilist.activities.length === 0) {
-            console.log(activities);
             dispatch(anilistSlice.actions.setActivities(activities));
         }
     };
