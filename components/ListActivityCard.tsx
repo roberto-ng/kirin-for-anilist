@@ -13,7 +13,6 @@ interface ListActivityCardProps {
 }
 
 export default function ListActivityCard({ activity }: ListActivityCardProps) {
-    const episodes = activity.media.episodes ?? '?';
     const title = activity.media.title.romaji;
 
     let text = null;
