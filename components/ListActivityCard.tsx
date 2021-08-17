@@ -68,6 +68,7 @@ export default function ListActivityCard({ activity }: ListActivityCardProps) {
                     >
                         {activity.user.name}
                     </Text>
+                    
                     <Text 
                         style={[styles.cardContentText, styles.cardContentInfoText]}
                         numberOfLines={3}

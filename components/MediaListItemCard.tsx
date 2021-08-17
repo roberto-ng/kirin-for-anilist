@@ -20,6 +20,11 @@ export default function MediaListItemCard({
     mediaListItem,
 }: MediaListItemCardProps) {
     const { media } = mediaListItem;
+    const episodes = media.episodes ?? media.chapters;
+    let mediaProgress = mediaListItem.progress.toString();
+    if (episodes != null) {
+        mediaProgress += `/${episodes}`;
+    }
 
     return (
         <View 
@@ -43,7 +48,7 @@ export default function MediaListItemCard({
             
                 <View style={styles.cardContentInfo}>
                     <Text style={[styles.cardContentText, styles.cardContentInfoText]}>
-                        Progress: {mediaListItem.progress}/{media.episodes || '?'} +
+                        Progress: {mediaProgress} +
                     </Text>
                 </View>
             </View>

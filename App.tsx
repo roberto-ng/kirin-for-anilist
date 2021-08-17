@@ -223,6 +223,7 @@ async function fetchMangaInProgress(accessToken: string, userId: string): Promis
                     media {
                         id
                         episodes
+                        chapters
                         status
                         title {
                             romaji

@@ -16,7 +16,8 @@ export enum ActivityType {
 
 export interface Media {
     id: string,
-    episodes: number,
+    episodes?: number,
+    chapters?: number,
     status: MediaStatus,
     title: {
         romaji: string,
