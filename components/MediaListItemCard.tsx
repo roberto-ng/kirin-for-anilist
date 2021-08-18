@@ -1,30 +1,61 @@
 import React from 'react';
+import { useState } from 'react';
 import { 
     StyleSheet, 
     View, 
     Image,
     Platform,
 } from 'react-native';
-import { Button, Text } from 'react-native-paper';
+import { IconButton, Text } from 'react-native-paper';
 import { MediaList } from '../model/anilist';
+import { increaseMediaProgression } from '../api/anilist';
 
 export interface MediaListItemCardProps {
     mediaListItem: MediaList,
     isLast: boolean,
     isFirst: boolean,
+    token?: string,
 }
 
 export default function MediaListItemCard({ 
     isLast, 
     isFirst, 
     mediaListItem,
+    token,
 }: MediaListItemCardProps) {
+    const [isUpdating, setIsUpdating] = useState<boolean>(false);
+    const [progress, setProgress] = useState<number>(mediaListItem.progress);
+
     const { media } = mediaListItem;
     const episodes = media.episodes ?? media.chapters;
-    let mediaProgress = mediaListItem.progress.toString();
-    if (episodes != null) {
-        mediaProgress += `/${episodes}`;
-    }
+
+    const formatProgress = (): string => {
+        let mediaProgress = progress.toString();
+        if (episodes != null) {
+            mediaProgress += `/${episodes}`;
+        }
+
+        return mediaProgress;
+    };
+
+
+    const handleIncrementButtonPress = async () => {
+        if (token == null) {
+            console.error('Auth token is not avalable.');
+            setIsUpdating(false);
+            return;
+        }
+
+        try {
+            setIsUpdating(true);
+            await increaseMediaProgression(token, mediaListItem);
+            setProgress(progress + 1);
+        } catch (err) {
+            console.error(err);
+        }
+
+        setIsUpdating(false);
+    };
 
     return (
         <View 
@@ -48,8 +79,17 @@ export default function MediaListItemCard({
             
                 <View style={styles.cardContentInfo}>
                     <Text style={[styles.cardContentText, styles.cardContentInfoText]}>
-                        Progress: {mediaProgress} +
+                        Progress: {formatProgress()}
                     </Text>
+                    <IconButton 
+                        icon="plus" 
+                        color="rgb(159,173,189)" 
+                        size={23}
+                        disabled={isUpdating} // disable the button if the media progress is being updated
+                        onPress={handleIncrementButtonPress}
+                    >
+                        +
+                    </IconButton>
                 </View>
             </View>
         </View>
@@ -82,8 +122,13 @@ const styles = StyleSheet.create({
     },
     cardContentInfo: {
         marginBottom: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     cardContentInfoText: {
         fontSize: 14,
+    },
+    plusButton: {
+        color: 'white',
     },
 });

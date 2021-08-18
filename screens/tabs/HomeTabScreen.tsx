@@ -57,6 +57,7 @@ export default function HomeTabScreen() {
                 mediaListItem={item} 
                 isLast={isLast}
                 isFirst={isFirst}
+                token={anilist.token}
             />
         );
     }

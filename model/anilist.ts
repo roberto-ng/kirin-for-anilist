@@ -30,6 +30,7 @@ export interface Media {
 }
 
 export interface MediaList {
+    id: number,
     progress: number,
     updatedAt: number,
     media: Media,

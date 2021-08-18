@@ -32,7 +32,6 @@ const MyTheme = {
 };
 
 const url = 'https://graphql.anilist.co';
-const authUrl = `https://anilist.co/api/v2/oauth/authorize`;
 const Stack = createStackNavigator();
 
 function AppContent() {
@@ -159,6 +158,7 @@ async function fetchAnimeInProgress(accessToken: string, userId: string): Promis
                     perPage
                 }
                 mediaList (userId: $id, type: ANIME, status: CURRENT, sort: UPDATED_TIME_DESC) {
+                    id
                     progress
                     updatedAt
                     media {
@@ -218,6 +218,7 @@ async function fetchMangaInProgress(accessToken: string, userId: string): Promis
                     perPage
                 }
                 mediaList (userId: $id, type: MANGA, status: CURRENT, sort: UPDATED_TIME_DESC) {
+                    id
                     progress
                     updatedAt
                     media {
