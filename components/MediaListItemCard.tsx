@@ -23,13 +23,13 @@ export default function MediaListItemCard({
     mediaListItem,
     token,
 }: MediaListItemCardProps) {
-    const { media } = mediaListItem;
     const [isUpdating, setIsUpdating] = useState<boolean>(false);
-    const [progress, setProgress] = useState<number>(mediaListItem.progress);
+    const [item, setItem] = useState<MediaList>(mediaListItem);
+    const { media } = mediaListItem;
     
     const formatProgress = (): string => {
         const total = media.episodes ?? media.chapters;
-        let mediaProgress = progress.toString();
+        let mediaProgress = item.progress.toString();
         if (total != null) {
             mediaProgress += `/${total}`;
         }
@@ -45,8 +45,8 @@ export default function MediaListItemCard({
 
         try {
             setIsUpdating(true);
-            await increaseMediaProgression(token, mediaListItem);
-            setProgress(progress + 1);
+            await increaseMediaProgression(token, item);
+            setItem({...item, progress: item.progress + 1});
         } catch (err) {
             console.error(err);
         }
