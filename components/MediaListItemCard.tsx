@@ -23,26 +23,23 @@ export default function MediaListItemCard({
     mediaListItem,
     token,
 }: MediaListItemCardProps) {
+    const { media } = mediaListItem;
     const [isUpdating, setIsUpdating] = useState<boolean>(false);
     const [progress, setProgress] = useState<number>(mediaListItem.progress);
-
-    const { media } = mediaListItem;
-    const episodes = media.episodes ?? media.chapters;
-
+    
     const formatProgress = (): string => {
+        const total = media.episodes ?? media.chapters;
         let mediaProgress = progress.toString();
-        if (episodes != null) {
-            mediaProgress += `/${episodes}`;
+        if (total != null) {
+            mediaProgress += `/${total}`;
         }
 
         return mediaProgress;
     };
 
-
     const handleIncrementButtonPress = async () => {
         if (token == null) {
             console.error('Auth token is not avalable.');
-            setIsUpdating(false);
             return;
         }
 

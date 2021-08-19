@@ -85,41 +85,53 @@ export default function HomeTabScreen() {
                     </Button>
                 ) : (
                     <>
-                        <Text style={[styles.text, { margin: 15, color: 'rgb(159,173,189)', }]}>
-                            Airing
-                        </Text>
-                        <View style={styles.cardListWrapper}>
-                                <FlatList
-                                    data={animeAiring}
-                                    keyExtractor={item => item.media.id.toString()}
-                                    horizontal={true}
-                                    renderItem={renderItem}
-                                />
-                        </View>
+                        {(animeAiring.length > 0) && (
+                            <>
+                                <Text style={[styles.text, { margin: 15, color: 'rgb(159,173,189)', }]}>
+                                    Airing
+                                </Text>
+                                <View style={styles.cardListWrapper}>
+                                        <FlatList
+                                            data={animeAiring}
+                                            keyExtractor={item => item.media.id.toString()}
+                                            horizontal={true}
+                                            renderItem={renderItem}
+                                        />
+                                </View>
+                            </>
+                        )}
 
-                        <Text style={[styles.text, { margin: 15, color: 'rgb(159,173,189)', }]}>
-                            Anime in Progress
-                        </Text>
-                        <View style={styles.cardListWrapper}>
-                                <FlatList
-                                    data={animeFinishedAiring}
-                                    renderItem={renderItem}
-                                    keyExtractor={item => item.media.id.toString()}
-                                    horizontal={true}
-                                />
-                        </View>
+                        {(animeFinishedAiring.length > 0) && (
+                            <>
+                                <Text style={[styles.text, { margin: 15, color: 'rgb(159,173,189)', }]}>
+                                    Anime in Progress
+                                </Text>
+                                <View style={styles.cardListWrapper}>
+                                        <FlatList
+                                            data={animeFinishedAiring}
+                                            renderItem={renderItem}
+                                            keyExtractor={item => item.media.id.toString()}
+                                            horizontal={true}
+                                        />
+                                </View>
+                            </>
+                        )}
 
-                        <Text style={[styles.text, { margin: 15, color: 'rgb(159,173,189)', }]}>
-                            Manga in Progress
-                        </Text>
-                        <View style={styles.cardListWrapper}>
-                                <FlatList
-                                    data={mangaInProgress}
-                                    renderItem={renderItem}
-                                    keyExtractor={item => item.media.id.toString()}
-                                    horizontal={true}
-                                />
-                        </View>
+                        {(mangaInProgress.length > 0) && (
+                            <>
+                                <Text style={[styles.text, { margin: 15, color: 'rgb(159,173,189)', }]}>
+                                    Manga in Progress
+                                </Text>
+                                <View style={styles.cardListWrapper}>
+                                        <FlatList
+                                            data={mangaInProgress}
+                                            renderItem={renderItem}
+                                            keyExtractor={item => item.media.id.toString()}
+                                            horizontal={true}
+                                        />
+                                </View>
+                            </>
+                        )}
 
                         <Text style={[styles.text, { margin: 15, color: 'rgb(159,173,189)', }]}>
                             Activity
