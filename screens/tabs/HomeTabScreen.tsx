@@ -15,7 +15,7 @@ import {
     Platform,
     ScrollView,
 } from 'react-native';
-import { Button, Text, ActivityIndicator, Colors } from 'react-native-paper';
+import { Button, Text, ActivityIndicator, Colors, Snackbar } from 'react-native-paper';
 import { StoreState, anilistSlice } from '../../store/store';
 import MediaListItemCard from '../../components/MediaListItemCard';
 import TextActivityCard from '../../components/TextActivityCard';
@@ -41,12 +41,15 @@ interface MediaSectionProps {
     name: string,
     token: string,
     list: MediaList[],
+    onError: (err: any) => void,
 }
 
 export default function HomeTabScreen({}) {
     const anilist = useSelector((state: StoreState) => state.anilist);
     const [hasFetchedData, setHasFetchedData] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [errorMsg, setErrorMsg] = useState<string | null>(null);
+    const [showError, setShowError] = useState<boolean>(false);
     const [animeAiring, setAnimeAiring] = useState<MediaList[]>([]);
     const [animeFinishedAiring, setAnimeFinishedAiring] = useState<MediaList[]>([]);
     const [mangaInProgress, setMangaInProgress] = useState<MediaList[]>([]);
@@ -89,6 +92,17 @@ export default function HomeTabScreen({}) {
         }
     };
 
+    const onError = (err: any) => {
+        if (err instanceof Error) {
+            setErrorMsg(err.message);
+        } else {
+            setErrorMsg(err + '');
+        }
+
+        console.log(err);
+        setShowError(true);
+    };
+
     useEffect(() => {
         if (anilist.token == null || anilist.user == null) {
             return;
@@ -102,7 +116,8 @@ export default function HomeTabScreen({}) {
     });
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
+        <>
+            <ScrollView contentContainerStyle={styles.container}>
                 {(anilist.token == null) ? (
                     <Button 
                         mode="contained"
@@ -117,6 +132,7 @@ export default function HomeTabScreen({}) {
                                 name="Airing" 
                                 list={animeAiring} 
                                 token={anilist.token} 
+                                onError={onError}
                             />
                         )}
 
@@ -125,6 +141,7 @@ export default function HomeTabScreen({}) {
                                 name="Anime in Progress" 
                                 list={animeFinishedAiring} 
                                 token={anilist.token} 
+                                onError={onError}
                             />
                         )}
 
@@ -133,6 +150,7 @@ export default function HomeTabScreen({}) {
                                 name="Manga in Progress" 
                                 list={mangaInProgress} 
                                 token={anilist.token} 
+                                onError={onError}
                             />
                         )}
 
@@ -147,11 +165,11 @@ export default function HomeTabScreen({}) {
                                         const ActivityCard = getActivityCard(activity);
                                         return (
                                             <ActivityCard 
-                                            activity={activity as any} 
-                                            key={index} 
-                                            />
-                                        );
-                                    })}                    
+                                                activity={activity as any} 
+                                                key={index}                                             />
+                                            );
+                                        })
+                                    }     
                                 </View>
                             </>
                         )}
@@ -161,15 +179,32 @@ export default function HomeTabScreen({}) {
                                 <ActivityIndicator size={50} animating={true} color={Colors.white} />
                             </View>
                         )}
+
                     </>
                 )}
-
                 <StatusBar style="light" />
-        </ScrollView>
+            </ScrollView>
+            <Snackbar
+                visible={showError}
+                onDismiss={() => {
+                    setErrorMsg(null);
+                    setShowError(false);
+                }}
+                action={{
+                    label: 'Ok',
+                    onPress: () => {
+                        setErrorMsg(null);
+                        setShowError(false);
+                    },
+                }}
+            >
+                {errorMsg}
+            </Snackbar>
+        </>
     );
 };
 
-function MediaSection({ name, token, list }: MediaSectionProps) {
+function MediaSection({ name, token, list, onError }: MediaSectionProps) {
     return (
         <>
             <Text style={[styles.text, { margin: 15, color: 'rgb(159,173,189)', }]}>
@@ -191,6 +226,7 @@ function MediaSection({ name, token, list }: MediaSectionProps) {
                                 isLast={isLast}
                                 isFirst={isFirst}
                                 token={token}
+                                onError={onError}
                             />
                         );
                     }}

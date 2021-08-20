@@ -6,7 +6,7 @@ import {
     Image,
     Platform,
 } from 'react-native';
-import { IconButton, Text } from 'react-native-paper';
+import { IconButton, Snackbar, Text } from 'react-native-paper';
 import { MediaList } from '../model/anilist';
 import { increaseMediaProgression } from '../api/anilist';
 
@@ -15,6 +15,7 @@ export interface MediaListItemCardProps {
     isLast: boolean,
     isFirst: boolean,
     token?: string,
+    onError: (err: any) => void;
 }
 
 export default function MediaListItemCard({ 
@@ -22,6 +23,7 @@ export default function MediaListItemCard({
     isFirst, 
     mediaListItem,
     token,
+    onError,
 }: MediaListItemCardProps) {
     const [isUpdating, setIsUpdating] = useState<boolean>(false);
     const [item, setItem] = useState<MediaList>(mediaListItem);
@@ -48,7 +50,7 @@ export default function MediaListItemCard({
             await increaseMediaProgression(token, item);
             setItem({...item, progress: item.progress + 1});
         } catch (err) {
-            console.error(err);
+            onError(err);
         }
 
         setIsUpdating(false);
@@ -84,9 +86,7 @@ export default function MediaListItemCard({
                         size={23}
                         disabled={isUpdating} // disable the button if the media progress is being updated
                         onPress={handleIncrementButtonPress}
-                    >
-                        +
-                    </IconButton>
+                    />
                 </View>
             </View>
         </View>
