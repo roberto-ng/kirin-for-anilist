@@ -1,6 +1,44 @@
-import { MediaList } from '../model/anilist';
+import { 
+    Media, 
+    MediaList, 
+    User, 
+    Page,
+    ActivityUnion, 
+} from '../model/anilist';
 
 const url = 'https://graphql.anilist.co';
+
+export async function fetchViewer(accessToken: string): Promise<User> {
+    const query = `
+        query {
+            Viewer {
+                id
+                name
+                avatar {
+                    medium
+                    large
+                }
+            }
+        }
+    `;
+    
+    const options = {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+            query,
+            variables: {},
+        }),
+    };
+    
+    const res = await fetch(url, options);
+    const user = (await res.json()).data.Viewer as User;
+    return user;
+}
 
 export async function increaseMediaProgression(token: string, mediaList: MediaList): Promise<void> {
     let query = `
@@ -31,4 +69,238 @@ export async function increaseMediaProgression(token: string, mediaList: MediaLi
     if (!res.ok) {
         throw new Error(await res.text());
     }
+}
+
+export async function fetchAnimeInProgress(accessToken: string, userId: string): Promise<MediaList[]> {
+    const query = `
+        query ($id: Int, $page: Int, $perPage: Int) {
+            Page (page: $page, perPage: $perPage) {
+                pageInfo {
+                    total
+                    currentPage
+                    lastPage
+                    hasNextPage
+                    perPage
+                }
+                mediaList (userId: $id, type: ANIME, status: CURRENT, sort: UPDATED_TIME_DESC) {
+                    id
+                    progress
+                    updatedAt
+                    media {
+                        id
+                        episodes
+                        status
+                        title {
+                            romaji
+                            english
+                            native
+                        }
+                        coverImage {
+                            medium
+                        }
+                    }
+                }
+            }
+        }
+    `;
+
+    const options = {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+            query,
+            variables: {
+                id: userId,
+                page: 1,
+                perPage: 50,
+            },
+        }),
+    };
+
+    const res = await fetch(url, options);
+    const json = await res.json();
+    const page = json.data.Page as Page;
+    if (page.mediaList == null) {
+        throw new Error('The Page object has no mediaList member');
+    }
+
+    return page.mediaList;
+}
+
+export async function fetchMangaInProgress(accessToken: string, userId: string): Promise<MediaList[]> {
+    const query = `
+        query ($id: Int, $page: Int, $perPage: Int) {
+            Page (page: $page, perPage: $perPage) {
+                pageInfo {
+                    total
+                    currentPage
+                    lastPage
+                    hasNextPage
+                    perPage
+                }
+                mediaList (userId: $id, type: MANGA, status: CURRENT, sort: UPDATED_TIME_DESC) {
+                    id
+                    progress
+                    updatedAt
+                    media {
+                        id
+                        episodes
+                        chapters
+                        status
+                        title {
+                            romaji
+                            english
+                            native
+                        }
+                        coverImage {
+                            medium
+                        }
+                    }
+                }
+            }
+        }
+    `;
+
+    const options = {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+            query,
+            variables: {
+                id: userId,
+                page: 1,
+                perPage: 50,
+            },
+        }),
+    };
+
+    const res = await fetch(url, options);
+    const json = await res.json();
+    const page = json.data.Page as Page;
+    if (page.mediaList == null) {
+        throw new Error('The Page object has no mediaList member');
+    }
+
+    return page.mediaList;
+}
+
+export async function fetchActivities(accessToken: string): Promise<ActivityUnion[]> {
+    const query = `
+        query ($page: Int, $perPage: Int) {
+            Page (page: $page, perPage: $perPage) {
+                pageInfo {
+                    total
+                    currentPage
+                    lastPage
+                    hasNextPage
+                    perPage
+                }
+                activities (isFollowing: true, sort: ID_DESC) {
+                    ...on TextActivity {
+                        id
+                        userId
+                        type
+                        text
+                        isLocked
+                        likeCount
+                        replyCount
+                        siteUrl
+                        isSubscribed
+                        user {
+                            id
+                            name
+                            avatar {
+                                medium
+                                large
+                            }
+                        }
+                    }
+
+                    ...on ListActivity {
+                        id
+                        userId
+                        type
+                        status
+                        progress
+                        media {
+                            id
+                            episodes
+                            status
+                            title {
+                                romaji
+                                english
+                                native
+                            }
+                            coverImage {
+                                medium
+                            }    
+                        }
+                        isLocked
+                        likeCount
+                        replyCount
+                        siteUrl
+                        isSubscribed
+                        user {
+                            id
+                            name
+                            avatar {
+                                medium
+                                large
+                            }
+                        }
+                    }
+
+                    ...on MessageActivity {
+                        id
+                        recipientId
+                        messengerId     
+                        message
+                        siteUrl
+                        isSubscribed
+                        messenger {
+                            id
+                            name
+                            avatar {
+                                medium
+                                large
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    `;
+
+    const options = {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+            query,
+            variables: {
+                page: 1,
+                perPage: 15,
+            },
+        }),
+    };
+
+    const res = await fetch(url, options);
+    const json = await res.json();
+    const page = json.data.Page as Page;
+    if (page.activities == null) {
+        throw new Error('The Page object has no \'activities\' member');
+    }
+
+    return page.activities;
 }

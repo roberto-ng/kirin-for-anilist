@@ -16,20 +16,42 @@ import {
     ScrollView,
 } from 'react-native';
 import { Button, Text } from 'react-native-paper';
-import { ActivityType, ActivityUnion, ListActivity, MediaList, MediaStatus, MessageActivity, TextActivity } from '../../model/anilist';
 import { StoreState, anilistSlice } from '../../store/store';
 import MediaListItemCard from '../../components/MediaListItemCard';
 import TextActivityCard from '../../components/TextActivityCard';
 import ListActivityCard from '../../components/ListActivityCard';
+import { 
+    fetchViewer, 
+    fetchActivities, 
+    fetchMangaInProgress, 
+    fetchAnimeInProgress,
+} from '../../api/anilist';
+import { 
+    ActivityType, 
+    ActivityUnion, 
+    User, 
+    MediaList, 
+    MediaStatus, 
+} from '../../model/anilist';
 
-const url = 'https://graphql.anilist.co';
 const authUrl = `https://anilist.co/api/v2/oauth/authorize`;
-
 const clientId: string = Constants.manifest?.extra?.anilistClientId;
 
-export default function HomeTabScreen() {
-    const dispatch = useDispatch();
+interface MediaSectionProps {
+    name: string,
+    token: string,
+    list: MediaList[],
+}
+
+export default function HomeTabScreen({}) {
+    //const dispatch = useDispatch();
     const anilist = useSelector((state: StoreState) => state.anilist);
+    const [hasFetchedData, setHasFetchedData] = useState<boolean>(false);
+    const [animeAiring, setAnimeAiring] = useState<MediaList[]>([]);
+    const [animeFinishedAiring, setAnimeFinishedAiring] = useState<MediaList[]>([]);
+    const [mangaInProgress, setMangaInProgress] = useState<MediaList[]>([]);
+    const [activities, setActivities] = useState<ActivityUnion[]>([]);
+    /*
     // filter the items that are still airing
     const animeAiring = useSelector((state: StoreState) => {
         const { animeInProgress } = state.anilist;
@@ -42,25 +64,30 @@ export default function HomeTabScreen() {
     });
     const mangaInProgress = useSelector((state: StoreState) => state.anilist.mangaInProgress);
     const activities = useSelector((state: StoreState) => state.anilist.activities);
+    */
+
+    const fetchData = async (accessToken: string, user: User) => {
+        const animeInProgressResponse = await fetchAnimeInProgress(accessToken, user.id);
+        const mangaInProgressResponse = await fetchMangaInProgress(accessToken, user.id);
+        const activitiesResponse = await fetchActivities(accessToken);
+
+        if (animeAiring.length === 0 && animeFinishedAiring.length === 0) {
+            const airing = animeInProgressResponse.filter(m => m.media.status === MediaStatus.RELEASING);
+            const finished = animeInProgressResponse.filter(m => m.media.status === MediaStatus.FINISHED);
+            setAnimeAiring(airing);
+            setAnimeFinishedAiring(finished);
+        }
+        if (mangaInProgress.length === 0) {
+            setMangaInProgress(mangaInProgressResponse);
+        }
+        if (activities.length === 0) {
+            setActivities(activitiesResponse);
+        }
+    };
 
     const handleLogInBtnPress = () => {
         Linking.openURL(authUrl + '?client_id=' + clientId + '&response_type=token');
     };
-
-    const renderItem: ListRenderItem<MediaList> = ({ item, index }) => {
-        // check if this is the last item on the list
-        const isLast = index === (anilist.animeInProgress.length - 1);
-        const isFirst = index === 0;
-        
-        return (
-            <MediaListItemCard 
-                mediaListItem={item} 
-                isLast={isLast}
-                isFirst={isFirst}
-                token={anilist.token}
-            />
-        );
-    }
 
     const getActivityCard = (activity: ActivityUnion) => {
         if (
@@ -74,6 +101,18 @@ export default function HomeTabScreen() {
         }
     };
 
+    useEffect(() => {
+        if (anilist.token == null || anilist.user == null) {
+            return;
+        }
+
+        if (!hasFetchedData) {
+            setHasFetchedData(true);
+            fetchData(anilist.token, anilist.user)
+                .catch((err) => console.error(err));
+        }
+    });
+
     return (
         <ScrollView contentContainerStyle={styles.container}>
                 {(anilist.token == null) ? (
@@ -86,51 +125,27 @@ export default function HomeTabScreen() {
                 ) : (
                     <>
                         {(animeAiring.length > 0) && (
-                            <>
-                                <Text style={[styles.text, { margin: 15, color: 'rgb(159,173,189)', }]}>
-                                    Airing
-                                </Text>
-                                <View style={styles.cardListWrapper}>
-                                        <FlatList
-                                            data={animeAiring}
-                                            keyExtractor={item => item.media.id.toString()}
-                                            horizontal={true}
-                                            renderItem={renderItem}
-                                        />
-                                </View>
-                            </>
+                            <MediaSection 
+                                name="Airing" 
+                                list={animeAiring} 
+                                token={anilist.token} 
+                            />
                         )}
 
                         {(animeFinishedAiring.length > 0) && (
-                            <>
-                                <Text style={[styles.text, { margin: 15, color: 'rgb(159,173,189)', }]}>
-                                    Anime in Progress
-                                </Text>
-                                <View style={styles.cardListWrapper}>
-                                        <FlatList
-                                            data={animeFinishedAiring}
-                                            renderItem={renderItem}
-                                            keyExtractor={item => item.media.id.toString()}
-                                            horizontal={true}
-                                        />
-                                </View>
-                            </>
+                            <MediaSection 
+                                name="Anime in Progress" 
+                                list={animeFinishedAiring} 
+                                token={anilist.token} 
+                            />
                         )}
 
                         {(mangaInProgress.length > 0) && (
-                            <>
-                                <Text style={[styles.text, { margin: 15, color: 'rgb(159,173,189)', }]}>
-                                    Manga in Progress
-                                </Text>
-                                <View style={styles.cardListWrapper}>
-                                        <FlatList
-                                            data={mangaInProgress}
-                                            renderItem={renderItem}
-                                            keyExtractor={item => item.media.id.toString()}
-                                            horizontal={true}
-                                        />
-                                </View>
-                            </>
+                            <MediaSection 
+                                name="Manga in Progress" 
+                                list={mangaInProgress} 
+                                token={anilist.token} 
+                            />
                         )}
 
                         <Text style={[styles.text, { margin: 15, color: 'rgb(159,173,189)', }]}>
@@ -155,6 +170,37 @@ export default function HomeTabScreen() {
         </ScrollView>
     );
 };
+
+function MediaSection({ name, token, list }: MediaSectionProps) {
+    return (
+        <>
+            <Text style={[styles.text, { margin: 15, color: 'rgb(159,173,189)', }]}>
+                {name}
+            </Text>
+            <View style={styles.cardListWrapper}>
+                <FlatList
+                    data={list}
+                    keyExtractor={item => item.media.id.toString()}
+                    horizontal={true}
+                    renderItem={({ item, index }) => {
+                        // check if this is the last item on the list
+                        const isLast = index === (list.length - 1);
+                        const isFirst = index === 0;
+                                                        
+                        return (
+                            <MediaListItemCard 
+                                mediaListItem={item} 
+                                isLast={isLast}
+                                isFirst={isFirst}
+                                token={token}
+                            />
+                        );
+                    }}
+                />
+            </View>
+        </>
+    );
+}
 
 const backgroundColor = '#0B1622';
 
