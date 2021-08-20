@@ -15,7 +15,7 @@ import {
     Platform,
     ScrollView,
 } from 'react-native';
-import { Button, Text } from 'react-native-paper';
+import { Button, Text, ActivityIndicator, Colors } from 'react-native-paper';
 import { StoreState, anilistSlice } from '../../store/store';
 import MediaListItemCard from '../../components/MediaListItemCard';
 import TextActivityCard from '../../components/TextActivityCard';
@@ -46,6 +46,7 @@ interface MediaSectionProps {
 export default function HomeTabScreen({}) {
     const anilist = useSelector((state: StoreState) => state.anilist);
     const [hasFetchedData, setHasFetchedData] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [animeAiring, setAnimeAiring] = useState<MediaList[]>([]);
     const [animeFinishedAiring, setAnimeFinishedAiring] = useState<MediaList[]>([]);
     const [mangaInProgress, setMangaInProgress] = useState<MediaList[]>([]);
@@ -68,6 +69,8 @@ export default function HomeTabScreen({}) {
         if (activities.length === 0) {
             setActivities(activitiesResponse);
         }
+
+        setIsLoading(false);
     };
 
     const handleLogInBtnPress = () => {
@@ -152,6 +155,12 @@ export default function HomeTabScreen({}) {
                                 </View>
                             </>
                         )}
+
+                        {(isLoading) && (
+                            <View style={styles.activityIndicatorContainer}>
+                                <ActivityIndicator size={50} animating={true} color={Colors.white} />
+                            </View>
+                        )}
                     </>
                 )}
 
@@ -215,5 +224,11 @@ const styles = StyleSheet.create({
         height: (Platform.OS === 'web') ? 135 : 115,
         width: '100%', 
         marginRight: 10, 
+    },
+    activityIndicatorContainer: {
+        width: '100%',
+        height: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 });
