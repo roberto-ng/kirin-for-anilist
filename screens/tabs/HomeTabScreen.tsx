@@ -44,27 +44,12 @@ interface MediaSectionProps {
 }
 
 export default function HomeTabScreen({}) {
-    //const dispatch = useDispatch();
     const anilist = useSelector((state: StoreState) => state.anilist);
     const [hasFetchedData, setHasFetchedData] = useState<boolean>(false);
     const [animeAiring, setAnimeAiring] = useState<MediaList[]>([]);
     const [animeFinishedAiring, setAnimeFinishedAiring] = useState<MediaList[]>([]);
     const [mangaInProgress, setMangaInProgress] = useState<MediaList[]>([]);
     const [activities, setActivities] = useState<ActivityUnion[]>([]);
-    /*
-    // filter the items that are still airing
-    const animeAiring = useSelector((state: StoreState) => {
-        const { animeInProgress } = state.anilist;
-        return animeInProgress.filter(m => m.media.status === MediaStatus.RELEASING);
-    });
-    // filter the items that finished airing
-    const animeFinishedAiring = useSelector((state: StoreState) => {
-        const { animeInProgress } = state.anilist;
-        return animeInProgress.filter(m => m.media.status === MediaStatus.FINISHED);
-    });
-    const mangaInProgress = useSelector((state: StoreState) => state.anilist.mangaInProgress);
-    const activities = useSelector((state: StoreState) => state.anilist.activities);
-    */
 
     const fetchData = async (accessToken: string, user: User) => {
         const animeInProgressResponse = await fetchAnimeInProgress(accessToken, user.id);
