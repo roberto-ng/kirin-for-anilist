@@ -133,21 +133,25 @@ export default function HomeTabScreen({}) {
                             />
                         )}
 
-                        <Text style={[styles.text, { margin: 15, color: 'rgb(159,173,189)', }]}>
-                            Activity
-                        </Text>
+                        {(activities.length > 0) && (
+                            <>
+                                <Text style={[styles.text, { margin: 15, color: 'rgb(159,173,189)', }]}>
+                                    Activity
+                                </Text>
 
-                        <View style={styles.activities}>
-                            {activities.map((activity, index) => {
-                                const ActivityCard = getActivityCard(activity);
-                                return (
-                                    <ActivityCard 
-                                    activity={activity as any} 
-                                    key={index} 
-                                    />
-                                );
-                            })}                    
-                        </View>
+                                <View style={styles.activities}>
+                                    {activities.map((activity, index) => {
+                                        const ActivityCard = getActivityCard(activity);
+                                        return (
+                                            <ActivityCard 
+                                            activity={activity as any} 
+                                            key={index} 
+                                            />
+                                        );
+                                    })}                    
+                                </View>
+                            </>
+                        )}
                     </>
                 )}
 
