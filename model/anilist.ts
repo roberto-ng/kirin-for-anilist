@@ -14,11 +14,26 @@ export enum ActivityType {
     MEDIA_LIST = 'MEDIA_LIST',
 }
 
+export enum MediaListStatus {
+    CURRENT = 'CURRENT',
+    PLANNING = 'PLANNING',
+    COMPLETED = 'COMPLETED',
+    DROPPED = 'DROPPED',
+    PAUSED = 'PAUSED',
+    REPEATING = 'REPEATING',
+}
+
+export enum MediaType {
+    ANIME = 'ANIME',
+    MANGA = 'MANGA',
+}
+
 export interface Media {
     id: string,
     episodes?: number,
     chapters?: number,
     status: MediaStatus,
+    type: MediaType,
     title: {
         romaji: string,
         english: string,
@@ -34,6 +49,7 @@ export interface MediaList {
     progress: number,
     updatedAt: number,
     media: Media,
+    status: MediaListStatus,
 }
 
 export interface User {

@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar'
 import Constants from 'expo-constants';
 import React, { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { Provider as PaperProvider, DarkTheme as PaperDefaultTheme } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as WebBrowser from 'expo-web-browser';
 import * as Linking from 'expo-linking';
@@ -22,8 +23,18 @@ const backgroundColor = '#0B1622';
 const MyTheme = {
     ...DefaultTheme,
     colors: {
-      ...DefaultTheme.colors,
-      background: '#0B1622'
+        ...DefaultTheme.colors,
+        background: '#0B1622'
+    },
+};
+
+const MyPaperTheme = {
+    ...PaperDefaultTheme,
+    roundness: 2,
+    colors: {
+        ...PaperDefaultTheme.colors,
+        primary: 'white',
+        accent: '#0B1622',
     },
 };
 
@@ -70,19 +81,21 @@ function AppContent() {
 
     return (
         <View style={{ flex: 1, backgroundColor }}>
-            <NavigationContainer theme={MyTheme}>
-                <Stack.Navigator 
-                    initialRouteName="Main"
-                >
-                    <Stack.Screen 
-                        name="Main" 
-                        component={MainScreen}
-                        options={{
-                            headerShown: false,
-                        }}
-                    />
-                </Stack.Navigator>
-            </NavigationContainer>
+            <PaperProvider theme={MyPaperTheme}>
+                <NavigationContainer theme={MyTheme}>
+                    <Stack.Navigator 
+                        initialRouteName="Main"
+                        >
+                        <Stack.Screen 
+                            name="Main" 
+                            component={MainScreen}
+                            options={{
+                                headerShown: false,
+                            }}
+                            />
+                    </Stack.Navigator>
+                </NavigationContainer>
+            </PaperProvider>
         </View>
     );
 }

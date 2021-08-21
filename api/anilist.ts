@@ -4,6 +4,8 @@ import {
     User, 
     Page,
     ActivityUnion, 
+    MediaType,
+    MediaListStatus,
 } from '../model/anilist';
 
 const url = 'https://graphql.anilist.co';
@@ -86,10 +88,12 @@ export async function fetchAnimeInProgress(accessToken: string, userId: string):
                     id
                     progress
                     updatedAt
+                    status
                     media {
                         id
                         episodes
                         status
+                        type
                         title {
                             romaji
                             english
@@ -146,11 +150,13 @@ export async function fetchMangaInProgress(accessToken: string, userId: string):
                     id
                     progress
                     updatedAt
+                    status
                     media {
                         id
                         episodes
                         chapters
                         status
+                        type
                         title {
                             romaji
                             english
@@ -303,4 +309,74 @@ export async function fetchActivities(accessToken: string): Promise<ActivityUnio
     }
 
     return page.activities;
+}
+
+export async function fetchMediaList(
+    accessToken: string, 
+    userId: string, 
+    mediaType: MediaType,
+    status: MediaListStatus,
+): Promise<MediaList[]> {
+    const query = `
+        query ($id: Int, $page: Int, $perPage: Int, $mediaType: MediaType, $status: MediaListStatus) {
+            Page (page: $page, perPage: $perPage) {
+                pageInfo {
+                    total
+                    currentPage
+                    lastPage
+                    hasNextPage
+                    perPage
+                }
+                mediaList (userId: $id, type: $mediaType, status: $status, sort: MEDIA_TITLE_ROMAJI_DESC) {
+                    id
+                    progress
+                    updatedAt
+                    status
+                    media {
+                        id
+                        episodes
+                        chapters
+                        status
+                        type
+                        title {
+                            romaji
+                            english
+                            native
+                        }
+                        coverImage {
+                            medium
+                        }
+                    }
+                }
+            }
+        }
+    `;
+
+    const options = {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+            query,
+            variables: {
+                id: userId,
+                page: 1,
+                perPage: 50,
+                mediaType,
+                status,
+            },
+        }),
+    };
+
+    const res = await fetch(url, options);
+    const json = await res.json();
+    const page = json.data.Page as Page;
+    if (page.mediaList == null) {
+        throw new Error('The Page object has no mediaList member');
+    }
+
+    return page.mediaList;
 }

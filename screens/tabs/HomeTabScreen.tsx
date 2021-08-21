@@ -179,7 +179,6 @@ export default function HomeTabScreen({}) {
                                 <ActivityIndicator size={50} animating={true} color={Colors.white} />
                             </View>
                         )}
-
                     </>
                 )}
                 <StatusBar style="light" />
