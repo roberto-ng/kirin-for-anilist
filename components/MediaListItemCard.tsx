@@ -65,7 +65,7 @@ export default function MediaListItemCard({
         >
             <Image 
                 style={styles.cardCoverImage} 
-                source={{ uri: media.coverImage.medium }} 
+                source={{ uri: media.coverImage.large }} 
             />
 
             <View style={styles.cardContent}>

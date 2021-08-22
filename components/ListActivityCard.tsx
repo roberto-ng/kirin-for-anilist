@@ -58,7 +58,7 @@ export default function ListActivityCard({ activity }: ListActivityCardProps) {
         <View style={styles.card}>
             <Image 
                 style={styles.cardCoverImage} 
-                source={{ uri: activity.media.coverImage.medium }} 
+                source={{ uri: activity.media.coverImage.large }} 
             />
             
             <View style={styles.cardContent}>

@@ -101,6 +101,8 @@ export async function fetchAnimeInProgress(accessToken: string, userId: string):
                         }
                         coverImage {
                             medium
+                            large
+                            extraLarge
                         }
                     }
                 }
@@ -164,6 +166,8 @@ export async function fetchMangaInProgress(accessToken: string, userId: string):
                         }
                         coverImage {
                             medium
+                            large
+                            extraLarge
                         }
                     }
                 }
@@ -247,6 +251,8 @@ export async function fetchActivities(accessToken: string): Promise<ActivityUnio
                             }
                             coverImage {
                                 medium
+                                large
+                                extraLarge
                             }    
                         }
                         isLocked
@@ -327,7 +333,7 @@ export async function fetchMediaList(
                     hasNextPage
                     perPage
                 }
-                mediaList (userId: $id, type: $mediaType, status: $status, sort: MEDIA_TITLE_ROMAJI_DESC) {
+                mediaList (userId: $id, type: $mediaType, status: $status, sort: MEDIA_TITLE_ROMAJI) {
                     id
                     progress
                     updatedAt
@@ -345,6 +351,8 @@ export async function fetchMediaList(
                         }
                         coverImage {
                             medium
+                            large
+                            extraLarge
                         }
                     }
                 }

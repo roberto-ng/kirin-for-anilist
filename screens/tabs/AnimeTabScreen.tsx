@@ -1,42 +1,94 @@
 import Constants from 'expo-constants';
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, FlatList, SectionList,  } from 'react-native';
 import { ActivityIndicator, Button, Colors, List } from 'react-native-paper';
 import { Text } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { NavigationContainer } from '@react-navigation/native';
-import { MediaListStatus, MediaStatus } from '../../model/anilist';
+import { MediaListStatus, MediaType, MediaList, User, Media } from '../../model/anilist';
 import { StoreState, anilistSlice } from '../../store/store';
-import { StatusTab } from './StatusTab';
+import { fetchMediaList } from '../../api/anilist';
+import { useEffect } from 'react';
 
-//const watchingTab = () => <View><Text>Hey!!</Text></View>;
-//const rewatchingTab = () => <StatusTab status={MediaListStatus.REPEATING} />;
-//const completedTab = () => <StatusTab status={MediaListStatus.COMPLETED} />;
+interface Section {
+    title: string,
+    data: MediaList[],
+};
 
 export default function AnimeTabScreen(): JSX.Element {
+    const anilist = useSelector((state: StoreState) => state.anilist); 
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [hasFetchedInitialData, setHasFetchedInitialData] = useState<boolean>(false);
+    const [current, setCurrent] = useState<MediaList[]>([]);
+    const [repeating, setRepeating] = useState<MediaList[]>([]);
+    const [completed, setCompleted] = useState<MediaList[]>([]);
+    const [sections, setSections] = useState<Section[]>([]);
+    
+    const fetchInitialData = (token: string, user: User) => {
+        fetchMediaList(token, user.id, MediaType.ANIME, MediaListStatus.CURRENT)
+            .then((currentAnime) => {
+                setIsLoading(false);
+                setCurrent(currentAnime);
+            }) 
+            .catch((err) => console.error(err));
+        
+        fetchMediaList(token, user.id, MediaType.ANIME, MediaListStatus.REPEATING)
+            .then((repeatingAnime) => {
+                setIsLoading(false);
+                setRepeating(repeatingAnime);
+            })
+            .catch((err) => console.error(err));
+        
+        fetchMediaList(token, user.id, MediaType.ANIME, MediaListStatus.COMPLETED)
+            .then((completedAnime) => {
+                setIsLoading(false);
+                setCompleted(completedAnime);
+            })
+            .catch((err) => console.error(err));
+    };
+
+    useEffect(() => {
+        if (anilist.token == null || anilist.user == null) {
+            return;
+        }
+
+        if (!hasFetchedInitialData) {
+            setHasFetchedInitialData(true);
+            fetchInitialData(anilist.token, anilist.user);
+        }
+    });
+
+    useEffect(() => {
+        setSections([
+            {
+                title: 'Watching',
+                data: [...current],
+            },
+            {
+                title: 'Rewatching',
+                data: [...repeating],
+            },
+            {
+                title: 'Completed',
+                data: [...completed],
+            },
+        ]);
+    }, [current, repeating, completed]);
 
     return (
         <View style={styles.container}>
-            <List.Section title="">
-                <List.Accordion
-                    title="Accordion"
-                    style={styles.accordion}
-                >
-                    <Text>First item</Text>
-                    <Text>Second item</Text>
-                </List.Accordion>
-
-                <List.Accordion
-                    title="Another Accordion"
-                    style={styles.accordion}
-                >
-                    <Text>First item</Text>
-                    <Text>Second item</Text>
-                </List.Accordion>
-            </List.Section>
+            <SectionList 
+                sections={sections}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item, index }) => (
+                    <Text key={index}>{item.media.title.romaji}</Text>
+                )}
+                renderSectionHeader={({ section: { title } }) => (
+                    <Text style={styles.sectionHeader}>{title}</Text>
+                )}
+            />
 
             {(isLoading) && (
                 <View style={styles.activityIndicatorContainer}>
@@ -71,5 +123,10 @@ const styles = StyleSheet.create({
     },
     accordion: {
         backgroundColor: '#151F2E',
+    },
+    sectionHeader: {
+        fontSize: 23,
+        fontFamily: 'Roboto',
+        color: 'rgb(159,173,189)'
     },
 });

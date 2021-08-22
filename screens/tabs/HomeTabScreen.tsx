@@ -212,7 +212,7 @@ function MediaSection({ name, token, list, onError }: MediaSectionProps) {
             <View style={styles.cardListWrapper}>
                 <FlatList
                     data={list}
-                    keyExtractor={item => item.media.id.toString()}
+                    keyExtractor={item => item.id.toString()}
                     horizontal={true}
                     renderItem={({ item, index }) => {
                         // check if this is the last item on the list
