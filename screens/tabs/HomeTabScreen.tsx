@@ -4,8 +4,8 @@ import React, { FC, useEffect, useState } from 'react';
 import { useAsyncStorage } from '@react-native-async-storage/async-storage';
 import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
-import * as Linking from 'expo-linking';
 import { useSelector, useDispatch } from 'react-redux';
+import * as ExpoLinking from 'expo-linking';
 import { 
     StyleSheet, 
     View, 
@@ -14,6 +14,7 @@ import {
     Image,
     Platform,
     ScrollView,
+    Linking,
 } from 'react-native';
 import { Button, Text, ActivityIndicator, Colors, Snackbar } from 'react-native-paper';
 import { StoreState, anilistSlice } from '../../store/store';
@@ -119,12 +120,14 @@ export default function HomeTabScreen({}) {
         <>
             <ScrollView contentContainerStyle={styles.container}>
                 {(anilist.token == null) ? (
-                    <Button 
-                        mode="contained"
-                        onPress={handleLogInBtnPress}
-                    >
-                        Log in
-                    </Button>
+                    <>
+                        <Button 
+                            mode="contained"
+                            onPress={handleLogInBtnPress}
+                        >
+                            Log in
+                        </Button>
+                    </>
                 ) : (
                     <>
                         {(animeAiring.length > 0) && (

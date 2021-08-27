@@ -2,11 +2,11 @@ import 'react-native-gesture-handler'
 import { StatusBar } from 'expo-status-bar'
 import Constants from 'expo-constants';
 import React, { useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Linking } from 'react-native';
 import { Provider as PaperProvider, DarkTheme as PaperDefaultTheme } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as WebBrowser from 'expo-web-browser';
-import * as Linking from 'expo-linking';
+import * as ExpoLinking from 'expo-linking';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Provider } from 'react-redux';
@@ -54,7 +54,7 @@ function AppContent() {
         Linking.addEventListener('url', async (e) => {
             if (state.anilist.token == null) {
                 try {
-                    const parsedURL = Linking.parse(e.url.replace('#', '?'));
+                    const parsedURL = ExpoLinking.parse(e.url.replace('#', '?'));
                     const accessToken = parsedURL.queryParams['access_token']
                     if (typeof accessToken !== 'string') {
                         throw new Error('Redirect URL does not contain an access_token param\n');

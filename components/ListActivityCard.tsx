@@ -78,7 +78,7 @@ export default function ListActivityCard({ activity }: ListActivityCardProps) {
                         >
                             {activity.user.name}
                         </Text>
-                        <Text>{getRelativeTime(activity.createdAt)}</Text>
+                        <Text>{/*getRelativeTime(activity.createdAt)*/''}</Text>
                     </View>
                     
                     <Text 

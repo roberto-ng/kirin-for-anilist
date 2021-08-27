@@ -21,6 +21,7 @@
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="kirinforanilist"/>
         <data android:scheme="com.kirin.a"/>
+        <data android:scheme="kirin"/>
       </intent-filter>
     </activity>
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity"/>
