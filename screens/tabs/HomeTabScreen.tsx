@@ -17,7 +17,7 @@ import {
 } from 'react-native';
 import { Button, Text, ActivityIndicator, Colors, Snackbar } from 'react-native-paper';
 import { StoreState, anilistSlice } from '../../store/store';
-import MediaListItemCard from '../../components/MediaListItemCard';
+import HomeMediaListCard from '../../components/HomeMediaListCard';
 import TextActivityCard from '../../components/TextActivityCard';
 import ListActivityCard from '../../components/ListActivityCard';
 import { 
@@ -222,7 +222,7 @@ function MediaSection({ name, token, list, onError }: MediaSectionProps) {
                         const isFirst = index === 0;
                                                         
                         return (
-                            <MediaListItemCard 
+                            <HomeMediaListCard 
                                 mediaListItem={item} 
                                 isLast={isLast}
                                 isFirst={isFirst}

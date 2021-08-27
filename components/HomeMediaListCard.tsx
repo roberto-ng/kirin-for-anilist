@@ -10,7 +10,7 @@ import { IconButton, Snackbar, Text } from 'react-native-paper';
 import { MediaList } from '../model/anilist';
 import { increaseMediaProgression } from '../api/anilist';
 
-export interface MediaListItemCardProps {
+export interface HomeMediaListProps {
     mediaListItem: MediaList,
     isLast: boolean,
     isFirst: boolean,
@@ -18,13 +18,13 @@ export interface MediaListItemCardProps {
     onError: (err: any) => void;
 }
 
-export default function MediaListItemCard({ 
+export default function HomeMediaListCard({ 
     isLast, 
     isFirst, 
     mediaListItem,
     token,
     onError,
-}: MediaListItemCardProps) {
+}: HomeMediaListProps) {
     const [isUpdating, setIsUpdating] = useState<boolean>(false);
     const [item, setItem] = useState<MediaList>(mediaListItem);
     const { media } = mediaListItem;
