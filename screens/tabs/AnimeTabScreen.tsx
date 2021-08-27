@@ -49,7 +49,7 @@ export default function AnimeTabScreen(): JSX.Element {
         return sections[index].data;
     };
 
-    const addToSections = (newListItems: MediaList[], index: SectionIndex): void => {
+    const addToSections = (sections: Section[], newListItems: MediaList[], index: SectionIndex): Section[] => {
         let current = [...getSectionData(SectionIndex.CURRENT)];
         let repeating = [...getSectionData(SectionIndex.REPEATING)];
         let completed = [...getSectionData(SectionIndex.COMPLETED)];
@@ -66,7 +66,7 @@ export default function AnimeTabScreen(): JSX.Element {
                 break;
         }
 
-        setSections(() => [
+        return [
             {
                 title: 'Watching',
                 data: current,
@@ -79,7 +79,7 @@ export default function AnimeTabScreen(): JSX.Element {
                 title: 'Completed',
                 data: completed,
             },
-        ]);
+        ];
     };
     
     const fetchInitialData = (token: string, user: User): void => {
@@ -121,7 +121,7 @@ export default function AnimeTabScreen(): JSX.Element {
             return;
         }
         
-        addToSections(newCurrent, SectionIndex.CURRENT);
+        setSections((sections) => addToSections(sections, newCurrent, SectionIndex.CURRENT));
         setNewCurrent(() => []);
     }, [newCurrent]);
     useEffect(() => {
@@ -129,7 +129,7 @@ export default function AnimeTabScreen(): JSX.Element {
             return;
         }
 
-        addToSections(newRepeating, SectionIndex.REPEATING);
+        setSections((sections) => addToSections(sections, newRepeating, SectionIndex.REPEATING));
         setNewRepeating(() => []);
     }, [newRepeating]);
     useEffect(() => {
@@ -137,7 +137,7 @@ export default function AnimeTabScreen(): JSX.Element {
             return;
         }
 
-        addToSections(newCompleted, SectionIndex.COMPLETED);
+        setSections((sections) => addToSections(sections, newCompleted, SectionIndex.COMPLETED));
         setNewCompleted(() => []);
     }, [newCompleted]);
 
