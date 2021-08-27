@@ -17,34 +17,90 @@ interface Section {
     data: MediaList[],
 };
 
+enum SectionIndex {
+    CURRENT = 0,
+    REPEATING = 1,
+    COMPLETED = 2,
+}
+
 export default function AnimeTabScreen(): JSX.Element {
     const anilist = useSelector((state: StoreState) => state.anilist); 
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [hasFetchedInitialData, setHasFetchedInitialData] = useState<boolean>(false);
-    const [current, setCurrent] = useState<MediaList[]>([]);
-    const [repeating, setRepeating] = useState<MediaList[]>([]);
-    const [completed, setCompleted] = useState<MediaList[]>([]);
-    const [sections, setSections] = useState<Section[]>([]);
+    const [newCurrent, setNewCurrent] = useState<MediaList[]>([]);
+    const [newRepeating, setNewRepeating] = useState<MediaList[]>([]);
+    const [newCompleted, setNewCompleted] = useState<MediaList[]>([]);
+    const [sections, setSections] = useState<Section[]>([
+        {
+            title: 'Watching',
+            data: [],
+        },
+        {
+            title: 'Rewatching',
+            data: [],
+        },
+        {
+            title: 'Completed',
+            data: [],
+        },
+    ]);
+
+    const getSectionData = (index: SectionIndex): MediaList[] => {
+        return sections[index].data;
+    };
+
+    const addToSections = (newListItems: MediaList[], index: SectionIndex): void => {
+        let current = [...getSectionData(SectionIndex.CURRENT)];
+        let repeating = [...getSectionData(SectionIndex.REPEATING)];
+        let completed = [...getSectionData(SectionIndex.COMPLETED)];
+
+        switch (index) {
+            case SectionIndex.CURRENT:
+                current = [...current, ...newListItems];
+                break;
+            case SectionIndex.REPEATING:
+                repeating = [...repeating, ...newListItems];
+                break;
+            case SectionIndex.COMPLETED:
+                completed = [...completed, ...newListItems];
+                break;
+        }
+
+        setSections(() => [
+            {
+                title: 'Watching',
+                data: current,
+            },
+            {
+                title: 'Rewatching',
+                data: repeating,
+            },
+            {
+                title: 'Completed',
+                data: completed,
+            },
+        ]);
+    };
     
-    const fetchInitialData = (token: string, user: User) => {
+    const fetchInitialData = (token: string, user: User): void => {
         fetchMediaList(token, user.id, MediaType.ANIME, MediaListStatus.CURRENT)
             .then((currentAnime) => {
                 setIsLoading(false);
-                setCurrent(currentAnime);
+                setNewCurrent(currentAnime);
             }) 
             .catch((err) => console.error(err));
         
         fetchMediaList(token, user.id, MediaType.ANIME, MediaListStatus.REPEATING)
             .then((repeatingAnime) => {
                 setIsLoading(false);
-                setRepeating(repeatingAnime);
+                setNewRepeating(repeatingAnime);
             })
             .catch((err) => console.error(err));
         
         fetchMediaList(token, user.id, MediaType.ANIME, MediaListStatus.COMPLETED)
             .then((completedAnime) => {
                 setIsLoading(false);
-                setCompleted(completedAnime);
+                setNewCompleted(completedAnime);
             })
             .catch((err) => console.error(err));
     };
@@ -61,21 +117,29 @@ export default function AnimeTabScreen(): JSX.Element {
     });
 
     useEffect(() => {
-        setSections([
-            {
-                title: 'Watching',
-                data: [...current],
-            },
-            {
-                title: 'Rewatching',
-                data: [...repeating],
-            },
-            {
-                title: 'Completed',
-                data: [...completed],
-            },
-        ]);
-    }, [current, repeating, completed]);
+        if (newCurrent.length === 0) {
+            return;
+        }
+        
+        addToSections(newCurrent, SectionIndex.CURRENT);
+        setNewCurrent(() => []);
+    }, [newCurrent]);
+    useEffect(() => {
+        if (newRepeating.length === 0) {
+            return;
+        }
+
+        addToSections(newRepeating, SectionIndex.REPEATING);
+        setNewRepeating(() => []);
+    }, [newRepeating]);
+    useEffect(() => {
+        if (newCompleted.length === 0) {
+            return;
+        }
+
+        addToSections(newCompleted, SectionIndex.COMPLETED);
+        setNewCompleted(() => []);
+    }, [newCompleted]);
 
     if (!hasFetchedInitialData) {
         return (
@@ -91,8 +155,8 @@ export default function AnimeTabScreen(): JSX.Element {
                 style={styles.listContainer}
                 sections={sections}
                 keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item, index }) => (
-                    <MediaListCard key={index} item={item}/>
+                renderItem={({ item }) => (
+                    <MediaListCard key={item.id} item={item}/>
                 )}
                 renderSectionHeader={({ section: { title, data } }) => {
                     if (data.length > 0) {
