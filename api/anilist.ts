@@ -224,6 +224,7 @@ export async function fetchActivities(accessToken: string): Promise<ActivityUnio
                         replyCount
                         siteUrl
                         isSubscribed
+                        createdAt
                         user {
                             id
                             name
@@ -278,6 +279,7 @@ export async function fetchActivities(accessToken: string): Promise<ActivityUnio
                         message
                         siteUrl
                         isSubscribed
+                        createdAt
                         messenger {
                             id
                             name

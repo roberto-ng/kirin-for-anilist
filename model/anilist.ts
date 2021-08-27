@@ -119,6 +119,7 @@ export interface TextActivity {
     isSubscribed: boolean,
     likeCount: number,
     replyCount: number,
+    createdAt: number,
 }
 
 export interface ListActivity {
@@ -149,6 +150,7 @@ export interface MessageActivity {
     isSubscribed: boolean,
     likeCount: number,
     replyCount: number,
+    createdAt: number,
 }
 
 export type ActivityUnion = TextActivity | ListActivity | MessageActivity;

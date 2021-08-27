@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import { TextActivity, MessageActivity, ActivityType } from '../model/anilist';
 import { Button, Text } from 'react-native-paper';
+import { getRelativeTime } from '../utils';
 
 interface TextActivityCardProps {
     activity: TextActivity | MessageActivity,
@@ -29,11 +30,16 @@ export default function TextActivityCard({ activity }: TextActivityCardProps) {
     return (
         <View style={styles.card}>            
             <View style={styles.cardContent}>
-                <Text 
-                    style={[styles.username, styles.cardContentTitle]}
-                >
-                    {username}
-                </Text>     
+                <View style={styles.cardTop}>
+                    <Text 
+                        style={[styles.username, styles.cardContentTitle]}
+                    >
+                        {username}
+                    </Text> 
+                    <Text style={[styles.cardContentText, { marginLeft: 5 }]}>
+                        {getRelativeTime(activity.createdAt)}
+                    </Text>
+                </View>
 
                 <Text 
                     style={[styles.cardContentText, styles.cardContentTitle]}
@@ -49,15 +55,15 @@ const styles = StyleSheet.create({
     card: {
         backgroundColor: '#151F2E',
         height: 115,
-        width: 255,
+        //width: 255,
         borderRadius: 3,
         flexDirection: 'row',
+        margin: 6,
     },
     cardCoverImage: {
         height: 115,
         width: 85,
     },
-    
     cardContent: {
         flex: 1,
         padding: 12,
@@ -78,5 +84,10 @@ const styles = StyleSheet.create({
     },
     cardContentInfoText: {
         fontSize: 14,
+    },
+    cardTop: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 5,
     },
 });

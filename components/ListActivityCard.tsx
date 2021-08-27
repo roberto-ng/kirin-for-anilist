@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import { ActivityType, ActivityUnion, ListActivity } from '../model/anilist';
 import { Button, Text } from 'react-native-paper';
-import { dateFromUnixTimestamp } from '../utils';
+import { getRelativeTime } from '../utils';
 
 interface ListActivityCardProps {
     activity: ListActivity,
@@ -29,52 +29,40 @@ export default function ListActivityCard({ activity }: ListActivityCardProps) {
     let text = null;
     switch (activity.status) {
         case 'read chapter':
-            text = `Read chapter ${activity.progress} of ${title}`;
+            text = `Read chapter ${activity.progress} of `;
             break;
         
         case 'watched episode':
-            text = `Watched episode ${activity.progress} of ${title}`;
+            text = `Watched episode ${activity.progress} of `;
             break;
         
         case 'plans to watch':
-            text = `Plans to watch ${title}`;
+            text = `Plans to watch `;
             break;
 
         case 'plans to read':
-            text = `Plans to read ${title}`;
+            text = `Plans to read `;
             break;
         
         case 'paused watching':
-            text = `Paused watching ${title}`;
+            text = `Paused watching `;
             break;
         
         case 'paused reading':
-            text = `Paused reading ${title}`;
+            text = `Paused reading `;
             break;
         
         case 'dropped':
-            text = `Dropped ${title}`;
+            text = `Dropped `;
             break;
 
         case 'completed':
-            text = `Completed ${title}`;
+            text = `Completed `;
             break;
 
         default:
             text = '';
             break;
-    }
-
-    const getRelativeTime = (createdAt: number) => {
-        const date = dateFromUnixTimestamp(createdAt);
-        let duration = (date.getTime() - Date.now()) / 1000;
-        const formatter = new Intl.RelativeTimeFormat('us');
-        for (const division of DIVISIONS) {
-            if (Math.abs(duration) < division.amount) {
-                return formatter.format(Math.round(duration), division.name as any);
-            }
-            duration /= division.amount;
-        }
     }
 
     return (
@@ -92,7 +80,7 @@ export default function ListActivityCard({ activity }: ListActivityCardProps) {
                         >
                             {activity.user.name}
                         </Text>
-                        <Text style={{ marginLeft: 5 }}>
+                        <Text style={[styles.cardContentText, { marginLeft: 5 }]}>
                             {getRelativeTime(activity.createdAt)}
                         </Text>
                     </View>
@@ -101,7 +89,14 @@ export default function ListActivityCard({ activity }: ListActivityCardProps) {
                         style={[styles.cardContentText, styles.cardContentInfoText]}
                         numberOfLines={3}
                     >
-                        {text}
+                        {text} 
+                        <Text 
+                            style={styles.title} 
+                            numberOfLines={3}
+                            onPress={() => console.log(`Opening ${title}...`)}
+                        >
+                            {title}
+                        </Text>
                     </Text>
                 </View>
             </View>
@@ -146,5 +141,9 @@ const styles = StyleSheet.create({
     cardTop: {
         flexDirection: 'row',
         alignItems: 'center',
+        marginBottom: 5,
+    },
+    title: {
+        color: 'rgb(61,180,242)',
     },
 });
