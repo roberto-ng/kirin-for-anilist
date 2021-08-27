@@ -77,6 +77,9 @@ export interface Media {
         large: string,
         extraLarge: string,
     },
+    mediaListEntry: {
+        score: number,
+    },
 }
 
 export interface MediaList {
@@ -98,6 +101,7 @@ export interface User {
 
 export interface Page {
     mediaList?: MediaList[],
+    media: Media[],
     activities?: ActivityUnion[],
     pageInfo: {
         currentPage: number,

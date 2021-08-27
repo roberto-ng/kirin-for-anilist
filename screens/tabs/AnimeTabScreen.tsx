@@ -1,8 +1,8 @@
 import Constants from 'expo-constants';
 import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, FlatList, SectionList,  } from 'react-native';
-import { ActivityIndicator, Button, Colors, List } from 'react-native-paper';
+import { ActivityIndicator, Button, Colors, Divider } from 'react-native-paper';
 import { Text } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -10,7 +10,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { MediaListStatus, MediaType, MediaList, User, Media } from '../../model/anilist';
 import { StoreState, anilistSlice } from '../../store/store';
 import { fetchMediaList } from '../../api/anilist';
-import { useEffect } from 'react';
+import MediaListCard from '../../components/MediaListCard';
 
 interface Section {
     title: string,
@@ -77,17 +77,30 @@ export default function AnimeTabScreen(): JSX.Element {
         ]);
     }, [current, repeating, completed]);
 
+    if (!hasFetchedInitialData) {
+        return (
+            <View style={styles.activityIndicatorContainer}>
+                <ActivityIndicator size={50} animating={true} color={Colors.white} />
+            </View>
+        );
+    }
+
     return (
         <View style={styles.container}>
             <SectionList 
+                style={styles.listContainer}
                 sections={sections}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item, index }) => (
-                    <Text key={index}>{item.media.title.romaji}</Text>
+                    <MediaListCard key={index} item={item}/>
                 )}
-                renderSectionHeader={({ section: { title } }) => (
-                    <Text style={styles.sectionHeader}>{title}</Text>
-                )}
+                renderSectionHeader={({ section: { title, data } }) => {
+                    if (data.length > 0) {
+                        return <Text style={styles.sectionHeader}>{title}</Text>;
+                    } else {
+                        return <View></View>;
+                    }
+                }}
             />
 
             {(isLoading) && (
@@ -111,6 +124,11 @@ const styles = StyleSheet.create({
         //justifyContent: 'center',
         paddingTop: Constants.statusBarHeight,
     },
+    listContainer: {
+        //width: '100%',
+        marginRight: 12,
+        marginLeft: 12,
+    },
     text: {
         color: 'white',
         fontSize: 20,
@@ -127,6 +145,8 @@ const styles = StyleSheet.create({
     sectionHeader: {
         fontSize: 23,
         fontFamily: 'Roboto',
-        color: 'rgb(159,173,189)'
+        color: 'rgb(159,173,189)',
+        marginBottom: 4,
+        textAlign: 'center',
     },
 });

@@ -89,6 +89,7 @@ export async function fetchAnimeInProgress(accessToken: string, userId: string):
                     progress
                     updatedAt
                     status
+                    score (format: POINT_10)
                     media {
                         id
                         episodes
@@ -103,6 +104,9 @@ export async function fetchAnimeInProgress(accessToken: string, userId: string):
                             medium
                             large
                             extraLarge
+                        }
+                        mediaListEntry {
+                            score
                         }
                     }
                 }
@@ -153,6 +157,7 @@ export async function fetchMangaInProgress(accessToken: string, userId: string):
                     progress
                     updatedAt
                     status
+                    score (format: POINT_10)
                     media {
                         id
                         episodes
@@ -168,6 +173,9 @@ export async function fetchMangaInProgress(accessToken: string, userId: string):
                             medium
                             large
                             extraLarge
+                        }
+                        mediaListEntry {
+                            score
                         }
                     }
                 }
@@ -356,6 +364,9 @@ export async function fetchMediaList(
                             medium
                             large
                             extraLarge
+                        }
+                        mediaListEntry {
+                            score
                         }
                     }
                 }
