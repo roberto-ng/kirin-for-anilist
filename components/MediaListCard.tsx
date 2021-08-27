@@ -26,14 +26,20 @@ export default function MediaListCard({ item }: MediaListCardProps): JSX.Element
     }
     
     return (
-        <View style={styles.touchableContainer}>
-            <Pressable onPress={() => {}}>
-                <View style={styles.container}>
-                    <View style={styles.coverImage}>
-                        <Image 
+        <Pressable 
+            style={styles.pressable} 
+            android_ripple={{ color: 'white' }} 
+            onPress={() => {}}
+        >
+            <View style={styles.container}>
+                    <View style={styles.converImageWrapper}>
+                        <ImageBackground 
                             source={{ uri: item.media.coverImage.large }}
                             style={styles.coverImage} 
-                        />
+                        >
+                            <Pressable android_ripple={{ color: 'white' }} style={styles.coverImage} >
+                            </Pressable>
+                        </ImageBackground>
                     </View>
                     <View style={styles.mediaDetails}>
                         <Text numberOfLines={3} style={styles.title}>
@@ -51,34 +57,40 @@ export default function MediaListCard({ item }: MediaListCardProps): JSX.Element
                             )}
                         </View>
                     </View>
-                </View>
-            </Pressable>
-        </View>
+            </View>
+        </Pressable>
     );
 }
 
 const styles = StyleSheet.create({
-    touchableContainer: {
+    pressable: {
+        width: '100%',
         backgroundColor: '#151F2E',
-        marginTop: 7,
         marginBottom: 7,
+        marginTop: 7,
+        borderRadius: 3,
     },
     container: {
+        width: '100%',
+        height: 130,
         borderRadius: 3,
-        height: 125,
         flexDirection: 'row',
     },
     coverImage: {
-        height: 125,
+        height: 115,
         width: 95,
-        borderRadius: 4,
+    },
+    converImageWrapper: {
+        marginLeft: 8,
+        height: '100%',
+        justifyContent: 'center',
     },
     mediaDetails: {
+        flex: 1,
         flexDirection: 'column',
         justifyContent: 'space-between',
-        flexWrap: 'wrap',
         padding: 8,
-        width: '80%',
+        height: '100%',
     },
     mediaDetailsBottom: {
         alignItems: 'center',
@@ -89,13 +101,12 @@ const styles = StyleSheet.create({
         fontSize: 16,
         flexWrap: 'wrap',
         color: 'white',
-        width: '90%',
     },
     progress: {
         fontSize: 14,
     },
     score: {
         fontSize: 20,
-        marginRight: 20,
+        marginRight: 5,
     },
 });
