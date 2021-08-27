@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import { ActivityType, ActivityUnion, ListActivity } from '../model/anilist';
 import { Button, Text } from 'react-native-paper';
+import { dateFromUnixTimestamp } from '../utils';
 
 interface ListActivityCardProps {
     activity: ListActivity,
@@ -54,6 +55,14 @@ export default function ListActivityCard({ activity }: ListActivityCardProps) {
             break;
     }
 
+    const getRelativeTime = (createdAt: number) => {
+        const date = dateFromUnixTimestamp(createdAt);
+        const deltaDays = (date.getTime() - Date.now()) / (1000 * 3600 * 24);
+        const formatter = new Intl.RelativeTimeFormat();
+        const result = formatter.format(Math.round(deltaDays), 'hours');
+        return result;
+    };
+
     return (
         <View style={styles.card}>
             <Image 
@@ -63,11 +72,14 @@ export default function ListActivityCard({ activity }: ListActivityCardProps) {
             
             <View style={styles.cardContent}>
                 <View style={styles.cardContentInfo}>
-                    <Text 
-                        style={[styles.username, styles.cardContentInfoText]}
-                    >
-                        {activity.user.name}
-                    </Text>
+                    <View>
+                        <Text 
+                            style={[styles.username, styles.cardContentInfoText]}
+                        >
+                            {activity.user.name}
+                        </Text>
+                        <Text>{getRelativeTime(activity.createdAt)}</Text>
+                    </View>
                     
                     <Text 
                         style={[styles.cardContentText, styles.cardContentInfoText]}

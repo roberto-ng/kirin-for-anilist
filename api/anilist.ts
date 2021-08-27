@@ -240,6 +240,7 @@ export async function fetchActivities(accessToken: string): Promise<ActivityUnio
                         type
                         status
                         progress
+                        createdAt
                         media {
                             id
                             episodes

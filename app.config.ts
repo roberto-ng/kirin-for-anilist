@@ -35,4 +35,12 @@ export default {
     extra: {
         anilistClientId: process.env.ANILIST_CLIENT_ID,
     },
+    // @ts-ignore 
+    android: {
+        package: 'com.kirin.a',
+    },
+    // @ts-ignore 
+    ios: {
+        bundleIdentifier: 'com.kirin.a',
+    },
 };

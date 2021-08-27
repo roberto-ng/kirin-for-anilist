@@ -134,6 +134,7 @@ export interface ListActivity {
     isSubscribed: boolean,
     likeCount: number,
     replyCount: number,
+    createdAt: number,
 }
 
 export interface MessageActivity {
