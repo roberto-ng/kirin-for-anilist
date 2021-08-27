@@ -14,8 +14,8 @@ export function dateFromUnixTimestamp(timestamp: number): Date {
 
 export function getRelativeTime(createdAt: number): string {
     const date = dateFromUnixTimestamp(createdAt);
-    let duration = (date.getTime() - Date.now()) / 1000;
     const formatter = new Intl.RelativeTimeFormat('us');
+    let duration = (date.getTime() - Date.now()) / 1000;
     for (const division of DIVISIONS) {
         if (Math.abs(duration) < division.amount) {
             return formatter.format(Math.round(duration), division.name as any);

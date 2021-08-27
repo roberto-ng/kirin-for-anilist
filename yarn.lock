@@ -1533,6 +1533,14 @@
   dependencies:
     tslib "^2.1.0"
 
+"@formatjs/intl-numberformat@^7.2.3":
+  version "7.2.3"
+  resolved "https://registry.yarnpkg.com/@formatjs/intl-numberformat/-/intl-numberformat-7.2.3.tgz#c7956b7cc93dff107d5edfedf6aeea49f047f33e"
+  integrity sha512-Rb2hfjiBl5976mbAMl/VDXO5Bp7+Oq5GAK+LBy13mUWM2JiqM7pBqQWYRRHusoYiQfkhdgfs/uY+8wxlbr5rOg==
+  dependencies:
+    "@formatjs/ecma402-abstract" "1.9.8"
+    tslib "^2.1.0"
+
 "@formatjs/intl-pluralrules@^4.1.3":
   version "4.1.3"
   resolved "https://registry.yarnpkg.com/@formatjs/intl-pluralrules/-/intl-pluralrules-4.1.3.tgz#f74aea3db38cd44393be48344b2ffed71278b6d7"
