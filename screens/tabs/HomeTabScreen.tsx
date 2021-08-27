@@ -5,7 +5,6 @@ import { useAsyncStorage } from '@react-native-async-storage/async-storage';
 import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
 import { useSelector, useDispatch } from 'react-redux';
-import * as ExpoLinking from 'expo-linking';
 import { 
     StyleSheet, 
     View, 

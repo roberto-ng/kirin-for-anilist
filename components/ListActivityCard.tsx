@@ -13,6 +13,16 @@ interface ListActivityCardProps {
     activity: ListActivity,
 }
 
+const DIVISIONS = [
+    { amount: 60, name: 'seconds' },
+    { amount: 60, name: 'minutes' },
+    { amount: 24, name: 'hours' },
+    { amount: 7, name: 'days' },
+    { amount: 4.34524, name: 'weeks' },
+    { amount: 12, name: 'months' },
+    { amount: Number.POSITIVE_INFINITY, name: 'years' }
+]
+
 export default function ListActivityCard({ activity }: ListActivityCardProps) {
     const title = activity.media.title.romaji;
 
@@ -57,11 +67,15 @@ export default function ListActivityCard({ activity }: ListActivityCardProps) {
 
     const getRelativeTime = (createdAt: number) => {
         const date = dateFromUnixTimestamp(createdAt);
-        const deltaDays = (date.getTime() - Date.now()) / (1000 * 3600 * 24);
-        const formatter = new Intl.RelativeTimeFormat();
-        const result = formatter.format(Math.round(deltaDays), 'hours');
-        return result;
-    };
+        let duration = (date.getTime() - Date.now()) / 1000;
+        const formatter = new Intl.RelativeTimeFormat('us');
+        for (const division of DIVISIONS) {
+            if (Math.abs(duration) < division.amount) {
+                return formatter.format(Math.round(duration), division.name as any);
+            }
+            duration /= division.amount;
+        }
+    }
 
     return (
         <View style={styles.card}>
@@ -72,13 +86,15 @@ export default function ListActivityCard({ activity }: ListActivityCardProps) {
             
             <View style={styles.cardContent}>
                 <View style={styles.cardContentInfo}>
-                    <View>
+                    <View style={styles.cardTop}>
                         <Text 
                             style={[styles.username, styles.cardContentInfoText]}
                         >
                             {activity.user.name}
                         </Text>
-                        <Text>{/*getRelativeTime(activity.createdAt)*/''}</Text>
+                        <Text style={{ marginLeft: 5 }}>
+                            {getRelativeTime(activity.createdAt)}
+                        </Text>
                     </View>
                     
                     <Text 
@@ -126,5 +142,9 @@ const styles = StyleSheet.create({
     },
     cardContentInfoText: {
         fontSize: 15,
+    },
+    cardTop: {
+        flexDirection: 'row',
+        alignItems: 'center',
     },
 });
