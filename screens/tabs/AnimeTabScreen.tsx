@@ -124,6 +124,7 @@ export default function AnimeTabScreen(): JSX.Element {
         setSections((sections) => addToSections(sections, newCurrent, SectionIndex.CURRENT));
         setNewCurrent(() => []);
     }, [newCurrent]);
+    
     useEffect(() => {
         if (newRepeating.length === 0) {
             return;
@@ -132,6 +133,7 @@ export default function AnimeTabScreen(): JSX.Element {
         setSections((sections) => addToSections(sections, newRepeating, SectionIndex.REPEATING));
         setNewRepeating(() => []);
     }, [newRepeating]);
+
     useEffect(() => {
         if (newCompleted.length === 0) {
             return;
@@ -185,11 +187,9 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: backgroundColor,
         alignItems: 'stretch',
-        //justifyContent: 'center',
         paddingTop: Constants.statusBarHeight,
     },
     listContainer: {
-        //width: '100%',
         marginRight: 12,
         marginLeft: 12,
     },

@@ -100,13 +100,15 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 16,
         flexWrap: 'wrap',
-        color: 'white',
+        color: 'rgb(159,173,189)',
     },
     progress: {
         fontSize: 14,
+        color: 'rgb(159,173,189)',
     },
     score: {
         fontSize: 20,
         marginRight: 5,
+        color: 'rgb(159,173,189)',
     },
 });
