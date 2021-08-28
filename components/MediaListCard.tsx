@@ -28,7 +28,7 @@ export default function MediaListCard({ item }: MediaListCardProps): JSX.Element
     return (
         <Pressable 
             style={styles.pressable} 
-            android_ripple={{ color: 'white' }} 
+            //android_ripple={{ color: 'white' }} 
             onPress={() => {}}
         >
             <View style={styles.container}>
@@ -65,7 +65,6 @@ export default function MediaListCard({ item }: MediaListCardProps): JSX.Element
 const styles = StyleSheet.create({
     pressable: {
         width: '100%',
-        backgroundColor: '#151F2E',
         marginBottom: 7,
         marginTop: 7,
         borderRadius: 3,
@@ -75,6 +74,7 @@ const styles = StyleSheet.create({
         height: 130,
         borderRadius: 3,
         flexDirection: 'row',
+        backgroundColor: '#151F2E',
     },
     coverImage: {
         height: 115,
