@@ -105,6 +105,10 @@ export default function AnimeTabScreen(): JSX.Element {
             .catch((err) => console.error(err));
     };
 
+    const handleEndReached = (): void => {
+        console.log('Hey we reached the end!');
+    }
+
     useEffect(() => {
         if (anilist.token == null || anilist.user == null) {
             return;
@@ -157,6 +161,8 @@ export default function AnimeTabScreen(): JSX.Element {
                 style={styles.listContainer}
                 sections={sections}
                 keyExtractor={(item) => item.id.toString()}
+                onEndReachedThreshold={0.2}
+                onEndReached={handleEndReached}
                 renderItem={({ item }) => (
                     <MediaListCard key={item.id} item={item}/>
                 )}
