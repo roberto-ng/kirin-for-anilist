@@ -153,7 +153,7 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
     
     const fetchInitialData = async (token: string, user: User): Promise<void> => {
         setIsLoading(true);
-        const page = await fetchMediaList(token, user.id, mediaType, MediaListStatus.CURRENT, 1)
+        const page = await fetchMediaList(token, user.id, mediaType, MediaListStatus.CURRENT, 1);
         setIsLoading(false);
         setNewCurrent(page.mediaList ?? []);
         setLastDownloaded({
