@@ -28,7 +28,6 @@ export default function MediaListCard({ item }: MediaListCardProps): JSX.Element
     return (
         <Pressable 
             style={styles.pressable} 
-            //android_ripple={{ color: 'white' }} 
             onPress={() => {}}
         >
             <View style={styles.container}>
@@ -37,14 +36,19 @@ export default function MediaListCard({ item }: MediaListCardProps): JSX.Element
                             source={{ uri: item.media.coverImage.large }}
                             style={styles.coverImage} 
                         >
-                            <Pressable android_ripple={{ color: 'white' }} style={styles.coverImage} >
+                            <Pressable 
+                                android_ripple={{ color: 'white' }} 
+                                style={styles.coverImage} 
+                            >
                             </Pressable>
                         </ImageBackground>
                     </View>
+
                     <View style={styles.mediaDetails}>
                         <Text numberOfLines={3} style={styles.title}>
                             {title}
                         </Text>
+                        
                         <View style={styles.mediaDetailsBottom}>
                             <Text style={styles.progress}>
                                 Progress: {progress}

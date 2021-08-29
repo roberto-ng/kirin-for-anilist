@@ -333,7 +333,8 @@ export async function fetchMediaList(
     userId: string, 
     mediaType: MediaType,
     status: MediaListStatus,
-): Promise<MediaList[]> {
+    pageNumber: number,
+): Promise<Page> {
     const query = `
         query ($id: Int, $page: Int, $perPage: Int, $mediaType: MediaType, $status: MediaListStatus) {
             Page (page: $page, perPage: $perPage) {
@@ -385,7 +386,7 @@ export async function fetchMediaList(
             query,
             variables: {
                 id: userId,
-                page: 1,
+                page: pageNumber,
                 perPage: 50,
                 mediaType,
                 status,
@@ -400,5 +401,5 @@ export async function fetchMediaList(
         throw new Error('The Page object has no mediaList member');
     }
 
-    return page.mediaList;
+    return page;
 }
