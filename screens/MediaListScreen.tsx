@@ -1,7 +1,7 @@
 import Constants from 'expo-constants';
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, FlatList, SectionList,  } from 'react-native';
+import { StyleSheet, View, RefreshControl, SectionList,  } from 'react-native';
 import { ActivityIndicator, Button, Colors, Divider } from 'react-native-paper';
 import { Text } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
@@ -65,6 +65,7 @@ const INITIAL_SECTIONS = [
 
 export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.Element {
     const anilist = useSelector((state: StoreState) => state.anilist); 
+    const [refreshing, setRefreshing] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isListComplete, setIsListComplete] = useState<boolean>(false);
     const [hasFetchedInitialData, setHasFetchedInitialData] = useState<boolean>(false);
@@ -150,19 +151,16 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
         ];
     };
     
-    const fetchInitialData = (token: string, user: User): void => {
+    const fetchInitialData = async (token: string, user: User): Promise<void> => {
         setIsLoading(true);
-        fetchMediaList(token, user.id, mediaType, MediaListStatus.CURRENT, 1)
-            .then((page) => {
-                setIsLoading(false);
-                setNewCurrent(page.mediaList ?? []);
-                setLastDownloaded({
-                    section: MediaListStatus.CURRENT,
-                    hasNextPage: page.pageInfo.hasNextPage,
-                    page: page.pageInfo.currentPage,
-                });
-            }) 
-            .catch((err) => console.error(err));
+        const page = await fetchMediaList(token, user.id, mediaType, MediaListStatus.CURRENT, 1)
+        setIsLoading(false);
+        setNewCurrent(page.mediaList ?? []);
+        setLastDownloaded({
+            section: MediaListStatus.CURRENT,
+            hasNextPage: page.pageInfo.hasNextPage,
+            page: page.pageInfo.currentPage,
+        });
     };
 
     const handleEndReached = async (): Promise<void> => {
@@ -257,6 +255,23 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
         }
     }
 
+    const handleRefresh = async () => {
+        if (anilist.token == null || anilist.user == null) {
+            return;
+        }
+        
+        setRefreshing(true);
+        setLastDownloaded({
+            section: null,
+            page: 1,
+            hasNextPage: false,
+        });
+        setHasFetchedInitialData(false);
+        setIsLoading(false);
+        setIsListComplete(false);
+        setSections(INITIAL_SECTIONS);
+    };
+
     useEffect(() => {
         if (anilist.token == null || anilist.user == null) {
             return;
@@ -264,7 +279,12 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
 
         if (!hasFetchedInitialData) {
             setHasFetchedInitialData(true);
-            fetchInitialData(anilist.token, anilist.user);
+            fetchInitialData(anilist.token, anilist.user)
+                .then(() => setRefreshing(false))
+                .catch((err: any) => {
+                    setRefreshing(false);
+                    console.error(err.message ?? err.toString());
+                });
         }
     });
 
@@ -357,6 +377,12 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
                         <View></View>
                     )
                 )}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={handleRefresh}
+                    />
+                }
             />
 
             <StatusBar style="light" />
