@@ -65,7 +65,6 @@ export interface Media {
     id: string,
     episodes?: number,
     chapters?: number,
-    status: MediaStatus,
     type: MediaType,
     title: {
         romaji: string,
@@ -79,6 +78,7 @@ export interface Media {
     },
     mediaListEntry: {
         score: number,
+        status: MediaListStatus,
     },
 }
 
@@ -87,7 +87,6 @@ export interface MediaList {
     progress: number,
     updatedAt: number,
     media: Media,
-    status: MediaListStatus,
 }
 
 export interface User {

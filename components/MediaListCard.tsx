@@ -7,16 +7,17 @@ import {
     Pressable,
 } from 'react-native';
 import { Text, TouchableRipple } from 'react-native-paper';
-import { MediaList } from '../model/anilist';
+import { MediaList, MediaListStatus } from '../model/anilist';
 
 interface MediaListCardProps {
     item: MediaList,
 }
 
 function MediaListCard({ item }: MediaListCardProps): JSX.Element {
-    const title = item.media.title.romaji;
-    const score = item.media.mediaListEntry.score; 
-    const total = item.media.episodes ?? item.media.chapters;
+    const title  = item.media.title.romaji;
+    const score  = item.media.mediaListEntry.score; 
+    const total  = item.media.episodes ?? item.media.chapters;
+    const status = item.media.mediaListEntry.status;
     
     let progress = null;
     if (total == null) {
@@ -50,9 +51,11 @@ function MediaListCard({ item }: MediaListCardProps): JSX.Element {
                         </Text>
                         
                         <View style={styles.mediaDetailsBottom}>
-                            <Text style={styles.progress}>
-                                Progress: {progress}
-                            </Text>
+                            {(status !== MediaListStatus.PLANNING) && (
+                                <Text style={styles.progress}>
+                                    Progress: {progress}
+                                </Text>
+                            )}
 
                             {(score != null && score > 0) && (
                                 <Text style={styles.score}>

@@ -368,6 +368,7 @@ export async function fetchMediaList(
                         }
                         mediaListEntry {
                             score
+                            status
                         }
                     }
                 }
