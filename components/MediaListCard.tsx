@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { memo } from 'react';
 import { 
     StyleSheet, 
     View, 
@@ -13,7 +13,7 @@ interface MediaListCardProps {
     item: MediaList,
 }
 
-export default function MediaListCard({ item }: MediaListCardProps): JSX.Element {
+function MediaListCard({ item }: MediaListCardProps): JSX.Element {
     const title = item.media.title.romaji;
     const score = item.media.mediaListEntry.score; 
     const total = item.media.episodes ?? item.media.chapters;
@@ -116,3 +116,5 @@ const styles = StyleSheet.create({
         color: 'rgb(159,173,189)',
     },
 });
+
+export default memo(MediaListCard);

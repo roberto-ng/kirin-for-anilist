@@ -1,33 +1,9 @@
-import Constants from 'expo-constants';
-import { StatusBar } from 'expo-status-bar';
-import React, { FC } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Text } from 'react-native-paper';
+import React from 'react';
+import MediaListScreen from '../MediaListScreen';
+import { MediaType } from '../../model/anilist';
 
 export default function MangaTabScreen() {
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>
-                This is the manga list screen
-            </Text>
-
-            <StatusBar style="light" />
-        </View>
+        <MediaListScreen mediaType={MediaType.MANGA} />
     );
-};
-
-const backgroundColor = '#0B1622';
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: backgroundColor,
-    alignItems: 'center',
-    //justifyContent: 'center',
-    paddingTop: Constants.statusBarHeight,
-  },
-  text: {
-    color: 'white',
-    fontSize: 20,
-  },
-});
+}
