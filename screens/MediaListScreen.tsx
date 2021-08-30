@@ -179,31 +179,13 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
         } else {
             // this section doesn't have more pages, go to the next one
             pageNumber = 1;
-            switch (lastDownloaded.section) {
-                case MediaListStatus.CURRENT:
-                    nextSection = MediaListStatus.REPEATING;
-                    break;
-    
-                case MediaListStatus.REPEATING:
-                    nextSection = MediaListStatus.COMPLETED;
-                    break;
-                
-                case MediaListStatus.COMPLETED:
-                    nextSection = MediaListStatus.PAUSED;
-                    break;
-                
-                case MediaListStatus.PAUSED:
-                    nextSection = MediaListStatus.DROPPED;
-                    break;
-                
-                case MediaListStatus.DROPPED:
-                    nextSection = MediaListStatus.PLANNING;
-                    break;
-
-                case MediaListStatus.PLANNING:
-                    // yay, we've finished downloading all sections
-                    setIsListComplete(true);
-                    return;
+            if (lastDownloaded.section === MediaListStatus.PLANNING) {
+                // yay, we've finished downloading all sections
+                setIsListComplete(true);
+                return;
+            } else {
+                const currentSectionIndex = mediaListStatusToSectionIndex(lastDownloaded.section);
+                nextSection = sectionIndexToMediaListStatus(currentSectionIndex + 1);
             }
         }
 
@@ -370,5 +352,27 @@ function mediaListStatusToSectionIndex(status: MediaListStatus): SectionIndex {
 
         case MediaListStatus.PLANNING:
             return SectionIndex.PLANNING;
+    }
+}
+
+function sectionIndexToMediaListStatus(status: SectionIndex): MediaListStatus {
+    switch (status) {
+        case SectionIndex.CURRENT:
+            return MediaListStatus.CURRENT;
+
+        case SectionIndex.REPEATING:
+            return MediaListStatus.REPEATING;
+        
+        case SectionIndex.COMPLETED:
+            return MediaListStatus.COMPLETED;
+        
+        case SectionIndex.PAUSED:
+            return MediaListStatus.PAUSED;
+        
+        case SectionIndex.DROPPED:
+            return MediaListStatus.DROPPED;
+
+        case SectionIndex.PLANNING:
+            return MediaListStatus.PLANNING;
     }
 }
