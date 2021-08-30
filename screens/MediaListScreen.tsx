@@ -69,12 +69,6 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isListComplete, setIsListComplete] = useState<boolean>(false);
     const [hasFetchedInitialData, setHasFetchedInitialData] = useState<boolean>(false);
-    const [newCurrent, setNewCurrent] = useState<MediaList[]>([]);
-    const [newRepeating, setNewRepeating] = useState<MediaList[]>([]);
-    const [newCompleted, setNewCompleted] = useState<MediaList[]>([]);
-    const [newPaused, setNewPaused] = useState<MediaList[]>([]);
-    const [newDropped, setNewDropped] = useState<MediaList[]>([]);
-    const [newPlanning, setNewPlanning] = useState<MediaList[]>([]);
     const [lastDownloaded, setLastDownloaded] = useState<LastDownloaded>({
         section: null,
         page: 1,
@@ -154,8 +148,11 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
     const fetchInitialData = async (token: string, user: User): Promise<void> => {
         setIsLoading(true);
         const page = await fetchMediaList(token, user.id, mediaType, MediaListStatus.CURRENT, 1);
+        setSections((sections) => {
+            const newMediaList = page.mediaList ?? [];
+            return addToSections(sections, newMediaList, SectionIndex.CURRENT);
+        });
         setIsLoading(false);
-        setNewCurrent(page.mediaList ?? []);
         setLastDownloaded({
             section: MediaListStatus.CURRENT,
             hasNextPage: page.pageInfo.hasNextPage,
@@ -173,7 +170,7 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
         }
 
         // download more stuff
-        let nextSection = null;
+        let nextSection: MediaListStatus | null = null;
         let pageNumber = null;
         if (lastDownloaded.hasNextPage) {
             // this section still has more pages, let's continue on the same section
@@ -203,7 +200,7 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
                     nextSection = MediaListStatus.PLANNING;
                     break;
 
-                default:
+                case MediaListStatus.PLANNING:
                     // yay, we've finished downloading all sections
                     setIsListComplete(true);
                     return;
@@ -215,35 +212,15 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
             const page = await fetchMediaList(token, user.id, mediaType, nextSection, pageNumber);
             setIsLoading(false);
 
-            const mediaList = page.mediaList ?? [];
-            switch (nextSection) {
-                case MediaListStatus.CURRENT:
-                    setNewCurrent(mediaList);
-                    break;
+            const newMediaList = page.mediaList ?? [];
+            setSections((sections) => {
+                if (nextSection === null) {
+                    return sections;
+                }
 
-                case MediaListStatus.REPEATING:
-                    setNewRepeating(mediaList);
-                    break;
-                
-                case MediaListStatus.COMPLETED:
-                    setNewCompleted(mediaList);
-                    break;
-
-                case MediaListStatus.PAUSED:
-                    setNewPaused(mediaList);
-                    break;
-                
-                case MediaListStatus.DROPPED:
-                    setNewDropped(mediaList);
-                    break;
-
-                case MediaListStatus.PLANNING:
-                    setNewPlanning(mediaList);
-                    break;
-                
-                default:
-                    return;
-            }
+                const nextSectionIndex = mediaListStatusToSectionIndex(nextSection);
+                return addToSections(sections, newMediaList, nextSectionIndex);
+            });
 
             setLastDownloaded({
                 section: nextSection,
@@ -288,60 +265,6 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
         }
     });
 
-    useEffect(() => {
-        if (newCurrent.length === 0) {
-            return;
-        }
-        
-        setSections((sections) => addToSections(sections, newCurrent, SectionIndex.CURRENT));
-        setNewCurrent(() => []);
-    }, [newCurrent]);
-    
-    useEffect(() => {
-        if (newRepeating.length === 0) {
-            return;
-        }
-
-        setSections((sections) => addToSections(sections, newRepeating, SectionIndex.REPEATING));
-        setNewRepeating(() => []);
-    }, [newRepeating]);
-
-    useEffect(() => {
-        if (newCompleted.length === 0) {
-            return;
-        }
-
-        setSections((sections) => addToSections(sections, newCompleted, SectionIndex.COMPLETED));
-        setNewCompleted(() => []);
-    }, [newCompleted]);
-
-    useEffect(() => {
-        if (newPaused.length === 0) {
-            return;
-        }
-
-        setSections((sections) => addToSections(sections, newPaused, SectionIndex.PAUSED));
-        setNewPaused(() => []);
-    }, [newPaused]);
-
-    useEffect(() => {
-        if (newDropped.length === 0) {
-            return;
-        }
-
-        setSections((sections) => addToSections(sections, newDropped, SectionIndex.DROPPED));
-        setNewDropped(() => []);
-    }, [newDropped]);
-
-    useEffect(() => {
-        if (newPlanning.length === 0) {
-            return;
-        }
-
-        setSections((sections) => addToSections(sections, newPlanning, SectionIndex.PLANNING));
-        setNewPlanning(() => []);
-    }, [newPlanning]);
-
     if (!hasFetchedInitialData) {
         return (
             <View style={styles.activityIndicatorContainer}>
@@ -356,7 +279,7 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
                 style={styles.listContainer}
                 sections={sections}
                 keyExtractor={(item) => item.id.toString()}
-                onEndReachedThreshold={5}
+                onEndReachedThreshold={0.5}
                 onEndReached={handleEndReached}
                 renderItem={({ item }) => (
                     <MediaListCard key={item.id} item={item}/>
@@ -427,3 +350,25 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
 });
+
+function mediaListStatusToSectionIndex(status: MediaListStatus): SectionIndex {
+    switch (status) {
+        case MediaListStatus.CURRENT:
+            return SectionIndex.CURRENT;
+
+        case MediaListStatus.REPEATING:
+            return SectionIndex.REPEATING;
+        
+        case MediaListStatus.COMPLETED:
+            return SectionIndex.COMPLETED;
+        
+        case MediaListStatus.PAUSED:
+            return SectionIndex.PAUSED;
+        
+        case MediaListStatus.DROPPED:
+            return SectionIndex.DROPPED;
+
+        case MediaListStatus.PLANNING:
+            return SectionIndex.PLANNING;
+    }
+}
