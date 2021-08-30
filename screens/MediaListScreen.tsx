@@ -173,14 +173,14 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
             nextSection = lastDownloaded.section;
             pageNumber = lastDownloaded.page + 1;
         } else {
-            // this section doesn't have more pages, go to the next one
-            pageNumber = 1;
             if (lastDownloaded.section === SectionIndex.PLANNING) {
                 // yay, we've finished downloading all sections
                 setIsListComplete(true);
                 return;
             } else {
+                // this section doesn't have more pages, go to the next one
                 nextSection = lastDownloaded.section + 1;
+                pageNumber = 1;
             }
         }
 
@@ -203,7 +203,7 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
                 hasNextPage: page.pageInfo.hasNextPage,
                 page: page.pageInfo.currentPage,
             });
-            
+
             setIsLoading(false);
         } catch (err: any) {
             console.error(err.message ?? err.toString());
