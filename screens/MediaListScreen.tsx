@@ -31,7 +31,7 @@ enum SectionIndex {
 }
 
 interface LastDownloaded {
-    section: MediaListStatus | null,
+    section: SectionIndex,
     page: number,
     hasNextPage: boolean,
 }
@@ -69,11 +69,7 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isListComplete, setIsListComplete] = useState<boolean>(false);
     const [hasFetchedInitialData, setHasFetchedInitialData] = useState<boolean>(false);
-    const [lastDownloaded, setLastDownloaded] = useState<LastDownloaded>({
-        section: null,
-        page: 1,
-        hasNextPage: false,
-    });
+    const [lastDownloaded, setLastDownloaded] = useState<LastDownloaded | null>(null);
     const [sections, setSections] = useState<Section[]>(INITIAL_SECTIONS);
 
     const getSectionData = (index: SectionIndex): MediaList[] => {
@@ -152,12 +148,12 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
             const newMediaList = page.mediaList ?? [];
             return addToSections(sections, newMediaList, SectionIndex.CURRENT);
         });
-        setIsLoading(false);
         setLastDownloaded({
-            section: MediaListStatus.CURRENT,
+            section: SectionIndex.CURRENT,
             hasNextPage: page.pageInfo.hasNextPage,
             page: page.pageInfo.currentPage,
         });
+        setIsLoading(false);
     };
 
     const handleEndReached = async (): Promise<void> => {
@@ -165,12 +161,12 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
             return;
         } 
         const { token, user } = anilist;
-        if (lastDownloaded.section == null || token == null || user == null) {
+        if (lastDownloaded == null || token == null || user == null) {
             return;
         }
 
         // download more stuff
-        let nextSection: MediaListStatus | null = null;
+        let nextSection: SectionIndex | null = null;
         let pageNumber = null;
         if (lastDownloaded.hasNextPage) {
             // this section still has more pages, let's continue on the same section
@@ -179,36 +175,36 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
         } else {
             // this section doesn't have more pages, go to the next one
             pageNumber = 1;
-            if (lastDownloaded.section === MediaListStatus.PLANNING) {
+            if (lastDownloaded.section === SectionIndex.PLANNING) {
                 // yay, we've finished downloading all sections
                 setIsListComplete(true);
                 return;
             } else {
-                const currentSectionIndex = mediaListStatusToSectionIndex(lastDownloaded.section);
-                nextSection = sectionIndexToMediaListStatus(currentSectionIndex + 1);
+                nextSection = lastDownloaded.section + 1;
             }
         }
 
         try {
             setIsLoading(true);
-            const page = await fetchMediaList(token, user.id, mediaType, nextSection, pageNumber);
-            setIsLoading(false);
-
+            const status = sectionIndexToMediaListStatus(nextSection);
+            const page = await fetchMediaList(token, user.id, mediaType, status, pageNumber);
+            
             const newMediaList = page.mediaList ?? [];
             setSections((sections) => {
                 if (nextSection === null) {
                     return sections;
                 }
-
-                const nextSectionIndex = mediaListStatusToSectionIndex(nextSection);
-                return addToSections(sections, newMediaList, nextSectionIndex);
+                
+                return addToSections(sections, newMediaList, nextSection);
             });
-
+            
             setLastDownloaded({
                 section: nextSection,
                 hasNextPage: page.pageInfo.hasNextPage,
                 page: page.pageInfo.currentPage,
             });
+            
+            setIsLoading(false);
         } catch (err: any) {
             console.error(err.message ?? err.toString());
         }
@@ -220,11 +216,7 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
         }
         
         setRefreshing(true);
-        setLastDownloaded({
-            section: null,
-            page: 1,
-            hasNextPage: false,
-        });
+        setLastDownloaded(null);
         setHasFetchedInitialData(false);
         setIsLoading(false);
         setIsListComplete(false);
