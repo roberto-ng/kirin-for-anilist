@@ -161,12 +161,13 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
             const newMediaList = page.mediaList ?? [];
             return addToSections(sections, newMediaList, SectionIndex.CURRENT);
         });
+        setIsLoading(false);
+
         setLastDownloaded({
             section: SectionIndex.CURRENT,
             hasNextPage: page.pageInfo.hasNextPage,
             page: page.pageInfo.currentPage,
         });
-        setIsLoading(false);
     };
 
     const handleEndReached = async (): Promise<void> => {
@@ -217,6 +218,7 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
                 
                 return addToSections(sections, newMediaList, nextSection);
             });
+            setIsLoading(false);
             
             setLastDownloaded({
                 section: nextSection,
@@ -224,7 +226,6 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
                 page: page.pageInfo.currentPage,
             });
 
-            setIsLoading(false);
         } catch (err: any) {
             console.error(err.message ?? err.toString());
         }
@@ -258,6 +259,22 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
                 });
         }
     });
+
+    useEffect(() => {
+        if (!hasFetchedInitialData || isLoading || isListComplete) {
+            return;
+        }
+
+        let totalItems = 0;
+        for (const section of sections) {
+            totalItems += section.data.length;
+        }
+        if (totalItems < 25) {
+            // onEndReached is only called if the list can be scrolled, so it needs enough items 
+            // let's download more stuff to make the infinite scrolling work
+            handleEndReached();
+        }
+    }, [lastDownloaded]);
 
     if (!hasFetchedInitialData) {
         if (refreshing) {
