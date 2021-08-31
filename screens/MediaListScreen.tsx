@@ -7,7 +7,13 @@ import { Text } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { NavigationContainer } from '@react-navigation/native';
-import { MediaListStatus, MediaType, MediaList, User, Media } from '../model/anilist';
+import { 
+    MediaListStatus, 
+    MediaType, 
+    MediaList, 
+    User, 
+    MediaListSort,
+} from '../model/anilist';
 import { StoreState, anilistSlice } from '../store/store';
 import { fetchMediaList } from '../api/anilist';
 import MediaListCard from '../components/MediaListCard';
@@ -143,7 +149,14 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
     
     const fetchInitialData = async (token: string, user: User): Promise<void> => {
         setIsLoading(true);
-        const page = await fetchMediaList(token, user.id, mediaType, MediaListStatus.CURRENT, 1);
+        const page = await fetchMediaList(
+            token, 
+            user.id, 
+            mediaType, 
+            MediaListStatus.CURRENT, 
+            MediaListSort.MEDIA_TITLE_ROMAJI, 
+            1
+        );
         setSections((sections) => {
             const newMediaList = page.mediaList ?? [];
             return addToSections(sections, newMediaList, SectionIndex.CURRENT);
@@ -187,7 +200,14 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
         try {
             setIsLoading(true);
             const status = sectionIndexToMediaListStatus(nextSection);
-            const page = await fetchMediaList(token, user.id, mediaType, status, pageNumber);
+            const page = await fetchMediaList(
+                token, 
+                user.id, 
+                mediaType, 
+                status, 
+                MediaListSort.MEDIA_TITLE_ROMAJI, 
+                pageNumber,
+            );
             
             const newMediaList = page.mediaList ?? [];
             setSections((sections) => {
@@ -240,6 +260,10 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
     });
 
     if (!hasFetchedInitialData) {
+        if (refreshing) {
+            return <View></View>;
+        }
+        
         return (
             <View style={styles.activityIndicatorContainer}>
                 <ActivityIndicator size={50} animating={true} color={Colors.white} />
@@ -265,15 +289,23 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
                         return <View></View>;
                     }
                 }}
-                ListFooterComponent={() => (
-                    (isLoading) ? (
-                        <View style={styles.listActivityIndicatorContainer}>
-                            <ActivityIndicator size={50} animating={true} color={Colors.white} />
-                        </View>
-                    ) : (
-                        <View></View>
-                    )
-                )}
+                ListFooterComponent={() => {
+                    if (isLoading && !refreshing) {
+                        return (
+                            <View style={styles.listActivityIndicatorContainer}>
+                                <ActivityIndicator 
+                                    size={50} 
+                                    animating={true} 
+                                    color={Colors.white} 
+                                />
+                            </View>
+                        ) 
+                    } else {
+                        return (
+                            <View></View>
+                        )
+                    }
+                }}
                 refreshControl={
                     <RefreshControl
                         refreshing={refreshing}

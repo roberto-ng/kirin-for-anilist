@@ -6,6 +6,7 @@ import {
     ActivityUnion, 
     MediaType,
     MediaListStatus,
+    MediaListSort,
 } from '../model/anilist';
 
 const url = 'https://graphql.anilist.co';
@@ -74,66 +75,15 @@ export async function increaseMediaProgression(token: string, mediaList: MediaLi
 }
 
 export async function fetchAnimeInProgress(accessToken: string, userId: string): Promise<MediaList[]> {
-    const query = `
-        query ($id: Int, $page: Int, $perPage: Int) {
-            Page (page: $page, perPage: $perPage) {
-                pageInfo {
-                    total
-                    currentPage
-                    lastPage
-                    hasNextPage
-                    perPage
-                }
-                mediaList (userId: $id, type: ANIME, status: CURRENT, sort: UPDATED_TIME_DESC) {
-                    id
-                    progress
-                    updatedAt
-                    status
-                    score (format: POINT_10)
-                    media {
-                        id
-                        episodes
-                        status
-                        type
-                        title {
-                            romaji
-                            english
-                            native
-                        }
-                        coverImage {
-                            medium
-                            large
-                            extraLarge
-                        }
-                        mediaListEntry {
-                            score
-                        }
-                    }
-                }
-            }
-        }
-    `;
+    const page = await fetchMediaList(
+        accessToken, 
+        userId, 
+        MediaType.ANIME, 
+        MediaListStatus.CURRENT, 
+        MediaListSort.UPDATED_TIME_DESC, 
+        1,
+    );
 
-    const options = {
-        method: 'POST',
-        headers: {
-            'Authorization': 'Bearer ' + accessToken,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        },
-        body: JSON.stringify({
-            query,
-            variables: {
-                id: userId,
-                page: 1,
-                perPage: 50,
-            },
-        }),
-    };
-
-    const res = await fetch(url, options);
-    const json = await res.json();
-    const page = json.data.Page as Page;
     if (page.mediaList == null) {
         throw new Error('The Page object has no mediaList member');
     }
@@ -142,67 +92,15 @@ export async function fetchAnimeInProgress(accessToken: string, userId: string):
 }
 
 export async function fetchMangaInProgress(accessToken: string, userId: string): Promise<MediaList[]> {
-    const query = `
-        query ($id: Int, $page: Int, $perPage: Int) {
-            Page (page: $page, perPage: $perPage) {
-                pageInfo {
-                    total
-                    currentPage
-                    lastPage
-                    hasNextPage
-                    perPage
-                }
-                mediaList (userId: $id, type: MANGA, status: CURRENT, sort: UPDATED_TIME_DESC) {
-                    id
-                    progress
-                    updatedAt
-                    status
-                    score (format: POINT_10)
-                    media {
-                        id
-                        episodes
-                        chapters
-                        status
-                        type
-                        title {
-                            romaji
-                            english
-                            native
-                        }
-                        coverImage {
-                            medium
-                            large
-                            extraLarge
-                        }
-                        mediaListEntry {
-                            score
-                        }
-                    }
-                }
-            }
-        }
-    `;
-
-    const options = {
-        method: 'POST',
-        headers: {
-            'Authorization': 'Bearer ' + accessToken,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        },
-        body: JSON.stringify({
-            query,
-            variables: {
-                id: userId,
-                page: 1,
-                perPage: 50,
-            },
-        }),
-    };
-
-    const res = await fetch(url, options);
-    const json = await res.json();
-    const page = json.data.Page as Page;
+    const page = await fetchMediaList(
+        accessToken, 
+        userId, 
+        MediaType.MANGA, 
+        MediaListStatus.CURRENT, 
+        MediaListSort.UPDATED_TIME_DESC, 
+        1,
+    );
+    
     if (page.mediaList == null) {
         throw new Error('The Page object has no mediaList member');
     }
@@ -333,10 +231,11 @@ export async function fetchMediaList(
     userId: string, 
     mediaType: MediaType,
     status: MediaListStatus,
+    sort: MediaListSort,
     pageNumber: number,
 ): Promise<Page> {
     const query = `
-        query ($id: Int, $page: Int, $perPage: Int, $mediaType: MediaType, $status: MediaListStatus) {
+        query ($id: Int, $page: Int, $perPage: Int, $mediaType: MediaType, $status: MediaListStatus, $sort: [MediaListSort]) {
             Page (page: $page, perPage: $perPage) {
                 pageInfo {
                     total
@@ -345,7 +244,7 @@ export async function fetchMediaList(
                     hasNextPage
                     perPage
                 }
-                mediaList (userId: $id, type: $mediaType, status: $status, sort: MEDIA_TITLE_ROMAJI) {
+                mediaList (userId: $id, type: $mediaType, status: $status, sort: $sort) {
                     id
                     progress
                     updatedAt
@@ -389,6 +288,7 @@ export async function fetchMediaList(
                 id: userId,
                 page: pageNumber,
                 perPage: 50,
+                sort,
                 mediaType,
                 status,
             },
@@ -397,9 +297,17 @@ export async function fetchMediaList(
 
     const res = await fetch(url, options);
     const json = await res.json();
+    if (json.data == null) {
+        if (json.errors != null && json.errors.length > 0) {
+            throw new Error(json.errors[0].message);
+        } else {
+            throw new Error('data is null');
+        }
+    }
+
     const page = json.data.Page as Page;
     if (page.mediaList == null) {
-        throw new Error('The Page object has no mediaList member');
+        throw new Error('page object has no mediaList member');
     }
 
     return page;
