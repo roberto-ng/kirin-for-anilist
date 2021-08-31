@@ -32,38 +32,38 @@ function MediaListCard({ item }: MediaListCardProps): JSX.Element {
             onPress={() => {}}
         >
             <View style={styles.container}>
-                    <View style={styles.converImageWrapper}>
-                        <ImageBackground 
-                            source={{ uri: item.media.coverImage.large }}
+                <View style={styles.converImageWrapper}>
+                    <ImageBackground 
+                        source={{ uri: item.media.coverImage.large }}
+                        style={styles.coverImage} 
+                    >
+                        <Pressable 
+                            android_ripple={{ color: 'white' }} 
                             style={styles.coverImage} 
                         >
-                            <Pressable 
-                                android_ripple={{ color: 'white' }} 
-                                style={styles.coverImage} 
-                            >
-                            </Pressable>
-                        </ImageBackground>
-                    </View>
+                        </Pressable>
+                    </ImageBackground>
+                </View>
 
-                    <View style={styles.mediaDetails}>
-                        <Text numberOfLines={3} style={styles.title}>
-                            {title}
-                        </Text>
-                        
-                        <View style={styles.mediaDetailsBottom}>
-                            {(status !== MediaListStatus.PLANNING) && (
-                                <Text style={styles.progress}>
-                                    Progress: {progress}
-                                </Text>
-                            )}
+                <View style={styles.mediaDetails}>
+                    <Text numberOfLines={3} style={styles.title}>
+                        {title}
+                    </Text>
+                    
+                    <View style={styles.mediaDetailsBottom}>
+                        {(status !== MediaListStatus.PLANNING) && (
+                            <Text style={styles.progress}>
+                                Progress: {progress}
+                            </Text>
+                        )}
 
-                            {(score != null && score > 0) && (
-                                <Text style={styles.score}>
-                                    {score}
-                                </Text>
-                            )}
-                        </View>
+                        {(score != null && score > 0) && (
+                            <Text style={styles.score}>
+                                {score}
+                            </Text>
+                        )}
                     </View>
+                </View>
             </View>
         </Pressable>
     );
