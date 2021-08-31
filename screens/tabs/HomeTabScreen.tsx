@@ -216,6 +216,7 @@ function MediaSection({ name, token, list, onError }: MediaSectionProps) {
                     data={list}
                     keyExtractor={item => item.id.toString()}
                     horizontal={true}
+                    persistentScrollbar={true}
                     renderItem={({ item, index }) => {
                         // check if this is the last item on the list
                         const isLast = index === (list.length - 1);
