@@ -50,19 +50,19 @@ function MediaListCard({ item }: MediaListCardProps): JSX.Element {
                         {title}
                     </Text>
                     
-                    <View style={styles.mediaDetailsBottom}>
-                        {(status !== MediaListStatus.PLANNING) && (
+                    {(status !== MediaListStatus.PLANNING) && (
+                        <View style={styles.mediaDetailsBottom}>
                             <Text style={styles.progress}>
                                 Progress: {progress}
                             </Text>
-                        )}
 
-                        {(score != null && score > 0) && (
-                            <Text style={styles.score}>
-                                {score}
-                            </Text>
-                        )}
-                    </View>
+                            {(score != null && score > 0) && (
+                                <Text style={styles.score}>
+                                    {score}
+                                </Text>
+                            )}
+                        </View>
+                    )}
                 </View>
             </View>
         </Pressable>

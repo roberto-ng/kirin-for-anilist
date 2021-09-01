@@ -221,7 +221,7 @@ function MediaSection({ name, token, list, onError }: MediaSectionProps) {
                         // check if this is the last item on the list
                         const isLast = index === (list.length - 1);
                         const isFirst = index === 0;
-                                                        
+
                         return (
                             <HomeMediaListCard 
                                 mediaListItem={item} 
