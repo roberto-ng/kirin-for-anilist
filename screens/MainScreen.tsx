@@ -3,9 +3,9 @@ import { StyleSheet, View } from 'react-native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { TouchableWithoutFeedback } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import HomeTabScreen from './tabs/HomeTabScreen';
-import AnimeTabScreen from './tabs/AnimeTabScreen';
-import MangaTabScreen from './tabs/MangaTabScreen';
+import HomeTabScreen from './MainScreenTabs/HomeTabScreen';
+import AnimeTabScreen from './MainScreenTabs/AnimeTabScreen';
+import MangaTabScreen from './MainScreenTabs/MangaTabScreen';
 
 const Tab = createMaterialBottomTabNavigator();
 const backgroundColor = '#151F2E';
