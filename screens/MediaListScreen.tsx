@@ -82,13 +82,13 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
         return sections[index].data;
     };
 
-    const addToSections = (sections: Section[], newListItems: MediaList[], index: SectionIndex): Section[] => {
-        let current = [...getSectionData(SectionIndex.CURRENT)];
-        let repeating = [...getSectionData(SectionIndex.REPEATING)];
-        let completed = [...getSectionData(SectionIndex.COMPLETED)];
-        let paused = [...getSectionData(SectionIndex.PAUSED)];
-        let dropped = [...getSectionData(SectionIndex.DROPPED)];
-        let planning = [...getSectionData(SectionIndex.PLANNING)];
+    const addToSections = (newListItems: MediaList[], index: SectionIndex): Section[] => {
+        let current   = getSectionData(SectionIndex.CURRENT);
+        let repeating = getSectionData(SectionIndex.REPEATING);
+        let completed = getSectionData(SectionIndex.COMPLETED);
+        let paused    = getSectionData(SectionIndex.PAUSED);
+        let dropped   = getSectionData(SectionIndex.DROPPED);
+        let planning  = getSectionData(SectionIndex.PLANNING);
 
         switch (index) {
             case SectionIndex.CURRENT:
@@ -159,7 +159,7 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
         );
         setSections((sections) => {
             const newMediaList = page.mediaList ?? [];
-            return addToSections(sections, newMediaList, SectionIndex.CURRENT);
+            return addToSections(newMediaList, SectionIndex.CURRENT);
         });
         setIsLoading(false);
 
@@ -216,7 +216,7 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
                     return sections;
                 }
                 
-                return addToSections(sections, newMediaList, nextSection);
+                return addToSections(newMediaList, nextSection);
             });
             setIsLoading(false);
             
