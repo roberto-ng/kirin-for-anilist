@@ -7,6 +7,7 @@ import {
     Pressable,
 } from 'react-native';
 import { Text, TouchableRipple } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 import { MediaList, MediaListStatus } from '../model/anilist';
 
 interface MediaListCardProps {
@@ -14,6 +15,8 @@ interface MediaListCardProps {
 }
 
 function MediaListCard({ item }: MediaListCardProps): JSX.Element {
+    const navigation = useNavigation();
+
     const title  = item.media.title.romaji;
     const score  = item.media.mediaListEntry.score; 
     const total  = item.media.episodes ?? item.media.chapters;
@@ -25,11 +28,18 @@ function MediaListCard({ item }: MediaListCardProps): JSX.Element {
     } else {
         progress = `${item.progress}/${total}`;
     }
+
+    const handleCardPress = () => {
+        navigation.navigate('Media', {
+            media: item.media,
+            title: item.media.title.romaji,
+        });
+    };
     
     return (
         <Pressable 
             style={styles.pressable} 
-            onPress={() => {}}
+            onPress={handleCardPress}
         >
             <View style={styles.container}>
                 <View style={styles.converImageWrapper}>
@@ -40,6 +50,7 @@ function MediaListCard({ item }: MediaListCardProps): JSX.Element {
                         <Pressable 
                             android_ripple={{ color: 'white' }} 
                             style={styles.coverImage} 
+                            onPress={handleCardPress}
                         >
                         </Pressable>
                     </ImageBackground>

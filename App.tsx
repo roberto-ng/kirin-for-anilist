@@ -13,11 +13,12 @@ import { Provider as PaperProvider, DarkTheme as PaperDefaultTheme } from 'react
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as WebBrowser from 'expo-web-browser';
 import * as ExpoLinking from 'expo-linking';
-import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+import { NavigationContainer, DarkTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Provider } from 'react-redux';
 import { useSelector, useDispatch } from 'react-redux';
 import MainScreen from './screens/MainScreen';
+import MediaScreen from './screens/MediaScreen';
 import { store, StoreState, anilistSlice } from './store/store';
 import { 
     fetchViewer, 
@@ -27,10 +28,12 @@ WebBrowser.maybeCompleteAuthSession();
 
 const backgroundColor = '#0B1622';
 const MyTheme = {
-    ...DefaultTheme,
+    ...DarkTheme,
+    dark: true,
     colors: {
-        ...DefaultTheme.colors,
-        background: '#0B1622'
+        ...DarkTheme.colors,
+        background: '#0B1622',
+        card: '#151F2E',
     },
 };
 
@@ -91,14 +94,23 @@ function AppContent() {
                 <NavigationContainer theme={MyTheme}>
                     <Stack.Navigator 
                         initialRouteName="Main"
-                        >
+                    >
                         <Stack.Screen 
                             name="Main" 
                             component={MainScreen}
                             options={{
                                 headerShown: false,
                             }}
-                            />
+                        />
+                        <Stack.Screen 
+                            name="Media" 
+                            component={MediaScreen}
+                            options={{ 
+                                title: 'Details',
+                                headerShown: true,
+                                headerTintColor: 'white',
+                            }}
+                        />
                     </Stack.Navigator>
                 </NavigationContainer>
             </PaperProvider>

@@ -22,6 +22,7 @@
     "@reduxjs/toolkit": "^1.6.1",
     "@types/react-native-vector-icons": "^6.4.6",
     "@types/whatwg-url": "^8.2.1",
+    "add": "^2.0.6",
     "expo": "^42.0.0",
     "expo-auth-session": "~3.3.1",
     "expo-linking": "~2.3.1",
@@ -40,11 +41,15 @@
     "react-native-reanimated": "~2.2.0",
     "react-native-safe-area-context": "3.2.0",
     "react-native-screens": "~3.4.0",
+    "react-native-shadow-2": "^4.1.0",
+    "react-native-simple-shadow-view": "^1.6.3",
+    "react-native-svg": "^12.1.1",
     "react-native-tab-view": "^3.1.1",
     "react-native-unimodules": "~0.14.5",
     "react-native-vector-icons": "^8.1.0",
     "react-native-web": "~0.13.12",
-    "react-redux": "^7.2.4"
+    "react-redux": "^7.2.4",
+    "yarn": "^1.22.11"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
