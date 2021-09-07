@@ -265,6 +265,7 @@ export async function fetchMediaList(
                             large
                             extraLarge
                         }
+                        bannerImage
                         mediaListEntry {
                             score
                             status

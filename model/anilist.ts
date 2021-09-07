@@ -77,6 +77,7 @@ export interface Media {
         large: string,
         extraLarge: string,
     },
+    bannerImage: string,
     mediaListEntry: {
         score: number,
         status: MediaListStatus,
