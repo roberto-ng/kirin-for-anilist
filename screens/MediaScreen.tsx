@@ -31,8 +31,6 @@ export default function MediaScreen({ route }: Props): JSX.Element {
 
     const formatDescription = (description: string): string => {
         return description
-            .replaceAll('<br><br>', '')
-            .replaceAll('<br> <br>', '')
             .replaceAll('<br>', '')
             .replaceAll('<i>', '')
             .replaceAll('</i>', '');
