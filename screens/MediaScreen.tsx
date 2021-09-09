@@ -72,17 +72,20 @@ export default function MediaScreen({ route }: Props): JSX.Element {
                     {title}
                 </Text>
 
-                <View style={styles.descriptionContainer}>
-                    <Text style={[styles.text, styles.descriptionLabel]}>
-                        Description:
-                    </Text>
-                    <Paragraph 
-                        style={[styles.text, styles.descriptionText]}
-                        selectable={true}
-                    >
-                        {formatDescription(media.description ?? '')}
-                    </Paragraph>
-                </View>
+                {(media.description != null && media.description.trim().length > 0) && (
+                    <View style={styles.descriptionContainer}>
+                        <Text style={[styles.text, styles.descriptionLabel]}>
+                            Description:
+                        </Text>
+
+                        <Paragraph 
+                            style={[styles.text, styles.descriptionText]}
+                            selectable={true}
+                        >
+                            {formatDescription(media.description ?? '')}
+                        </Paragraph>
+                    </View>
+                )}
             </View>
         </ScrollView>
     );
