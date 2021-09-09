@@ -1,9 +1,18 @@
 import 'ts-replace-all';
 import React from 'react';
-import { View, ScrollView, StyleSheet, Image, ImageBackground } from 'react-native';
+import { 
+    View, 
+    ScrollView, 
+    StyleSheet, 
+    Image, 
+    ImageBackground, 
+    Platform,
+    ToastAndroid, 
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Paragraph, Text } from 'react-native-paper';
 import { Shadow } from 'react-native-shadow-2';
+import * as Clipboard from 'expo-clipboard';
 import { Media, MediaList } from '../model/anilist';
 
 interface Props {
@@ -29,6 +38,14 @@ export default function MediaScreen({ route }: Props): JSX.Element {
             .replaceAll('</i>', '');
     };
 
+    const handleTitleLongPress = () => {
+        Clipboard.setString(title);
+
+        if (Platform.OS === 'android') {
+            ToastAndroid.show('Copied to clipboard', ToastAndroid.SHORT);
+        }
+    };
+
     return (
         <ScrollView style={styles.container}>
             <ImageBackground
@@ -50,7 +67,12 @@ export default function MediaScreen({ route }: Props): JSX.Element {
             </ImageBackground>
 
             <View style={styles.contentWrapper}>
-                <Text style={[styles.text, styles.title]}>{title}</Text>
+                <Text 
+                    style={[styles.text, styles.title]}
+                    onLongPress={handleTitleLongPress}
+                >
+                    {title}
+                </Text>
 
                 <View style={styles.descriptionContainer}>
                     <Text style={[styles.text, styles.descriptionLabel]}>
