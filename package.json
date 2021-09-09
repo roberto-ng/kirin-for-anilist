@@ -7,6 +7,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@formatjs/intl-datetimeformat": "^4.2.3",
     "@formatjs/intl-getcanonicallocales": "^1.7.3",
     "@formatjs/intl-locale": "^2.4.37",
     "@formatjs/intl-numberformat": "^7.2.3",

@@ -1517,6 +1517,15 @@
     "@formatjs/intl-localematcher" "0.2.20"
     tslib "^2.1.0"
 
+"@formatjs/intl-datetimeformat@^4.2.3":
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/@formatjs/intl-datetimeformat/-/intl-datetimeformat-4.2.3.tgz#162d48091fd2a3c15ea4468665fca36bdc3c4cd0"
+  integrity sha512-GMVijELWrcHQNe+snkjRUbl+G8ag+sYM8I228mIjwvZ6FcmuhX2BwpUH8nRkGrPVnDL8qvyscMFrVA4LniZbcA==
+  dependencies:
+    "@formatjs/ecma402-abstract" "1.9.8"
+    "@formatjs/intl-localematcher" "0.2.20"
+    tslib "^2.1.0"
+
 "@formatjs/intl-getcanonicallocales@1.7.3", "@formatjs/intl-getcanonicallocales@^1.7.3":
   version "1.7.3"
   resolved "https://registry.yarnpkg.com/@formatjs/intl-getcanonicallocales/-/intl-getcanonicallocales-1.7.3.tgz#f5c33904ac0de7c50a5471b5ef531184bd019240"

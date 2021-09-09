@@ -36,7 +36,21 @@ export default function MediaScreen({ route }: Props): JSX.Element {
     const title = media.title.romaji;
 
     const informations = useMemo((): Information[] => {
-        const { startDate, endDate } = media;
+        const dateTimeFormat = new Intl.DateTimeFormat('en', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+        });
+        const startDate = new Date(
+            media.startDate.year, 
+            media.startDate.month - 1, // january is month 0, december is month 11
+            media.startDate.day,
+        );
+        const endDate = new Date(
+            media.endDate.year, 
+            media.endDate.month - 1, // january is month 0, december is month 11
+            media.endDate.day,
+        );
 
         return [
             {
@@ -49,11 +63,11 @@ export default function MediaScreen({ route }: Props): JSX.Element {
             },
             {
                 title: 'Start Date',
-                value: `${startDate.year}-${startDate.month}-${startDate.day}`,
+                value: dateTimeFormat.format(startDate),
             },
             {
                 title: 'End Date',
-                value: `${endDate.year}-${endDate.month}-${endDate.day}`,
+                value: dateTimeFormat.format(endDate),
             },
             {
                 title: 'Average Score',
@@ -65,7 +79,7 @@ export default function MediaScreen({ route }: Props): JSX.Element {
             },
             {
                 title: 'Popularity',
-                value: `${media.popularity}%`
+                value: `${media.popularity}`
             },
         ];
     }, []);
