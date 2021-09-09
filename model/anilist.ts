@@ -67,6 +67,7 @@ export interface Media {
     chapters?: number,
     type: MediaType,
     status: MediaStatus,
+    description: string,
     title: {
         romaji: string,
         english: string,

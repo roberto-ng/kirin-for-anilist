@@ -255,6 +255,7 @@ export async function fetchMediaList(
                         chapters
                         status
                         type
+                        description
                         title {
                             romaji
                             english

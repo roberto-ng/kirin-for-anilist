@@ -1,7 +1,8 @@
+import 'ts-replace-all';
 import React from 'react';
 import { View, ScrollView, StyleSheet, Image, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Text } from 'react-native-paper';
+import { Paragraph, Text } from 'react-native-paper';
 import { Shadow } from 'react-native-shadow-2';
 import { Media, MediaList } from '../model/anilist';
 
@@ -18,6 +19,15 @@ export default function MediaScreen({ route }: Props): JSX.Element {
     const { media } = route.params;
     const navigation = useNavigation();
     const title = media.title.romaji;
+
+    const formatDescription = (description: string): string => {
+        return description
+            .replaceAll('<br><br>', '')
+            .replaceAll('<br> <br>', '')
+            .replaceAll('<br>', '')
+            .replaceAll('<i>', '')
+            .replaceAll('</i>', '');
+    };
 
     return (
         <ScrollView style={styles.container}>
@@ -40,7 +50,19 @@ export default function MediaScreen({ route }: Props): JSX.Element {
             </ImageBackground>
 
             <View style={styles.contentWrapper}>
-                <Text style={styles.title}>{title}</Text>
+                <Text style={[styles.text, styles.title]}>{title}</Text>
+
+                <View style={styles.descriptionContainer}>
+                    <Text style={[styles.text, styles.descriptionLabel]}>
+                        Description:
+                    </Text>
+                    <Paragraph 
+                        style={[styles.text, styles.descriptionText]}
+                        selectable={true}
+                    >
+                        {formatDescription(media.description ?? '')}
+                    </Paragraph>
+                </View>
             </View>
         </ScrollView>
     );
@@ -71,5 +93,22 @@ const styles = StyleSheet.create({
         fontSize: 20,
         marginTop: 10,
         marginLeft: 20,
+    },
+    text: {
+        color: 'rgb(159,173,189)',
+    },
+    descriptionContainer: {
+        backgroundColor: '#151F2E',
+        margin: 20,
+        marginTop: 10,
+        borderRadius: 5,
+        padding: 10,
+    },
+    descriptionLabel: {
+        fontSize: 16,
+    },
+    descriptionText: {
+        fontSize: 16,
+        marginTop: 10,
     },
 });
