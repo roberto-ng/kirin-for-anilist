@@ -1,5 +1,5 @@
 import 'ts-replace-all';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { 
     View, 
     ScrollView, 
@@ -10,10 +10,11 @@ import {
     ToastAndroid, 
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Paragraph, Text } from 'react-native-paper';
+import { Paragraph, Text, Divider } from 'react-native-paper';
 import { Shadow } from 'react-native-shadow-2';
 import * as Clipboard from 'expo-clipboard';
 import { Media, MediaList } from '../model/anilist';
+import { FlatList } from 'react-native-gesture-handler';
 
 interface Props {
     route: {
@@ -24,10 +25,50 @@ interface Props {
     },
 }
 
+interface Information {
+    title: string,
+    value: string,
+}
+
 export default function MediaScreen({ route }: Props): JSX.Element {
     const { media } = route.params;
     const navigation = useNavigation();
     const title = media.title.romaji;
+
+    const informations = useMemo((): Information[] => {
+        const { startDate, endDate } = media;
+
+        return [
+            {
+                title: 'Format',
+                value: media.format,
+            },
+            {
+                title: 'Status',
+                value: media.status,
+            },
+            {
+                title: 'Start Date',
+                value: `${startDate.year}-${startDate.month}-${startDate.day}`,
+            },
+            {
+                title: 'End Date',
+                value: `${endDate.year}-${endDate.month}-${endDate.day}`,
+            },
+            {
+                title: 'Average Score',
+                value: `${media.averageScore}%`
+            },
+            {
+                title: 'Mean Score',
+                value: `${media.meanScore}%`
+            },
+            {
+                title: 'Popularity',
+                value: `${media.popularity}%`
+            },
+        ];
+    }, []);
 
     const formatDescription = (description: string): string => {
         return description
@@ -86,6 +127,31 @@ export default function MediaScreen({ route }: Props): JSX.Element {
                         </Paragraph>
                     </View>
                 )}
+
+                <View style={styles.informationsContainer}>
+                    <FlatList 
+                        data={informations}
+                        horizontal={true}
+                        keyExtractor={(_, i) => i.toString()}
+                        renderItem={({ item }) => (
+                            <View style={styles.information}>
+                                <Text 
+                                    style={styles.informationTitle}
+                                    numberOfLines={1}
+                                >
+                                    {item.title}
+                                </Text>
+                                <Text 
+                                    style={[styles.text, styles.informationValue]}
+                                    numberOfLines={1}
+                                    selectable={true}
+                                >
+                                    {item.value}
+                                </Text>
+                            </View>   
+                        )}
+                    />
+                </View>
             </View>
         </ScrollView>
     );
@@ -133,5 +199,28 @@ const styles = StyleSheet.create({
     descriptionText: {
         fontSize: 16,
         marginTop: 10,
+    },
+    informationsContainer: {
+        backgroundColor: '#151F2E',
+        margin: 20,
+        marginTop: 0,
+        borderRadius: 5,
+        //height: 70,
+        flexDirection: 'row',
+    },
+    information: {
+        height: 50,
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        margin: 10,
+        marginRight: 10,
+        marginLeft: 10,
+    },
+    informationTitle: {
+        color: 'rgb(146,153,161)',
+        fontSize: 15,
+    },
+    informationValue: {
+        fontSize: 15,
     },
 });

@@ -253,9 +253,32 @@ export async function fetchMediaList(
                         id
                         episodes
                         chapters
+                        volumes
                         status
                         type
                         description
+                        format
+                        averageScore
+                        meanScore
+                        popularity
+                        isLocked
+                        nextAiringEpisode {
+                            id
+                            airingAt
+                            timeUntilAiring
+                            episode
+                            mediaId
+                        }
+                        startDate {
+                            year
+                            month
+                            day
+                        }
+                        endDate {
+                            year
+                            month
+                            day
+                        }
                         title {
                             romaji
                             english

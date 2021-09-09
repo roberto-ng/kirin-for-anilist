@@ -61,13 +61,35 @@ export enum MediaListSort {
     MEDIA_POPULARITY_DESC = 'MEDIA_POPULARITY_DESC',
 }
 
+export enum MediaFormat {
+    TV = 'TV',
+    TV_SHORT = 'TV_SHORT',
+    MOVIE = 'MOVIE',
+    SPECIAL = 'SPECIAL',
+    OVA = 'OVA',
+    ONA = 'ONA',
+    MUSIC = 'MUSIC',
+    MANGA = 'MANGA',
+    NOVEL = 'NOVEL',
+    ONE_SHOT = 'ONE_SHOT',
+}
+
 export interface Media {
     id: string,
     episodes?: number,
     chapters?: number,
+    volumes?: number,
     type: MediaType,
     status: MediaStatus,
     description: string,
+    format: MediaFormat
+    averageScore: number,
+    meanScore: number,
+    popularity: number,
+    isLocked: boolean,
+    startDate: FuzzyDate,
+    endDate: FuzzyDate,
+    nextAiringEpisode: AiringSchedule,
     title: {
         romaji: string,
         english: string,
@@ -83,6 +105,20 @@ export interface Media {
         score: number,
         status: MediaListStatus,
     },
+}
+
+export interface AiringSchedule {
+    id: number,
+    airingAt: number,
+    timeUntilAiring: number, // Seconds until episode starts airing
+    episode: number,         // The airing episode number
+    mediaId: number,
+}
+
+export interface FuzzyDate {
+    year: number,
+    month: number,
+    day: number,
 }
 
 export interface MediaList {
