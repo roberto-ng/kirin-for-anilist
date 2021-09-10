@@ -7,6 +7,7 @@ import {
     MediaType,
     MediaListStatus,
     MediaListSort,
+    Character,
 } from '../model/anilist';
 
 const url = 'https://graphql.anilist.co';
@@ -336,4 +337,65 @@ export async function fetchMediaList(
     }
 
     return page;
+}
+
+export async function fetchMediaCharacters(mediaId: number): Promise<Character[]> {
+    let query = `
+        query ($mediaId: Int) {
+            Media (id: $mediaId) {
+                characters {
+                    nodes {
+                        id
+                        name {
+                            full
+                            native
+                        }
+                        image {
+                            large
+                            medium
+                        }
+                        description
+                        gender
+                        isFavourite
+                        isFavouriteBlocked
+                        favourites
+                    }
+                }
+            }
+        }
+    `;
+
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+            query,
+            variables: {
+                mediaId: mediaId,
+            },
+        }),
+    };
+
+    const res = await fetch(url, options);
+    if (!res.ok) {
+        throw new Error(await res.text());
+    }
+    const json = await res.json();
+    if (json.data == null) {
+        if (json.errors != null && json.errors.length > 0) {
+            throw new Error(json.errors[0].message);
+        } else {
+            throw new Error('data is null');
+        }
+    }
+
+    const characters = json.data.Media.characters.nodes as Character[];
+    if (characters == null) {
+        throw new Error('Result has no characters member');
+    }
+
+    return characters;
 }

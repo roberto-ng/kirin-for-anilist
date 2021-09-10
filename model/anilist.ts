@@ -75,7 +75,7 @@ export enum MediaFormat {
 }
 
 export interface Media {
-    id: string,
+    id: number,
     episodes?: number,
     chapters?: number,
     volumes?: number,
@@ -196,3 +196,20 @@ export interface MessageActivity {
 }
 
 export type ActivityUnion = TextActivity | ListActivity | MessageActivity;
+
+export interface Character {
+    id: number,
+    name: {
+        full: string,
+        native: string,
+    },
+    image: {
+        large: string,
+        medium: string,
+    },
+    description: string,
+    gender: string,
+    isFavourite: boolean,
+    isFavouriteBlocked: boolean,
+    favourites: number,
+};

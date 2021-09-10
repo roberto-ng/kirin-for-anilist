@@ -1,5 +1,5 @@
 import 'ts-replace-all';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { 
     View, 
     ScrollView, 
@@ -8,13 +8,14 @@ import {
     ImageBackground, 
     Platform,
     ToastAndroid, 
+    FlatList,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Paragraph, Text, Divider } from 'react-native-paper';
 import { Shadow } from 'react-native-shadow-2';
 import * as Clipboard from 'expo-clipboard';
-import { Media, MediaList } from '../model/anilist';
-import { FlatList } from 'react-native-gesture-handler';
+import { Media, MediaList, Character } from '../model/anilist';
+import { fetchMediaCharacters } from '../api/anilist';
 
 interface Props {
     route: {
@@ -31,8 +32,10 @@ interface Information {
 }
 
 export default function MediaScreen({ route }: Props): JSX.Element {
+    const [characters, setCharacters] = useState<Character[]>([]);
+    const [errorLoadingCharacters, setErrorLoadingCharacters] = useState<boolean>(false);
+
     const { media } = route.params;
-    const navigation = useNavigation();
     const title = media.title.romaji;
 
     const informations = useMemo((): Information[] => {
@@ -98,6 +101,22 @@ export default function MediaScreen({ route }: Props): JSX.Element {
             ToastAndroid.show('Copied to clipboard', ToastAndroid.SHORT);
         }
     };
+
+    useEffect(() => {
+        fetchMediaCharacters(media.id)
+            .then((newCharacters) => {
+                setCharacters(newCharacters);
+            })
+            .catch(err => {
+                setErrorLoadingCharacters(true);
+
+                if (Platform.OS === 'android') {
+                    ToastAndroid.show(err?.message ?? err, ToastAndroid.SHORT);
+                }
+
+                console.error(err);
+            });
+    }, []);
 
     return (
         <ScrollView style={styles.container}>
