@@ -30,6 +30,7 @@ function MediaListCard({ item }: MediaListCardProps): JSX.Element {
     }
 
     const handleCardPress = () => {
+        //@ts-ignore
         navigation.navigate('Media', {
             media: item.media,
             title: item.media.title.romaji,

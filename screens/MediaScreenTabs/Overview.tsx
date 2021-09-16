@@ -14,17 +14,12 @@ import { useNavigation } from '@react-navigation/native';
 import { Paragraph, Text, Divider } from 'react-native-paper';
 import { Shadow } from 'react-native-shadow-2';
 import * as Clipboard from 'expo-clipboard';
-import { Media, MediaList, Character } from '../model/anilist';
-import { fetchMediaCharacters } from '../api/anilist';
-import CharacterCard from '../components/CharacterCard';
+import { Media, MediaList, Character } from '../../model/anilist';
+import { fetchMediaCharacters } from '../../api/anilist';
 
 interface Props {
-    route: {
-        params: {
-            media: Media,
-            listEntry?: MediaList,
-        },
-    },
+    media: Media,
+    listEntry?: MediaList,
 }
 
 interface Information {
@@ -32,11 +27,10 @@ interface Information {
     value: string,
 }
 
-export default function MediaScreen({ route }: Props): JSX.Element {
+export default function Overview({ media, listEntry }: Props): JSX.Element {
     const [characters, setCharacters] = useState<Character[]>([]);
     const [errorLoadingCharacters, setErrorLoadingCharacters] = useState<boolean>(false);
 
-    const { media } = route.params;
     const title = media.title.romaji;
 
     const informations = useMemo((): Information[] => {
@@ -99,7 +93,7 @@ export default function MediaScreen({ route }: Props): JSX.Element {
         Clipboard.setString(title);
 
         if (Platform.OS === 'android') {
-            ToastAndroid.show('Copied to clipboard', ToastAndroid.SHORT);
+            ToastAndroid.show(`Copied to clipboard\n${title}`, ToastAndroid.SHORT);
         }
     };
 
@@ -186,25 +180,6 @@ export default function MediaScreen({ route }: Props): JSX.Element {
                         )}
                     />
                 </View>
-
-                {(characters.length > 0) && (
-                    <View style={styles.charactersContainer}>
-                        <Text style={[styles.sectionTitle, styles.text]}>
-                            Characters:
-                        </Text>
-
-                        <FlatList 
-                            data={characters}
-                            horizontal={true}
-                            keyExtractor={(_, i) => i.toString()}
-                            renderItem={({ item }) => (
-                                <CharacterCard 
-                                    character={item}
-                                />
-                            )}
-                        />
-                    </View>
-                )}
             </View>
         </ScrollView>
     );
@@ -213,7 +188,6 @@ export default function MediaScreen({ route }: Props): JSX.Element {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginBottom: 10,
     },
     coverImage: {
         width: 170,
@@ -236,12 +210,6 @@ const styles = StyleSheet.create({
         fontSize: 20,
         marginTop: 10,
         marginLeft: 20,
-        marginRight: 20,
-    },
-    sectionTitle: {
-        fontSize: 20,
-        marginTop: 5,
-        marginBottom: 5,
     },
     text: {
         color: 'rgb(159,173,189)',
@@ -262,8 +230,7 @@ const styles = StyleSheet.create({
     },
     informationsContainer: {
         backgroundColor: '#151F2E',
-        marginRight: 20,
-        marginLeft: 20,
+        margin: 20,
         marginTop: 0,
         borderRadius: 5,
         //height: 70,
@@ -283,9 +250,5 @@ const styles = StyleSheet.create({
     },
     informationValue: {
         fontSize: 15,
-    },
-    charactersContainer: {
-        marginLeft: 20,
-        marginRight: 20,
     },
 });
