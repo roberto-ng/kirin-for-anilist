@@ -29,7 +29,7 @@ interface Props {
 
 interface Information {
     title: string,
-    value: string,
+    value: string | null,
 }
 
 export default function MediaScreen({ route }: Props): JSX.Element {
@@ -40,23 +40,35 @@ export default function MediaScreen({ route }: Props): JSX.Element {
     const title = media.title.romaji;
 
     const informations = useMemo((): Information[] => {
+        const { startDate, endDate } = media;
         const dateTimeFormat = new Intl.DateTimeFormat('en', {
             month: 'long',
             day: 'numeric',
             year: 'numeric',
         });
-        const startDate = new Date(
-            media.startDate.year, 
-            media.startDate.month - 1, // january is month 0, december is month 11
-            media.startDate.day,
-        );
-        const endDate = new Date(
-            media.endDate.year, 
-            media.endDate.month - 1, // january is month 0, december is month 11
-            media.endDate.day,
-        );
 
-        return [
+        let startDateText = null;
+        let endDateText = null;
+        if (startDate.day != null && startDate.month != null && startDate.year != null) {
+            const date = new Date(
+                media.startDate.year, 
+                media.startDate.month - 1, // january is month 0, december is month 11
+                media.startDate.day,
+            );
+            
+            startDateText = dateTimeFormat.format(date);
+        }
+        if (endDate.day != null && endDate.month != null && endDate.year != null) {
+            const date = new Date(
+                media.endDate.year, 
+                media.endDate.month - 1, // january is month 0, december is month 11
+                media.endDate.day,
+            );
+
+            endDateText = dateTimeFormat.format(date);;
+        }
+
+        const infos = [
             {
                 title: 'Format',
                 value: media.format,
@@ -67,11 +79,11 @@ export default function MediaScreen({ route }: Props): JSX.Element {
             },
             {
                 title: 'Start Date',
-                value: dateTimeFormat.format(startDate),
+                value: startDateText,
             },
             {
                 title: 'End Date',
-                value: dateTimeFormat.format(endDate),
+                value: endDateText,
             },
             {
                 title: 'Average Score',
@@ -86,6 +98,9 @@ export default function MediaScreen({ route }: Props): JSX.Element {
                 value: `${media.popularity}`
             },
         ];
+
+        // remove items with a null value
+        return infos.filter(info => info.value != null);
     }, []);
 
     const formatDescription = (description: string): string => {
