@@ -197,17 +197,10 @@ export default function MediaScreen({ route }: Props): JSX.Element {
                             mode="contained"
                             onPress={handleEditButtonPress}
                             color="rgb(61,180,242)"
-                            style={{ flex: 1, margin: 10, marginRight: 0 }}
+                            style={{ flex: 1, marginTop: 12, margin: 10 }}
                         >
                             Edit
                         </Button>
-
-                        <IconButton 
-                            icon="heart-outline" 
-                            style={{ margin: 10 }}
-                            size={25}
-                            color={Colors.red400} 
-                        />
                 </View>
 
                 <View style={styles.contentWrapper}>
