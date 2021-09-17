@@ -8,6 +8,8 @@ import {
     MediaListStatus,
     MediaListSort,
     Character,
+    MediaListEntryFull,
+    MediaListEntryWrapper,
 } from '../model/anilist';
 
 const url = 'https://graphql.anilist.co';
@@ -398,4 +400,57 @@ export async function fetchMediaCharacters(mediaId: number): Promise<Character[]
     }
 
     return characters;
+}
+
+export async function fetchMediaListEntry(accessToken: string, mediaId: number): Promise<MediaListEntryFull | null> {
+    const query = `
+        query ($mediaId: Int) {
+            Media(id: $mediaId) {
+                mediaListEntry {
+                    status
+                    score
+                    progress
+                    progressVolumes
+                    repeat
+                    priority
+                    private
+                    notes
+                    startedAt {
+                        year
+                        month
+                        day
+                    }
+                    completedAt {
+                        year
+                        month
+                        day
+                    }
+                }
+            }
+        }
+    `;
+    
+    const options = {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+            query,
+            variables: {
+                mediaId,
+            },
+        }),
+    };
+    
+    const res = await fetch(url, options);
+    const json = await res.json();
+    const media = json.data.Media as MediaListEntryWrapper;
+    if (media?.mediaListEntry != null) {
+        return media.mediaListEntry;
+    } else {
+        return null;
+    }
 }

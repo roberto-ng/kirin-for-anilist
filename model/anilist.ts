@@ -213,3 +213,20 @@ export interface Character {
     isFavouriteBlocked: boolean,
     favourites: number,
 };
+
+export interface MediaListEntryWrapper {
+    mediaListEntry?: MediaListEntryFull,
+}
+
+export interface MediaListEntryFull {
+    status?: MediaListStatus,
+    score?: number,
+    progress?: number,
+    progressVolumes?: number,
+    repeat?: number,
+    priority?: number,
+    private?: boolean,
+    notes?: string,
+    startedAt?: FuzzyDate,
+    completedAt?: FuzzyDate,
+}

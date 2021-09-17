@@ -14,15 +14,17 @@ import { useNavigation } from '@react-navigation/native';
 import { Paragraph, Text, Divider } from 'react-native-paper';
 import { Shadow } from 'react-native-shadow-2';
 import * as Clipboard from 'expo-clipboard';
-import { Media, MediaList, Character } from '../model/anilist';
-import { fetchMediaCharacters } from '../api/anilist';
+import { Media, MediaList, Character, MediaListEntryFull } from '../model/anilist';
+import { fetchMediaCharacters, fetchMediaListEntry } from '../api/anilist';
 import CharacterCard from '../components/CharacterCard';
+import { anilistSlice } from '../store/anilistSlice';
+import { useSelector } from 'react-redux';
+import { StoreState } from '../store/store';
 
 interface Props {
     route: {
         params: {
             media: Media,
-            listEntry?: MediaList,
         },
     },
 }
@@ -33,8 +35,12 @@ interface Information {
 }
 
 export default function MediaScreen({ route }: Props): JSX.Element {
+    const anilist = useSelector((state: StoreState) => state.anilist); 
     const [characters, setCharacters] = useState<Character[]>([]);
     const [errorLoadingCharacters, setErrorLoadingCharacters] = useState<boolean>(false);
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+    const [listEntry, setListEntry] = useState<MediaListEntryFull | null>(null);
+    const [hasLoadedListEntry, setHasLoadedListEntry] = useState<boolean>(false);
 
     const { media } = route.params;
     const title = media.title.romaji;
@@ -128,13 +134,31 @@ export default function MediaScreen({ route }: Props): JSX.Element {
             })
             .catch(err => {
                 setErrorLoadingCharacters(true);
-
+                
                 if (Platform.OS === 'android') {
                     ToastAndroid.show(err?.message ?? err, ToastAndroid.SHORT);
                 }
-
-                console.error(err);
+                
+                console.error(err.message);
             });
+        
+        
+        if (anilist.token != null) {
+            setIsLoggedIn(true);
+
+            fetchMediaListEntry(anilist.token, media.id)
+                .then((entry) => {
+                    setListEntry(entry);
+                    setHasLoadedListEntry(true);
+                })
+                .catch((err) => {
+                    if (Platform.OS === 'android') {
+                        ToastAndroid.show(err.message, ToastAndroid.SHORT);
+                    }
+
+                    console.log(err.message);
+                });
+        }
     }, []);
 
     return (
