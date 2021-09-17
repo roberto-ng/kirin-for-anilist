@@ -133,6 +133,10 @@ export default function MediaScreen({ route }: Props): JSX.Element {
         bottomSheetRef.current?.expand();
     };
 
+    const onCloseBottomSheet = () => {
+        bottomSheetRef.current?.close();
+    };
+
     useEffect(() => {
         fetchMediaCharacters(media.id)
             .then((newCharacters) => {
@@ -286,9 +290,15 @@ export default function MediaScreen({ route }: Props): JSX.Element {
                 )}
             >
                 <BottomSheetScrollView contentContainerStyle={styles.bottomSheetContainer}>
-                    <View>
-                        <Text>Awesome</Text>
+                    <View style={styles.closeButtonWrapper}>
+                        <IconButton 
+                            size={27}
+                            icon="close"
+                            onPress={onCloseBottomSheet}
+                        />
                     </View>
+                    
+                    <Text>Awesome</Text>
                 </BottomSheetScrollView>
             </BottomSheet>
         </>
@@ -390,6 +400,7 @@ const styles = StyleSheet.create({
     },
     bottomSheetContainer: {
         flex: 1, 
+        width: '100%',
     },
     bottomSheetBackground: {
         ...StyleSheet.absoluteFillObject,
@@ -406,5 +417,9 @@ const styles = StyleSheet.create({
         borderRadius: 3,
         backgroundColor: Colors.white,
         marginTop: 9,
+    },
+    closeButtonWrapper: {
+        width: '100%',
+        alignItems: 'flex-end',
     },
 });
