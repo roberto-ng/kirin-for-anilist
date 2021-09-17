@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
         color: 'rgb(159,173,189)',
         fontSize: 16,
         margin: 12,
+        maxWidth: '60%',
     },
 });
 
