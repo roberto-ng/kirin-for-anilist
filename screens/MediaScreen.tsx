@@ -1,5 +1,5 @@
 import 'ts-replace-all';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { 
     View, 
     ScrollView, 
@@ -10,16 +10,17 @@ import {
     ToastAndroid, 
     FlatList,
 } from 'react-native';
+import  BottomSheet, { BottomSheetScrollView, BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
-import { Paragraph, Text, Divider } from 'react-native-paper';
+import { Paragraph, Text, Colors, Button } from 'react-native-paper';
 import { Shadow } from 'react-native-shadow-2';
 import * as Clipboard from 'expo-clipboard';
 import { Media, MediaList, Character, MediaListEntryFull } from '../model/anilist';
 import { fetchMediaCharacters, fetchMediaListEntry } from '../api/anilist';
 import CharacterCard from '../components/CharacterCard';
-import { anilistSlice } from '../store/anilistSlice';
 import { useSelector } from 'react-redux';
 import { StoreState } from '../store/store';
+import { BottomSheetScrollViewProps } from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetScrollable/types';
 
 interface Props {
     route: {
@@ -41,6 +42,8 @@ export default function MediaScreen({ route }: Props): JSX.Element {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
     const [listEntry, setListEntry] = useState<MediaListEntryFull | null>(null);
     const [hasLoadedListEntry, setHasLoadedListEntry] = useState<boolean>(false);
+    const bottomSheetRef = useRef<BottomSheet>(null);
+    const snapPoints = useMemo(() => ['30%', '50%', '80%'], []);
 
     const { media } = route.params;
     const title = media.title.romaji;
@@ -127,6 +130,10 @@ export default function MediaScreen({ route }: Props): JSX.Element {
         }
     };
 
+    const handleEditButtonPress = () => {
+        bottomSheetRef.current?.expand();
+    };
+
     useEffect(() => {
         fetchMediaCharacters(media.id)
             .then((newCharacters) => {
@@ -162,100 +169,136 @@ export default function MediaScreen({ route }: Props): JSX.Element {
     }, []);
 
     return (
-        <ScrollView style={styles.container}>
-            <ImageBackground
-                style={styles.banner}
-                source={{ uri: media.bannerImage }}
-            >
-                <View style={styles.bannerWrapper}>
-                    <Shadow 
-                        distance={5} 
-                        startColor="rgba(0, 0, 0, 0.4)" 
-                        finalColor="rgba(0, 0, 0, 0)" 
-                    >
-                        <Image 
-                            style={styles.coverImage} 
-                            source={{ uri: media.coverImage.large }} 
-                        />
-                    </Shadow>
-                </View>
-            </ImageBackground>
-
-            <View style={styles.contentWrapper}>
-                <Text 
-                    style={[styles.text, styles.title]}
-                    onLongPress={handleTitleLongPress}
+        <>
+            <ScrollView style={styles.container}>
+                <ImageBackground
+                    style={styles.banner}
+                    source={{ uri: media.bannerImage }}
                 >
-                    {title}
-                </Text>
+                    <View style={styles.bannerWrapper}>
+                        <View style={styles.coverAndButtonWrapper}>
+                            <Shadow 
+                                distance={5} 
+                                startColor="rgba(0, 0, 0, 0.4)" 
+                                finalColor="rgba(0, 0, 0, 0)" 
+                            >
+                                    <Image 
+                                        style={styles.coverImage} 
+                                        source={{ uri: media.coverImage.large }} 
+                                    />
 
-                {(media.description != null && media.description.trim().length > 0) && (
-                    <View style={styles.descriptionContainer}>
-                        <Text style={[styles.text, styles.descriptionLabel]}>
-                            Description:
-                        </Text>
+                            </Shadow>
 
-                        <Paragraph 
-                            style={[styles.text, styles.descriptionText]}
-                            selectable={true}
-                        >
-                            {formatDescription(media.description ?? '')}
-                        </Paragraph>
+                            
+                        </View>
                     </View>
-                )}
-
-                <View style={styles.informationsContainer}>
-                    <FlatList 
-                        data={informations}
-                        horizontal={true}
-                        keyExtractor={(_, i) => i.toString()}
-                        renderItem={({ item }) => (
-                            <View style={styles.information}>
-                                <Text 
-                                    style={styles.informationTitle}
-                                    numberOfLines={1}
-                                >
-                                    {item.title}
-                                </Text>
-                                <Text 
-                                    style={[styles.text, styles.informationValue]}
-                                    numberOfLines={1}
-                                    selectable={true}
-                                >
-                                    {item.value}
-                                </Text>
-                            </View>   
-                        )}
-                    />
+                </ImageBackground>
+                <View style={styles.buttonWrapper}>
+                        <Button 
+                            mode="contained"
+                            onPress={handleEditButtonPress}
+                            color="rgb(61,180,242)"
+                        >
+                            Edit
+                        </Button>
                 </View>
 
-                {(characters.length > 0) && (
-                    <View style={styles.charactersContainer}>
-                        <Text style={[styles.sectionTitle, styles.text]}>
-                            Characters:
-                        </Text>
+                <View style={styles.contentWrapper}>
+                    <Text 
+                        style={[styles.text, styles.title]}
+                        onLongPress={handleTitleLongPress}
+                    >
+                        {title}
+                    </Text>
 
+                    {(media.description != null && media.description.trim().length > 0) && (
+                        <View style={styles.descriptionContainer}>
+                            <Text style={[styles.text, styles.descriptionLabel]}>
+                                Description:
+                            </Text>
+
+                            <Paragraph 
+                                style={[styles.text, styles.descriptionText]}
+                                selectable={true}
+                            >
+                                {formatDescription(media.description ?? '')}
+                            </Paragraph>
+                        </View>
+                    )}
+
+                    <View style={styles.informationsContainer}>
                         <FlatList 
-                            data={characters}
+                            data={informations}
                             horizontal={true}
                             keyExtractor={(_, i) => i.toString()}
                             renderItem={({ item }) => (
-                                <CharacterCard 
-                                    character={item}
-                                />
+                                <View style={styles.information}>
+                                    <Text 
+                                        style={styles.informationTitle}
+                                        numberOfLines={1}
+                                    >
+                                        {item.title}
+                                    </Text>
+                                    <Text 
+                                        style={[styles.text, styles.informationValue]}
+                                        numberOfLines={1}
+                                        selectable={true}
+                                    >
+                                        {item.value}
+                                    </Text>
+                                </View>   
                             )}
                         />
                     </View>
+
+                    {(characters.length > 0) && (
+                        <View style={styles.charactersContainer}>
+                            <Text style={[styles.sectionTitle, styles.text]}>
+                                Characters:
+                            </Text>
+
+                            <FlatList 
+                                data={characters}
+                                horizontal={true}
+                                keyExtractor={(_, i) => i.toString()}
+                                renderItem={({ item }) => (
+                                    <CharacterCard 
+                                        character={item}
+                                    />
+                                )}
+                            />
+                        </View>
+                    )}
+                </View>
+            </ScrollView>
+
+            <BottomSheet
+                ref={bottomSheetRef}
+                snapPoints={snapPoints}
+                index={-1}
+                backgroundComponent={() => (
+                    <View style={styles.bottomSheetBackground} />
                 )}
-            </View>
-        </ScrollView>
+                handleComponent={() => (
+                    <View style={styles.closeLineContainer}>
+                        <View style={styles.closeLine}></View>
+                    </View>
+                )}
+            >
+                <BottomSheetScrollView contentContainerStyle={styles.bottomSheetContainer}>
+                    <View>
+                        <Text>Awesome</Text>
+                    </View>
+                </BottomSheetScrollView>
+            </BottomSheet>
+        </>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginBottom: 10,
+        //marginBottom: 10,
     },
     coverImage: {
         width: 170,
@@ -272,7 +315,7 @@ const styles = StyleSheet.create({
         marginLeft: 20,
     },
     contentWrapper: {
-        marginTop: 60,
+        marginTop: 5,
     },
     title: {
         fontSize: 20,
@@ -284,6 +327,19 @@ const styles = StyleSheet.create({
         fontSize: 20,
         marginTop: 5,
         marginBottom: 5,
+    },
+    coverAndButtonWrapper: {
+        height: 230,
+        flexDirection: 'row',
+        //justifyContent: 'space-between',
+        marginRight: 20,
+        alignItems: 'flex-end',
+    },
+    buttonWrapper: {
+        //marginTop: 230 - 37,
+        alignItems: 'flex-start',
+        margin: 10,
+        marginLeft: 190 + 10,
     },
     text: {
         color: 'rgb(159,173,189)',
@@ -329,5 +385,24 @@ const styles = StyleSheet.create({
     charactersContainer: {
         marginLeft: 20,
         marginRight: 20,
+    },
+    bottomSheetContainer: {
+        flex: 1, 
+    },
+    bottomSheetBackground: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: '#151F2E',
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+    },
+    closeLineContainer: {
+        alignSelf: 'center'
+    },
+    closeLine: {
+        width: 40,
+        height: 6,
+        borderRadius: 3,
+        backgroundColor: Colors.white,
+        marginTop: 9,
     },
 });
