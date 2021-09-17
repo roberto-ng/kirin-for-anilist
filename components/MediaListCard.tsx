@@ -44,17 +44,10 @@ function MediaListCard({ item }: MediaListCardProps): JSX.Element {
         >
             <View style={styles.container}>
                 <View style={styles.converImageWrapper}>
-                    <ImageBackground 
+                    <Image
                         source={{ uri: item.media.coverImage.large }}
                         style={styles.coverImage} 
-                    >
-                        <Pressable 
-                            android_ripple={{ color: 'white' }} 
-                            style={styles.coverImage} 
-                            onPress={handleCardPress}
-                        >
-                        </Pressable>
-                    </ImageBackground>
+                    />
                 </View>
 
                 <View style={styles.mediaDetails}>
