@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { IconButton, Snackbar, Text } from 'react-native-paper';
 import { MediaList } from '../model/anilist';
-import { increaseMediaProgression } from '../api/anilist';
+import { incrementMediaProgression } from '../api/anilist';
 
 export interface HomeMediaListProps {
     mediaListItem: MediaList,
@@ -47,7 +47,7 @@ export default function HomeMediaListCard({
 
         try {
             setIsUpdating(true);
-            await increaseMediaProgression(token, item);
+            await incrementMediaProgression(token, item);
             setItem({...item, progress: item.progress + 1});
         } catch (err) {
             onError(err);

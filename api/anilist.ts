@@ -44,7 +44,7 @@ export async function fetchViewer(accessToken: string): Promise<User> {
     return user;
 }
 
-export async function increaseMediaProgression(token: string, mediaList: MediaList): Promise<void> {
+export async function incrementMediaProgression(token: string, mediaList: MediaList): Promise<void> {
     let query = `
         mutation ($mediaId: Int, $progress: Int) {
             SaveMediaListEntry (mediaId: $mediaId, progress: $progress) {
