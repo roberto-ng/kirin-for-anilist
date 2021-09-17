@@ -10,9 +10,9 @@ import {
     ToastAndroid, 
     FlatList,
 } from 'react-native';
-import  BottomSheet, { BottomSheetScrollView, BottomSheetScrollViewMethods } from '@gorhom/bottom-sheet';
+import  BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
-import { Paragraph, Text, Colors, Button } from 'react-native-paper';
+import { Paragraph, Text, Colors, Button, IconButton } from 'react-native-paper';
 import { Shadow } from 'react-native-shadow-2';
 import * as Clipboard from 'expo-clipboard';
 import { Media, MediaList, Character, MediaListEntryFull } from '../model/anilist';
@@ -20,7 +20,6 @@ import { fetchMediaCharacters, fetchMediaListEntry } from '../api/anilist';
 import CharacterCard from '../components/CharacterCard';
 import { useSelector } from 'react-redux';
 import { StoreState } from '../store/store';
-import { BottomSheetScrollViewProps } from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetScrollable/types';
 
 interface Props {
     route: {
@@ -198,9 +197,17 @@ export default function MediaScreen({ route }: Props): JSX.Element {
                             mode="contained"
                             onPress={handleEditButtonPress}
                             color="rgb(61,180,242)"
+                            style={{ flex: 1, margin: 10, marginRight: 0 }}
                         >
                             Edit
                         </Button>
+
+                        <IconButton 
+                            icon="heart-outline" 
+                            style={{ margin: 10 }}
+                            size={25}
+                            color={Colors.red400} 
+                        />
                 </View>
 
                 <View style={styles.contentWrapper}>
@@ -337,9 +344,11 @@ const styles = StyleSheet.create({
     },
     buttonWrapper: {
         //marginTop: 230 - 37,
-        alignItems: 'flex-start',
-        margin: 10,
-        marginLeft: 190 + 10,
+        //flex: 1,
+        flexDirection: 'row',
+        //alignItems: 'flex-start',
+        //margin: 10,
+        marginLeft: 190,
     },
     text: {
         color: 'rgb(159,173,189)',
