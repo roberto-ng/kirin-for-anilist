@@ -404,9 +404,9 @@ const styles = StyleSheet.create({
     },
     bottomSheetBackground: {
         ...StyleSheet.absoluteFillObject,
-        backgroundColor: '#151F2E',
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10,
+        backgroundColor: '#15181c',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
     },
     closeLineContainer: {
         alignSelf: 'center'
