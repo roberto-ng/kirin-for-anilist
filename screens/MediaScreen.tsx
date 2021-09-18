@@ -12,10 +12,11 @@ import {
 } from 'react-native';
 import  BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
-import { Paragraph, Text, Colors, Button, IconButton } from 'react-native-paper';
+import { Paragraph, Text, Colors, Button, IconButton, DefaultTheme } from 'react-native-paper';
+import DropDown from 'react-native-paper-dropdown';
 import { Shadow } from 'react-native-shadow-2';
 import * as Clipboard from 'expo-clipboard';
-import { Media, MediaList, Character, MediaListEntryFull } from '../model/anilist';
+import { Media, MediaList, Character, MediaListEntryFull, MediaListStatus } from '../model/anilist';
 import { fetchMediaCharacters, fetchMediaListEntry } from '../api/anilist';
 import CharacterCard from '../components/CharacterCard';
 import { useSelector } from 'react-redux';
@@ -41,6 +42,8 @@ export default function MediaScreen({ route }: Props): JSX.Element {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
     const [listEntry, setListEntry] = useState<MediaListEntryFull | null>(null);
     const [hasLoadedListEntry, setHasLoadedListEntry] = useState<boolean>(false);
+    const [status, setStatus] = useState<MediaListStatus | null>(null);
+    const [showDropdown, setShowDropdown] = useState<boolean>(false);
     const bottomSheetRef = useRef<BottomSheet>(null);
     const snapPoints = useMemo(() => ['30%', '50%', '80%'], []);
 
@@ -111,6 +114,17 @@ export default function MediaScreen({ route }: Props): JSX.Element {
         return infos.filter(info => info.value != null);
     }, []);
 
+    const statusList = useMemo(() => {
+        return [
+            { label: 'Current', value: MediaListStatus.CURRENT },
+            { label: 'Planning', value: MediaListStatus.PLANNING },
+            { label: 'Completed', value: MediaListStatus.COMPLETED },
+            { label: 'Repeating', value: MediaListStatus.REPEATING },
+            { label: 'Paused', value: MediaListStatus.PAUSED },
+            { label: 'Dropped', value: MediaListStatus.DROPPED },
+        ];
+    }, []);
+
     const formatDescription = (description: string): string => {
         return description
             .replaceAll('<br>', '')
@@ -160,6 +174,7 @@ export default function MediaScreen({ route }: Props): JSX.Element {
                 .then((entry) => {
                     setListEntry(entry);
                     setHasLoadedListEntry(true);
+                    setStatus(entry?.status ?? null);
                 })
                 .catch((err) => {
                     if (Platform.OS === 'android') {
@@ -298,7 +313,19 @@ export default function MediaScreen({ route }: Props): JSX.Element {
                         />
                     </View>
                     
-                    <Text>Awesome</Text>
+                    {(listEntry != null) && (
+                        <DropDown 
+                            label="Status"
+                            mode="outlined"
+                            value={status ?? MediaListStatus.PLANNING}
+                            setValue={(newValue) => setStatus(newValue)}
+                            visible={showDropdown}
+                            showDropDown={() => setShowDropdown(true)}
+                            onDismiss={() => setShowDropdown(false)}
+                            list={statusList}
+                        />
+                    )}
+
                 </BottomSheetScrollView>
             </BottomSheet>
         </>
@@ -326,6 +353,7 @@ const styles = StyleSheet.create({
     },
     contentWrapper: {
         marginTop: 5,
+        marginBottom: 10,
     },
     title: {
         fontSize: 20,
@@ -400,7 +428,9 @@ const styles = StyleSheet.create({
     },
     bottomSheetContainer: {
         flex: 1, 
-        width: '100%',
+        //width: '100%',
+        marginRight: 10,
+        marginLeft: 10,
     },
     bottomSheetBackground: {
         ...StyleSheet.absoluteFillObject,
