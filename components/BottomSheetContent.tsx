@@ -66,7 +66,7 @@ export default function BottomSheetContent({ initialListEntry, media }: Props): 
                                 progress: newValue,
                             });
                         }}
-                        max={media.episodes ?? undefined}
+                        max={media.episodes ?? media.chapters}
                         min={0}
                         step={1}
                         textColor="black"
