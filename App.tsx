@@ -116,6 +116,7 @@ function AppContent() {
                                 title: 'Details',
                                 headerShown: true,
                                 headerTintColor: 'white',
+                                animationEnabled: true,
                             }}
                         />
                     </Stack.Navigator>

@@ -14,11 +14,13 @@ import  BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
 import { Paragraph, Text, Colors, Button, IconButton, DefaultTheme } from 'react-native-paper';
 import DropDown from 'react-native-paper-dropdown';
+import InputSpinner from 'react-native-input-spinner';
 import { Shadow } from 'react-native-shadow-2';
 import * as Clipboard from 'expo-clipboard';
 import { Media, MediaList, Character, MediaListEntryFull, MediaListStatus } from '../model/anilist';
 import { fetchMediaCharacters, fetchMediaListEntry } from '../api/anilist';
 import CharacterCard from '../components/CharacterCard';
+import BottomSheetContent from '../components/BottomSheetContent';
 import { useSelector } from 'react-redux';
 import { StoreState } from '../store/store';
 
@@ -314,15 +316,9 @@ export default function MediaScreen({ route }: Props): JSX.Element {
                     </View>
                     
                     {(listEntry != null) && (
-                        <DropDown 
-                            label="Status"
-                            mode="outlined"
-                            value={status ?? MediaListStatus.PLANNING}
-                            setValue={(newValue) => setStatus(newValue)}
-                            visible={showDropdown}
-                            showDropDown={() => setShowDropdown(true)}
-                            onDismiss={() => setShowDropdown(false)}
-                            list={statusList}
+                        <BottomSheetContent 
+                            media={media}
+                            initialListEntry={listEntry}
                         />
                     )}
 
