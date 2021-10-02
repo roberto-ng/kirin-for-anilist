@@ -154,18 +154,24 @@ export default function MediaScreen({ route }: Props): JSX.Element {
     };
 
     useEffect(() => {
+        let unmounted = false;
+
         fetchMediaCharacters(media.id)
             .then((newCharacters) => {
-                setCharacters(newCharacters);
+                if (!unmounted) {
+                    setCharacters(newCharacters);
+                }
             })
             .catch(err => {
-                setErrorLoadingCharacters(true);
-                
-                if (Platform.OS === 'android') {
-                    ToastAndroid.show(err?.message ?? err, ToastAndroid.SHORT);
+                if (!unmounted) {
+                    setErrorLoadingCharacters(true);
+                    
+                    if (Platform.OS === 'android') {
+                        ToastAndroid.show(err?.message ?? err, ToastAndroid.SHORT);
+                    }
+                    
+                    console.error(err.message);
                 }
-                
-                console.error(err.message);
             });
         
         
@@ -174,18 +180,24 @@ export default function MediaScreen({ route }: Props): JSX.Element {
 
             fetchMediaListEntry(anilist.token, media.id)
                 .then((entry) => {
-                    setListEntry(entry);
-                    setHasLoadedListEntry(true);
-                    setStatus(entry?.status ?? null);
+                    if (!unmounted) {
+                        setListEntry(entry);
+                        setHasLoadedListEntry(true);
+                        setStatus(entry?.status ?? null);
+                    }
                 })
                 .catch((err) => {
-                    if (Platform.OS === 'android') {
-                        ToastAndroid.show(err.message, ToastAndroid.SHORT);
+                    if (!unmounted) {
+                        if (Platform.OS === 'android') {
+                            ToastAndroid.show(err.message, ToastAndroid.SHORT);
+                        }
+    
+                        console.log(err.message);
                     }
-
-                    console.log(err.message);
                 });
         }
+
+        return () => { unmounted = true };
     }, []);
 
     return (
