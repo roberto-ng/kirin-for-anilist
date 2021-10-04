@@ -64,21 +64,21 @@ export default function MediaScreen({ route }: Props): JSX.Element {
         let endDateText = null;
         if (startDate.day != null && startDate.month != null && startDate.year != null) {
             const date = new Date(
-                media.startDate.year, 
-                media.startDate.month - 1, // january is month 0, december is month 11
-                media.startDate.day,
+                startDate.year, 
+                startDate.month - 1, // january is month 0, december is month 11
+                startDate.day,
             );
             
             startDateText = dateTimeFormat.format(date);
         }
         if (endDate.day != null && endDate.month != null && endDate.year != null) {
             const date = new Date(
-                media.endDate.year, 
-                media.endDate.month - 1, // january is month 0, december is month 11
-                media.endDate.day,
+                endDate.year, 
+                endDate.month - 1, // january is month 0, december is month 11
+                endDate.day,
             );
 
-            endDateText = dateTimeFormat.format(date);;
+            endDateText = dateTimeFormat.format(date);
         }
 
         const infos = [
@@ -442,7 +442,8 @@ const styles = StyleSheet.create({
     },
     bottomSheetBackground: {
         ...StyleSheet.absoluteFillObject,
-        backgroundColor: '#15181c',
+        //backgroundColor: '#15181c',
+        backgroundColor: '#151f2e',
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
     },

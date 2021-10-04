@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
     StyleSheet, 
     View, 
@@ -8,22 +8,39 @@ import {
 } from 'react-native';
 import DropDown from 'react-native-paper-dropdown';
 import InputSpinner from 'react-native-input-spinner';
-
-import { Text, TouchableRipple } from 'react-native-paper';
-import * as Clipboard from 'expo-clipboard';
-import { Media, MediaList, Character, MediaListEntryFull, MediaListStatus } from '../model/anilist';
+import { Text, Button, DefaultTheme, DarkTheme } from 'react-native-paper';
+import { Media, MediaListEntryFull, MediaListStatus, FuzzyDate } from '../model/anilist';
 
 interface Props {
     media: Media,
     initialListEntry: MediaListEntryFull,
 }
 
+const MyPaperTheme = {
+    ...DarkTheme,
+    roundness: 2,
+    colors: {
+        ...DarkTheme.colors,
+        background: '#151F2E',
+    },
+};
+
 export default function BottomSheetContent({ initialListEntry, media }: Props): JSX.Element {
+    const [showDropdown, setShowDropdown] = useState<boolean>(false);
+    const [startDate, setStartDate] = useState<Date | null>(fuzzyDateToJsDate(initialListEntry.startedAt));
+    const [startDateText, setStartDateText] = useState<string>('');
     const [listEntry, setListEntry] = useState<MediaListEntryFull>({
         ...initialListEntry,
         status: initialListEntry.status ?? MediaListStatus.PLANNING, // set default status
     });
-    const [showDropdown, setShowDropdown] = useState<boolean>(false);
+
+    const dateTimeFormat = useMemo(() => {
+        return new Intl.DateTimeFormat('en', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+        });
+    }, []);
 
     const statusList = useMemo(() => {
         return [
@@ -36,24 +53,35 @@ export default function BottomSheetContent({ initialListEntry, media }: Props): 
         ];
     }, []);
 
+    useEffect(() => {
+        if (startDate == null) {
+            setStartDateText('Unknown date');
+
+            const newListEntry: MediaListEntryFull = { 
+                ...listEntry,
+                startedAt: undefined,
+            };
+            setListEntry(newListEntry);
+        } else {
+            const text = dateTimeFormat.format(startDate);
+            setStartDateText(text);
+
+            const newListEntry: MediaListEntryFull = { 
+                ...listEntry,
+                startedAt: {
+                    day: startDate.getDay(),
+                    month: startDate.getMonth() + 1,
+                    year: startDate.getFullYear(),
+                },
+            };
+            setListEntry(newListEntry);
+        }
+    }, [startDate]);
+
     return (
         <View style={styles.container}>
-            <DropDown 
-                label="Status"
-                mode="outlined"
-                value={listEntry.status}
-                setValue={(newValue) => setListEntry({
-                    ...listEntry,
-                    status: newValue,
-                })}
-                visible={showDropdown}
-                showDropDown={() => setShowDropdown(true)}
-                onDismiss={() => setShowDropdown(false)}
-                list={statusList}
-            />
-
             <View style={styles.spinnersArea}>
-                <View style={styles.spinnerWrapper}>
+                <View style={[styles.spinnerWrapper, { marginRight: 30 }]}>
                     <Text style={styles.spinnerLabel}>
                         Progress:
                     </Text>
@@ -71,7 +99,8 @@ export default function BottomSheetContent({ initialListEntry, media }: Props): 
                         step={1}
                         textColor="black"
                         placeholderTextColor="gray"
-                        skin="clean"
+                        skin="round"
+                        color="#03A9F4"
                     />
                 </View>
 
@@ -93,11 +122,62 @@ export default function BottomSheetContent({ initialListEntry, media }: Props): 
                         step={1}
                         textColor="black"
                         placeholderTextColor="gray"
-                        skin="clean"
+                        skin="round"
+                        color="#03A9F4"
                     />
                 </View>
             </View>
 
+            <View style={styles.dropDownWrapper}>
+                <DropDown 
+                    label="Status"
+                    mode="flat"
+                    value={listEntry.status}
+                    setValue={(newValue) => setListEntry({
+                        ...listEntry,
+                        status: newValue,
+                    })}
+                    visible={showDropdown}
+                    showDropDown={() => setShowDropdown(true)}
+                    onDismiss={() => setShowDropdown(false)}
+                    list={statusList}
+                    theme={MyPaperTheme}
+                    //dropDownItemStyle={{ backgroundColor: 'white' }}
+                    //dropDownItemSelectedStyle={{ backgroundColor: 'white' }}
+                />
+            </View>
+
+            <View style={styles.dateWrapper}>
+                <Text style={styles.dateLabel}>
+                    Started at:
+                </Text>
+                <View style={styles.dateBottom}>
+                    <Text style={styles.dateText}>
+                        {startDateText}
+                    </Text>
+
+                    <Button
+                        mode="contained"
+                        color="#03A9F4"
+                        onPress={() => {}}
+                        style={styles.dateEditButton}
+                        compact
+                    >
+                        Edit
+                    </Button>
+
+                    {(listEntry?.startedAt?.day != null) && (
+                        <Button
+                            mode="contained"
+                            color="#03A9F4"
+                            onPress={() => {}}
+                            compact
+                        >
+                            Clear
+                        </Button>
+                    )}
+                </View>
+            </View>
         </View>
     );
 }
@@ -106,8 +186,8 @@ const styles = StyleSheet.create({
     container: {},
     spinnerWrapper: {
         width: 130,
-        marginTop: 10,
-        marginRight: 20,
+        marginBottom: 10,
+        //marginRight: 20,
         alignItems: 'center',
     },
     spinnerLabel: {
@@ -119,4 +199,43 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         flexDirection: 'row',
     },
+    dropDownWrapper: {
+        //backgroundColor: 'white',
+    },
+    dateWrapper: {
+        alignItems: 'center',
+        marginTop: 10,
+    },
+    dateLabel: {
+        fontSize: 16,
+    },
+    dateText: {
+        fontSize: 18,
+    },
+    dateEditButton: {
+        marginRight: 10,
+        marginLeft: 10,
+    },
+    dateBottom: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 8,
+    },
 });
+
+const fuzzyDateToJsDate = (fuzzyDate: FuzzyDate | undefined): (Date | null) => {
+    if (fuzzyDate == null) {
+        return null;
+    }
+
+    const {year, month, day} = fuzzyDate;
+    if (year != null && month != null && day != null)  {
+        return new Date(
+            year,
+            month - 1,
+            day,
+        );
+    } else {
+        return null;
+    }
+}

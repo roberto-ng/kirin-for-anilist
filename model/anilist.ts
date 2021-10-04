@@ -116,9 +116,9 @@ export interface AiringSchedule {
 }
 
 export interface FuzzyDate {
-    year: number,
-    month: number,
-    day: number,
+    year?: number,
+    month?: number,
+    day?: number,
 }
 
 export interface MediaList {
