@@ -94,11 +94,11 @@ export default function BottomSheetContent({ initialListEntry, media }: Props): 
             setListEntry(newListEntry);
         } else {
             const text = dateTimeFormat.format(finishDate);
-            setStartDateText(text);
+            setFinishDateText(text);
 
             const newListEntry: MediaListEntryFull = { 
                 ...listEntry,
-                startedAt: {
+                completedAt: {
                     day: finishDate.getDay(),
                     month: finishDate.getMonth() + 1,
                     year: finishDate.getFullYear(),
@@ -191,7 +191,7 @@ export default function BottomSheetContent({ initialListEntry, media }: Props): 
                     <View style={{ alignItems: 'center', flexDirection: 'row',  }}>
                         <Button 
                             mode="contained"
-                            icon={ (startDate != null) ? 'calendar-month' : undefined}
+                            icon="calendar-month"
                             onPress={() => {}}
                             color={blue}
                             style={{ width: 265 }}
@@ -217,7 +217,7 @@ export default function BottomSheetContent({ initialListEntry, media }: Props): 
                     <View style={{ alignItems: 'center', flexDirection: 'row',  }}>
                         <Button 
                             mode="contained"
-                            icon={ (finishDate != null) ? 'calendar-month' : undefined}
+                            icon="calendar-month"
                             onPress={() => {}}
                             color={blue}
                             style={{ width: 265 }}
