@@ -199,11 +199,15 @@ export default function BottomSheetContent({ initialListEntry, media }: Props): 
                             {startDateText}
                         </Button>
 
-                        <IconButton
-                            icon="close"
-                            size={20}
-                            onPress={() => {}}
-                        />
+                        {(startDate) ? (
+                            <IconButton
+                                icon="close"
+                                size={20}
+                                onPress={() => {}}
+                            />
+                        ) : (
+                            <View style={{ width: 40, }}></View>
+                        )}
                     </View>
                 </View>
             </View>
@@ -225,11 +229,16 @@ export default function BottomSheetContent({ initialListEntry, media }: Props): 
                             {finishDateText}
                         </Button>
 
-                        <IconButton
-                            icon="close"
-                            size={20}
-                            onPress={() => {}}
-                        />
+                        {(finishDate) ? (
+                            <IconButton
+                                icon="close"
+                                size={20}
+                                onPress={() => {}}
+                            />
+                        ) : (
+                            <View style={{ width: 40, }}></View>
+                        )}
+                        
                     </View>
                 </View>
             </View>
