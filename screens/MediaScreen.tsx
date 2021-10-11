@@ -322,7 +322,7 @@ export default function MediaScreen({ route }: Props): JSX.Element {
                     <View style={styles.closeButtonWrapper}>
                         <IconButton 
                             size={27}
-                            icon="close"
+                            icon="close-thick"
                             onPress={onCloseBottomSheet}
                         />
                     </View>

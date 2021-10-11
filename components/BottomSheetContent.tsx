@@ -5,10 +5,11 @@ import {
     Image,
     ToastAndroid,
     Platform,
+    ScrollView,
 } from 'react-native';
 import DropDown from 'react-native-paper-dropdown';
 import InputSpinner from 'react-native-input-spinner';
-import { Text, Button, DefaultTheme, DarkTheme } from 'react-native-paper';
+import { Text, Button, DefaultTheme, DarkTheme, IconButton, } from 'react-native-paper';
 import { Media, MediaListEntryFull, MediaListStatus, FuzzyDate } from '../model/anilist';
 
 interface Props {
@@ -21,14 +22,18 @@ const MyPaperTheme = {
     roundness: 2,
     colors: {
         ...DarkTheme.colors,
-        background: '#151F2E',
+        background: '#174a97',
     },
 };
+
+const blue = '#1565C0';
 
 export default function BottomSheetContent({ initialListEntry, media }: Props): JSX.Element {
     const [showDropdown, setShowDropdown] = useState<boolean>(false);
     const [startDate, setStartDate] = useState<Date | null>(fuzzyDateToJsDate(initialListEntry.startedAt));
     const [startDateText, setStartDateText] = useState<string>('');
+    const [finishDate, setFinishDate] = useState<Date | null>(fuzzyDateToJsDate(initialListEntry.completedAt));
+    const [finishDateText, setFinishDateText] = useState<string>('');
     const [listEntry, setListEntry] = useState<MediaListEntryFull>({
         ...initialListEntry,
         status: initialListEntry.status ?? MediaListStatus.PLANNING, // set default status
@@ -78,8 +83,33 @@ export default function BottomSheetContent({ initialListEntry, media }: Props): 
         }
     }, [startDate]);
 
+    useEffect(() => {
+        if (finishDate == null) {
+            setFinishDateText('Unknown date');
+
+            const newListEntry: MediaListEntryFull = { 
+                ...listEntry,
+                completedAt: undefined,
+            };
+            setListEntry(newListEntry);
+        } else {
+            const text = dateTimeFormat.format(finishDate);
+            setStartDateText(text);
+
+            const newListEntry: MediaListEntryFull = { 
+                ...listEntry,
+                startedAt: {
+                    day: finishDate.getDay(),
+                    month: finishDate.getMonth() + 1,
+                    year: finishDate.getFullYear(),
+                },
+            };
+            setListEntry(newListEntry);
+        }
+    }, [finishDate]);
+
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <View style={styles.spinnersArea}>
                 <View style={[styles.spinnerWrapper, { marginRight: 30 }]}>
                     <Text style={styles.spinnerLabel}>
@@ -100,7 +130,7 @@ export default function BottomSheetContent({ initialListEntry, media }: Props): 
                         textColor="black"
                         placeholderTextColor="gray"
                         skin="round"
-                        color="#03A9F4"
+                        color={blue}
                     />
                 </View>
 
@@ -123,62 +153,87 @@ export default function BottomSheetContent({ initialListEntry, media }: Props): 
                         textColor="black"
                         placeholderTextColor="gray"
                         skin="round"
-                        color="#03A9F4"
+                        color={blue}
                     />
                 </View>
             </View>
 
-            <View style={styles.dropDownWrapper}>
-                <DropDown 
-                    label="Status"
-                    mode="flat"
-                    value={listEntry.status}
-                    setValue={(newValue) => setListEntry({
-                        ...listEntry,
-                        status: newValue,
-                    })}
-                    visible={showDropdown}
-                    showDropDown={() => setShowDropdown(true)}
-                    onDismiss={() => setShowDropdown(false)}
-                    list={statusList}
-                    theme={MyPaperTheme}
-                    //dropDownItemStyle={{ backgroundColor: 'white' }}
-                    //dropDownItemSelectedStyle={{ backgroundColor: 'white' }}
-                />
-            </View>
-
-            <View style={styles.dateWrapper}>
-                <Text style={styles.dateLabel}>
-                    Started at:
-                </Text>
-                <View style={styles.dateBottom}>
-                    <Text style={styles.dateText}>
-                        {startDateText}
+            <View style={{ alignItems: 'center', }}>
+                <View style={styles.dropDownWrapper}>
+                    <Text style={styles.dateLabel}>
+                        Status:
                     </Text>
-
-                    <Button
-                        mode="contained"
-                        color="#03A9F4"
-                        onPress={() => {}}
-                        style={styles.dateEditButton}
-                        compact
-                    >
-                        Edit
-                    </Button>
-
-                    {(listEntry?.startedAt?.day != null) && (
-                        <Button
-                            mode="contained"
-                            color="#03A9F4"
-                            onPress={() => {}}
-                            compact
-                        >
-                            Clear
-                        </Button>
-                    )}
+                    <DropDown 
+                        //label="Status"
+                        mode="flat"
+                        value={listEntry.status}
+                        setValue={(newValue) => setListEntry({
+                            ...listEntry,
+                            status: newValue,
+                        })}
+                        visible={showDropdown}
+                        showDropDown={() => setShowDropdown(true)}
+                        onDismiss={() => setShowDropdown(false)}
+                        list={statusList}
+                        theme={MyPaperTheme}
+                        //dropDownItemStyle={{ backgroundColor: 'white' }}
+                        //dropDownItemSelectedStyle={{ backgroundColor: 'white' }}
+                    />
                 </View>
             </View>
-        </View>
+
+            <View style={{ margin: 10, alignItems: 'center' }}>
+                <View>
+                    <Text style={styles.dateLabel}>
+                        Start date:
+                    </Text>
+
+                    <View style={{ alignItems: 'center', flexDirection: 'row',  }}>
+                        <Button 
+                            mode="contained"
+                            icon={ (startDate != null) ? 'calendar-month' : undefined}
+                            onPress={() => {}}
+                            color={blue}
+                            style={{ width: 265 }}
+                        >
+                            {startDateText}
+                        </Button>
+
+                        <IconButton
+                            icon="close"
+                            size={20}
+                            onPress={() => {}}
+                        />
+                    </View>
+                </View>
+            </View>
+
+            <View style={{ alignItems: 'center' }}>
+                <View>
+                    <Text style={styles.dateLabel}>
+                        Finish date:
+                    </Text>
+
+                    <View style={{ alignItems: 'center', flexDirection: 'row',  }}>
+                        <Button 
+                            mode="contained"
+                            icon={ (finishDate != null) ? 'calendar-month' : undefined}
+                            onPress={() => {}}
+                            color={blue}
+                            style={{ width: 265 }}
+                        >
+                            {finishDateText}
+                        </Button>
+
+                        <IconButton
+                            icon="close"
+                            size={20}
+                            onPress={() => {}}
+                        />
+                    </View>
+                </View>
+            </View>
+        </ScrollView>
     );
 }
 
@@ -201,6 +256,7 @@ const styles = StyleSheet.create({
     },
     dropDownWrapper: {
         //backgroundColor: 'white',
+        width: 300,
     },
     dateWrapper: {
         alignItems: 'center',
@@ -208,6 +264,7 @@ const styles = StyleSheet.create({
     },
     dateLabel: {
         fontSize: 16,
+        marginBottom: 8,
     },
     dateText: {
         fontSize: 18,
@@ -219,7 +276,6 @@ const styles = StyleSheet.create({
     dateBottom: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 8,
     },
 });
 
