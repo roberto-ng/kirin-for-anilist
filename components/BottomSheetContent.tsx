@@ -10,6 +10,7 @@ import {
 import DropDown from 'react-native-paper-dropdown';
 import InputSpinner from 'react-native-input-spinner';
 import { Text, Button, DefaultTheme, DarkTheme, IconButton, } from 'react-native-paper';
+import DateTimePicker, { Event } from '@react-native-community/datetimepicker';
 import { Media, MediaListEntryFull, MediaListStatus, FuzzyDate } from '../model/anilist';
 
 interface Props {
@@ -31,9 +32,11 @@ const blue = '#1565C0';
 export default function BottomSheetContent({ initialListEntry, media }: Props): JSX.Element {
     const [showDropdown, setShowDropdown] = useState<boolean>(false);
     const [startDate, setStartDate] = useState<Date | null>(fuzzyDateToJsDate(initialListEntry.startedAt));
-    const [startDateText, setStartDateText] = useState<string>('');
     const [finishDate, setFinishDate] = useState<Date | null>(fuzzyDateToJsDate(initialListEntry.completedAt));
+    const [startDateText, setStartDateText] = useState<string>('');
     const [finishDateText, setFinishDateText] = useState<string>('');
+    const [showStartDatePicker, setShowStartDatePicker] = useState<boolean>(false);
+    const [showFinishDatePicker, setShowFinishDatePicker] = useState<boolean>(false);
     const [listEntry, setListEntry] = useState<MediaListEntryFull>({
         ...initialListEntry,
         status: initialListEntry.status ?? MediaListStatus.PLANNING, // set default status
@@ -57,6 +60,26 @@ export default function BottomSheetContent({ initialListEntry, media }: Props): 
             { label: 'Dropped', value: MediaListStatus.DROPPED },
         ];
     }, []);
+
+    const onStartDateChange = (_event: Event, selectedDate: Date | undefined) => {
+        const newDate = selectedDate ?? startDate;
+        setStartDate(newDate);
+        setShowStartDatePicker(false);
+    }
+
+    const onFinishDateChange = (_event: Event, selectedDate: Date | undefined) => {
+        const newDate = selectedDate ?? finishDate;
+        setFinishDate(newDate);
+        setShowFinishDatePicker(false);
+    }
+
+    const removeStartDate = () => {
+        setStartDate(null);
+    };
+
+    const removeFinishDate = () => {
+        setFinishDate(null);
+    }
 
     useEffect(() => {
         if (startDate == null) {
@@ -182,31 +205,28 @@ export default function BottomSheetContent({ initialListEntry, media }: Props): 
                 </View>
             </View>
 
-            <View style={{ margin: 10, alignItems: 'center' }}>
+            <View style={{ margin: 10, alignItems: 'center',  }}>
                 <View>
                     <Text style={styles.dateLabel}>
                         Start date:
                     </Text>
 
-                    <View style={{ alignItems: 'center', flexDirection: 'row',  }}>
+                    <View style={{ alignItems: 'center', flexDirection: 'row' }}>
                         <Button 
                             mode="contained"
                             icon="calendar-month"
-                            onPress={() => {}}
                             color={blue}
-                            style={{ width: 265 }}
+                            onPress={() => setShowStartDatePicker(true)}
                         >
                             {startDateText}
                         </Button>
 
-                        {(startDate) ? (
+                        {(startDate) && (
                             <IconButton
                                 icon="close"
                                 size={20}
-                                onPress={() => {}}
+                                onPress={removeStartDate}
                             />
-                        ) : (
-                            <View style={{ width: 40, }}></View>
                         )}
                     </View>
                 </View>
@@ -218,30 +238,49 @@ export default function BottomSheetContent({ initialListEntry, media }: Props): 
                         Finish date:
                     </Text>
 
-                    <View style={{ alignItems: 'center', flexDirection: 'row',  }}>
+                    <View style={{ alignItems: 'center', flexDirection: 'row' }}>
                         <Button 
                             mode="contained"
                             icon="calendar-month"
-                            onPress={() => {}}
+                            onPress={() => setShowFinishDatePicker(true)}
                             color={blue}
-                            style={{ width: 265 }}
                         >
                             {finishDateText}
                         </Button>
 
-                        {(finishDate) ? (
+                        {(finishDate) && (
                             <IconButton
                                 icon="close"
                                 size={20}
-                                onPress={() => {}}
+                                onPress={removeFinishDate}
                             />
-                        ) : (
-                            <View style={{ width: 40, }}></View>
                         )}
                         
                     </View>
                 </View>
             </View>
+
+            {(showStartDatePicker) && (    
+                <DateTimePicker
+                    testID="dateTimePicker"
+                    value={startDate ?? new Date()}
+                    mode="date"
+                    is24Hour={true}
+                    display="default"
+                    onChange={onStartDateChange}
+                />
+            )}
+
+            {(showFinishDatePicker) && (    
+                <DateTimePicker
+                    testID="finishDateTimePicker"
+                    value={finishDate ?? new Date()}
+                    mode="date"
+                    is24Hour={true}
+                    display="default"
+                    onChange={onFinishDateChange}
+                />
+            )}  
         </ScrollView>
     );
 }
@@ -265,7 +304,7 @@ const styles = StyleSheet.create({
     },
     dropDownWrapper: {
         //backgroundColor: 'white',
-        width: 300,
+        width: 260,
     },
     dateWrapper: {
         alignItems: 'center',
