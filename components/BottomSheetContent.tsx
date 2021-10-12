@@ -134,7 +134,7 @@ export default function BottomSheetContent({ initialListEntry, media }: Props): 
     return (
         <ScrollView style={styles.container}>
             <View style={styles.spinnersArea}>
-                <View style={[styles.spinnerWrapper, { marginRight: 30 }]}>
+                <View style={[styles.spinnerWrapper, { marginRight: 10 }]}>
                     <Text style={styles.spinnerLabel}>
                         Progress:
                     </Text>
@@ -216,6 +216,7 @@ export default function BottomSheetContent({ initialListEntry, media }: Props): 
                             mode="contained"
                             icon="calendar-month"
                             color={blue}
+                            style={{ width: 200 }}
                             onPress={() => setShowStartDatePicker(true)}
                         >
                             {startDateText}
@@ -242,8 +243,9 @@ export default function BottomSheetContent({ initialListEntry, media }: Props): 
                         <Button 
                             mode="contained"
                             icon="calendar-month"
-                            onPress={() => setShowFinishDatePicker(true)}
                             color={blue}
+                            style={{ width: 200 }}
+                            onPress={() => setShowFinishDatePicker(true)}
                         >
                             {finishDateText}
                         </Button>
@@ -306,7 +308,7 @@ const styles = StyleSheet.create({
     },
     dropDownWrapper: {
         //backgroundColor: 'white',
-        width: 260,
+        width: 200,
     },
     dateWrapper: {
         alignItems: 'center',
