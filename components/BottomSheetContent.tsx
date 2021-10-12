@@ -211,7 +211,7 @@ export default function BottomSheetContent({ initialListEntry, media }: Props): 
                         Start date:
                     </Text>
 
-                    <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+                    <View style={{ alignItems: 'center', flexDirection: 'row', width: 200 }}>
                         <Button 
                             mode="contained"
                             icon="calendar-month"
@@ -238,7 +238,7 @@ export default function BottomSheetContent({ initialListEntry, media }: Props): 
                         Finish date:
                     </Text>
 
-                    <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+                    <View style={{ alignItems: 'center', flexDirection: 'row', width: 200 }}>
                         <Button 
                             mode="contained"
                             icon="calendar-month"
@@ -267,6 +267,7 @@ export default function BottomSheetContent({ initialListEntry, media }: Props): 
                     mode="date"
                     is24Hour={true}
                     display="default"
+                    themeVariant="dark"
                     onChange={onStartDateChange}
                 />
             )}
@@ -278,6 +279,7 @@ export default function BottomSheetContent({ initialListEntry, media }: Props): 
                     mode="date"
                     is24Hour={true}
                     display="default"
+                    themeVariant="dark"
                     onChange={onFinishDateChange}
                 />
             )}  
