@@ -15,7 +15,7 @@ import { Media, MediaListEntryFull, MediaListStatus, FuzzyDate } from '../model/
 
 interface Props {
     media: Media,
-    initialListEntry: MediaListEntryFull,
+    initialListEntry: MediaListEntryFull | null,
 }
 
 const MyPaperTheme = {
@@ -28,19 +28,27 @@ const MyPaperTheme = {
 };
 
 const blue = '#1565C0';
+const defaultListEntry: MediaListEntryFull = {
+    score: 0,
+    progress: 0,
+    repeat: 0,
+    private: false,
+}
 
-export default function BottomSheetContent({ initialListEntry = {}, media }: Props): JSX.Element {
+export default function BottomSheetContent({ 
+    initialListEntry,
+    media,
+}: Props): JSX.Element {
     const [showDropdown, setShowDropdown] = useState<boolean>(false);
-    const [startDate, setStartDate] = useState<Date | null>(fuzzyDateToJsDate(initialListEntry.startedAt));
-    const [finishDate, setFinishDate] = useState<Date | null>(fuzzyDateToJsDate(initialListEntry.completedAt));
+    const [startDate, setStartDate] = useState<Date | null>(fuzzyDateToJsDate(initialListEntry?.startedAt));
+    const [finishDate, setFinishDate] = useState<Date | null>(fuzzyDateToJsDate(initialListEntry?.completedAt));
     const [startDateText, setStartDateText] = useState<string>('');
     const [finishDateText, setFinishDateText] = useState<string>('');
     const [showStartDatePicker, setShowStartDatePicker] = useState<boolean>(false);
     const [showFinishDatePicker, setShowFinishDatePicker] = useState<boolean>(false);
-    const [listEntry, setListEntry] = useState<MediaListEntryFull>({
-        ...initialListEntry,
-        status: initialListEntry.status ?? MediaListStatus.PLANNING, // set default status
-    });
+    const [listEntry, setListEntry] = useState<MediaListEntryFull>(
+        initialListEntry ?? defaultListEntry
+    );
 
     const dateTimeFormat = useMemo(() => {
         return new Intl.DateTimeFormat('en', {

@@ -352,7 +352,12 @@ export default function MediaScreen({ route }: Props): JSX.Element {
                             initialListEntry={listEntry}
                         />
                     )}
-
+                    {(listEntry == null) && (
+                        <BottomSheetContent 
+                            media={media}
+                            initialListEntry={null}
+                        />
+                    )}
                 </BottomSheetScrollView>
             </BottomSheet>
         </>
