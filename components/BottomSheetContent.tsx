@@ -29,7 +29,7 @@ const MyPaperTheme = {
 
 const blue = '#1565C0';
 
-export default function BottomSheetContent({ initialListEntry, media }: Props): JSX.Element {
+export default function BottomSheetContent({ initialListEntry = {}, media }: Props): JSX.Element {
     const [showDropdown, setShowDropdown] = useState<boolean>(false);
     const [startDate, setStartDate] = useState<Date | null>(fuzzyDateToJsDate(initialListEntry.startedAt));
     const [finishDate, setFinishDate] = useState<Date | null>(fuzzyDateToJsDate(initialListEntry.completedAt));

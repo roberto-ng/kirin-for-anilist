@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import  BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
-import { Paragraph, Text, Colors, Button, IconButton, DefaultTheme } from 'react-native-paper';
+import { Paragraph, Text, Colors, Button, IconButton, ActivityIndicator } from 'react-native-paper';
 import DropDown from 'react-native-paper-dropdown';
 import InputSpinner from 'react-native-input-spinner';
 import { Shadow } from 'react-native-shadow-2';
@@ -47,7 +47,7 @@ export default function MediaScreen({ route }: Props): JSX.Element {
     const [status, setStatus] = useState<MediaListStatus | null>(null);
     const [showDropdown, setShowDropdown] = useState<boolean>(false);
     const bottomSheetRef = useRef<BottomSheet>(null);
-    const snapPoints = useMemo(() => ['30%', '50%', '80%'], []);
+    const snapPoints = useMemo(() => ['30%', '60%', '90%', '100%'], []);
 
     const { media } = route.params;
     const title = media.title.romaji;
@@ -146,7 +146,7 @@ export default function MediaScreen({ route }: Props): JSX.Element {
     };
 
     const handleEditButtonPress = () => {
-        bottomSheetRef.current?.expand();
+        bottomSheetRef.current?.snapToIndex(2);
     };
 
     const onCloseBottomSheet = () => {
@@ -214,26 +214,45 @@ export default function MediaScreen({ route }: Props): JSX.Element {
                                 startColor="rgba(0, 0, 0, 0.4)" 
                                 finalColor="rgba(0, 0, 0, 0)" 
                             >
-                                    <Image 
-                                        style={styles.coverImage} 
-                                        source={{ uri: media.coverImage.large }} 
-                                    />
-
+                                <Image 
+                                    style={styles.coverImage} 
+                                    source={{ uri: media.coverImage.large }} 
+                                />
                             </Shadow>
-
-                            
                         </View>
                     </View>
                 </ImageBackground>
+                
                 <View style={styles.buttonWrapper}>
+                    {(listEntry != null) ? (
                         <Button 
                             mode="contained"
                             onPress={handleEditButtonPress}
                             color="rgb(61,180,242)"
-                            style={{ flex: 1, marginTop: 12, margin: 10 }}
+                            style={{ flex: 1, marginTop: 12, margin: 10, marginBottom: 0 }}
                         >
                             Edit
                         </Button>
+                    ) : (
+                        (hasLoadedListEntry) ? (
+                            <Button 
+                                mode="contained"
+                                onPress={handleEditButtonPress}
+                                color="rgb(61,180,242)"
+                                style={{ flex: 1, marginTop: 12, margin: 10, marginBottom: 0 }}
+                            >
+                                Add
+                            </Button>
+                        ) : (
+                            <View style={{ flex: 1, marginTop: 12, margin: 10, marginBottom: 0 }}>
+                                <ActivityIndicator 
+                                    animating={true}
+                                />
+                            </View>
+                            
+                        )
+                    )}
+                        
                 </View>
 
                 <View style={styles.contentWrapper}>
@@ -360,12 +379,12 @@ const styles = StyleSheet.create({
         marginLeft: 20,
     },
     contentWrapper: {
-        marginTop: 5,
+        top: 0,
         marginBottom: 10,
     },
     title: {
         fontSize: 20,
-        marginTop: 10,
+        //marginTop: 30,
         marginLeft: 20,
         marginRight: 20,
     },
@@ -388,6 +407,8 @@ const styles = StyleSheet.create({
         //alignItems: 'flex-start',
         //margin: 10,
         marginLeft: 190,
+        marginBottom: 20,
+        height: 48,
     },
     text: {
         color: 'rgb(159,173,189)',
