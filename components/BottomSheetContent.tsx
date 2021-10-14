@@ -270,6 +270,16 @@ export default function BottomSheetContent({
                 </View>
             </View>
 
+            <View style={{ alignItems: 'center', marginTop: 20 }}>
+                <Button
+                    mode="contained"
+                    color="#03A9F4"
+                >
+                    Save
+                </Button>
+            </View>
+            
+
             {(showStartDatePicker) && (    
                 <DateTimePicker
                     testID="dateTimePicker"

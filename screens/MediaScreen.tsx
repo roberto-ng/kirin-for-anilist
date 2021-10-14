@@ -48,7 +48,7 @@ export default function MediaScreen({ route }: Props): JSX.Element {
     const [showDropdown, setShowDropdown] = useState<boolean>(false);
     const bottomSheetRef = useRef<BottomSheet>(null);
     const snapPoints = useMemo(() => ['30%', '60%', '90%', '100%'], []);
-
+    
     const { media } = route.params;
     const title = media.title.romaji;
 
@@ -228,7 +228,7 @@ export default function MediaScreen({ route }: Props): JSX.Element {
                         <Button 
                             mode="contained"
                             onPress={handleEditButtonPress}
-                            color="rgb(61,180,242)"
+                            color="#174a97"
                             style={{ flex: 1, marginTop: 12, margin: 10, marginBottom: 0 }}
                         >
                             Edit
@@ -238,7 +238,7 @@ export default function MediaScreen({ route }: Props): JSX.Element {
                             <Button 
                                 mode="contained"
                                 onPress={handleEditButtonPress}
-                                color="rgb(61,180,242)"
+                                color="#174a97"
                                 style={{ flex: 1, marginTop: 12, margin: 10, marginBottom: 0 }}
                             >
                                 Add
@@ -346,16 +346,10 @@ export default function MediaScreen({ route }: Props): JSX.Element {
                         />
                     </View>
                     
-                    {(listEntry != null) && (
+                    {(hasLoadedListEntry) && (
                         <BottomSheetContent 
                             media={media}
                             initialListEntry={listEntry}
-                        />
-                    )}
-                    {(listEntry == null) && (
-                        <BottomSheetContent 
-                            media={media}
-                            initialListEntry={null}
                         />
                     )}
                 </BottomSheetScrollView>
