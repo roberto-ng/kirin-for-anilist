@@ -454,3 +454,62 @@ export async function fetchMediaListEntry(accessToken: string, mediaId: number):
         return null;
     }
 }
+
+export async function saveListEntry(
+    token: string, 
+    mediaId: number,
+    listEntry: MediaListEntryFull,
+): Promise<void> {
+    let query = `
+        mutation (
+            $mediaId: Int, 
+            $status: MediaListStatus,
+            $score: Float,
+            $progress: Int, 
+            $progressVolumes: Int,
+            $repeat: Int,
+            $startedAt: FuzzyDateInput,
+            $completedAt: FuzzyDateInput,
+        ) {
+            SaveMediaListEntry (
+                mediaId: $mediaId, 
+                status: $status,
+                score: $score,
+                progress: $progress,
+                progressVolumes: $progressVolumes,
+                repeat: $repeat,
+                startedAt: $startedAt,
+                completedAt: $completedAt,                
+            ) {
+                mediaId
+                progress
+            }
+        }
+    `;
+
+    const options = {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+            query,
+            variables: {
+                mediaId: mediaId,
+                status: listEntry.status,
+                score: listEntry.score,
+                progress: listEntry.progress,
+                progressVolumes: listEntry.progressVolumes,
+                repeat: listEntry.repeat,
+                startedAt: listEntry.startedAt,
+                completedAt: listEntry.completedAt,                
+            },
+        }),
+    };
+    const res = await fetch(url, options);
+    if (!res.ok) {
+        throw new Error(await res.text());
+    }
+}

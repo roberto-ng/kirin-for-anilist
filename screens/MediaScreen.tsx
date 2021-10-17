@@ -116,16 +116,6 @@ export default function MediaScreen({ route }: Props): JSX.Element {
         return infos.filter(info => info.value != null);
     }, []);
 
-    const statusList = useMemo(() => {
-        return [
-            { label: 'Current', value: MediaListStatus.CURRENT },
-            { label: 'Planning', value: MediaListStatus.PLANNING },
-            { label: 'Completed', value: MediaListStatus.COMPLETED },
-            { label: 'Repeating', value: MediaListStatus.REPEATING },
-            { label: 'Paused', value: MediaListStatus.PAUSED },
-            { label: 'Dropped', value: MediaListStatus.DROPPED },
-        ];
-    }, []);
 
     const formatDescription = (description: string): string => {
         return description
@@ -350,6 +340,11 @@ export default function MediaScreen({ route }: Props): JSX.Element {
                         <BottomSheetContent 
                             media={media}
                             initialListEntry={listEntry}
+                            token={anilist.token}
+                            onSaveFinished={(updatedListEntry) => {
+                                setListEntry(updatedListEntry);
+                                onCloseBottomSheet();
+                            }}
                         />
                     )}
                 </BottomSheetScrollView>
@@ -416,6 +411,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#151F2E',
         margin: 20,
         marginTop: 10,
+        marginBottom: 0,
         borderRadius: 5,
         padding: 10,
     },
@@ -430,7 +426,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#151F2E',
         marginRight: 20,
         marginLeft: 20,
-        marginTop: 0,
+        marginTop: 10,
         borderRadius: 5,
         //height: 70,
         flexDirection: 'row',

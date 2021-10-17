@@ -12,10 +12,13 @@ import InputSpinner from 'react-native-input-spinner';
 import { Text, Button, DefaultTheme, DarkTheme, IconButton, } from 'react-native-paper';
 import DateTimePicker, { Event } from '@react-native-community/datetimepicker';
 import { Media, MediaListEntryFull, MediaListStatus, FuzzyDate } from '../model/anilist';
+import { saveListEntry } from '../api/anilist';
 
 interface Props {
     media: Media,
+    token?: string,
     initialListEntry: MediaListEntryFull | null,
+    onSaveFinished: (listEntry: MediaListEntryFull) => void,
 }
 
 const MyPaperTheme = {
@@ -37,9 +40,12 @@ const defaultListEntry: MediaListEntryFull = {
 
 export default function BottomSheetContent({ 
     initialListEntry,
+    token,
     media,
+    onSaveFinished,
 }: Props): JSX.Element {
     const [showDropdown, setShowDropdown] = useState<boolean>(false);
+    const [isSaving, setIsSaving] = useState<boolean>(false);
     const [startDate, setStartDate] = useState<Date | null>(fuzzyDateToJsDate(initialListEntry?.startedAt));
     const [finishDate, setFinishDate] = useState<Date | null>(fuzzyDateToJsDate(initialListEntry?.completedAt));
     const [startDateText, setStartDateText] = useState<string>('');
@@ -87,7 +93,27 @@ export default function BottomSheetContent({
 
     const removeFinishDate = () => {
         setFinishDate(null);
-    }
+    };
+
+    const handleSavePress = async () => {
+        if (token == null) {
+            return;
+        }
+
+        setIsSaving(true);
+        try {
+            await saveListEntry(token, media.id, listEntry);
+            setIsSaving(false);
+            onSaveFinished(listEntry);
+        } catch (e) {
+            if (Platform.OS === 'android') {
+                ToastAndroid.show('Error: failed to save list entry', ToastAndroid.SHORT);
+            }
+
+            console.error(e);
+            setIsSaving(false);
+        }
+    };
 
     useEffect(() => {
         if (startDate == null) {
@@ -105,7 +131,7 @@ export default function BottomSheetContent({
             const newListEntry: MediaListEntryFull = { 
                 ...listEntry,
                 startedAt: {
-                    day: startDate.getDay(),
+                    day: startDate.getDate(),
                     month: startDate.getMonth() + 1,
                     year: startDate.getFullYear(),
                 },
@@ -130,7 +156,7 @@ export default function BottomSheetContent({
             const newListEntry: MediaListEntryFull = { 
                 ...listEntry,
                 completedAt: {
-                    day: finishDate.getDay(),
+                    day: finishDate.getDate(),
                     month: finishDate.getMonth() + 1,
                     year: finishDate.getFullYear(),
                 },
@@ -162,6 +188,7 @@ export default function BottomSheetContent({
                         placeholderTextColor="gray"
                         skin="round"
                         color={blue}
+                        disabled={isSaving}
                     />
                 </View>
 
@@ -185,6 +212,7 @@ export default function BottomSheetContent({
                         placeholderTextColor="gray"
                         skin="round"
                         color={blue}
+                        disabled={isSaving}
                     />
                 </View>
             </View>
@@ -226,6 +254,7 @@ export default function BottomSheetContent({
                             color={blue}
                             style={{ width: 200 }}
                             onPress={() => setShowStartDatePicker(true)}
+                            disabled={isSaving}
                         >
                             {startDateText}
                         </Button>
@@ -235,6 +264,7 @@ export default function BottomSheetContent({
                                 icon="close"
                                 size={20}
                                 onPress={removeStartDate}
+                                disabled={isSaving}
                             />
                         )}
                     </View>
@@ -254,6 +284,7 @@ export default function BottomSheetContent({
                             color={blue}
                             style={{ width: 200 }}
                             onPress={() => setShowFinishDatePicker(true)}
+                            disabled={isSaving}
                         >
                             {finishDateText}
                         </Button>
@@ -263,6 +294,7 @@ export default function BottomSheetContent({
                                 icon="close"
                                 size={20}
                                 onPress={removeFinishDate}
+                                disabled={isSaving}
                             />
                         )}
                         
@@ -274,6 +306,8 @@ export default function BottomSheetContent({
                 <Button
                     mode="contained"
                     color="#03A9F4"
+                    disabled={isSaving}
+                    onPress={handleSavePress}
                 >
                     Save
                 </Button>
