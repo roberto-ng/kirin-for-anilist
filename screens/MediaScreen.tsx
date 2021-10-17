@@ -214,35 +214,22 @@ export default function MediaScreen({ route }: Props): JSX.Element {
                 </ImageBackground>
                 
                 <View style={styles.buttonWrapper}>
-                    {(listEntry != null) ? (
+                    {(hasLoadedListEntry) ? (
                         <Button 
                             mode="contained"
                             onPress={handleEditButtonPress}
                             color="#174a97"
                             style={{ flex: 1, marginTop: 12, margin: 10, marginBottom: 0 }}
                         >
-                            Edit
+                            {(listEntry == null) ? 'Add' : 'Edit'}
                         </Button>
                     ) : (
-                        (hasLoadedListEntry) ? (
-                            <Button 
-                                mode="contained"
-                                onPress={handleEditButtonPress}
-                                color="#174a97"
-                                style={{ flex: 1, marginTop: 12, margin: 10, marginBottom: 0 }}
-                            >
-                                Add
-                            </Button>
-                        ) : (
-                            <View style={{ flex: 1, marginTop: 12, margin: 10, marginBottom: 0 }}>
-                                <ActivityIndicator 
-                                    animating={true}
-                                />
-                            </View>
-                            
-                        )
-                    )}
-                        
+                        <View style={{ flex: 1, marginTop: 12, margin: 10, marginBottom: 0 }}>
+                            <ActivityIndicator 
+                                animating={true}
+                            />
+                        </View>
+                    )}  
                 </View>
 
                 <View style={styles.contentWrapper}>
