@@ -4,9 +4,12 @@ import {
     View, 
     Image,
     Platform,
+    ImageBackground,
+    TouchableWithoutFeedback,
 } from 'react-native';
-import { ActivityType, ActivityUnion, ListActivity } from '../model/anilist';
 import { Button, Text } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
+import { ActivityType, ActivityUnion, ListActivity } from '../model/anilist';
 import { getRelativeTime } from '../utils';
 
 interface ListActivityCardProps {
@@ -24,6 +27,7 @@ const DIVISIONS = [
 ]
 
 export default function ListActivityCard({ activity }: ListActivityCardProps) {
+    const navigation = useNavigation();
     const title = activity.media.title.romaji;
 
     let text = null;
@@ -65,12 +69,22 @@ export default function ListActivityCard({ activity }: ListActivityCardProps) {
             break;
     }
 
+    const openMediaPage = () => {
+        //@ts-ignore
+        navigation.navigate('Media', {
+            media: activity.media,
+            title: activity.media.title.romaji,
+        });
+    };
+
     return (
         <View style={styles.card}>
-            <Image 
-                style={styles.cardCoverImage} 
-                source={{ uri: activity.media.coverImage.large }} 
-            />
+            <TouchableWithoutFeedback onPress={openMediaPage}>
+                <ImageBackground
+                    style={styles.cardCoverImage} 
+                    source={{ uri: activity.media.coverImage.large }} 
+                />
+            </TouchableWithoutFeedback>
             
             <View style={styles.cardContent}>
                 <View style={styles.cardContentInfo}>
@@ -93,7 +107,7 @@ export default function ListActivityCard({ activity }: ListActivityCardProps) {
                         <Text 
                             style={styles.title} 
                             numberOfLines={3}
-                            onPress={() => console.log(`Opening ${title}...`)}
+                            onPress={openMediaPage}
                         >
                             {title}
                         </Text>

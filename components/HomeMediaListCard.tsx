@@ -5,7 +5,10 @@ import {
     View, 
     Image,
     Platform,
+    ImageBackground,
+    TouchableWithoutFeedback,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { IconButton, Snackbar, Text } from 'react-native-paper';
 import { MediaList } from '../model/anilist';
 import { incrementMediaProgression } from '../api/anilist';
@@ -25,6 +28,7 @@ export default function HomeMediaListCard({
     token,
     onError,
 }: HomeMediaListProps) {
+    const navigation = useNavigation();
     const [isUpdating, setIsUpdating] = useState<boolean>(false);
     const [item, setItem] = useState<MediaList>(mediaListItem);
     const { media } = mediaListItem;
@@ -56,6 +60,14 @@ export default function HomeMediaListCard({
         setIsUpdating(false);
     };
 
+    const openMediaPage = () => {
+        //@ts-ignore
+        navigation.navigate('Media', {
+            media: item.media,
+            title: item.media.title.romaji,
+        });
+    };
+
     return (
         <View 
             style={[styles.itemCard, { 
@@ -63,15 +75,22 @@ export default function HomeMediaListCard({
                 marginLeft: (isFirst) ? 10 : 0,
             }]}
         >
-            <Image 
-                style={styles.cardCoverImage} 
-                source={{ uri: media.coverImage.large }} 
-            />
+            <TouchableWithoutFeedback 
+                style={styles.cardCoverImage}
+                onPress={openMediaPage}
+            >
+                <ImageBackground
+                    style={styles.cardCoverImage} 
+                    source={{ uri: media.coverImage.large }} 
+                />
+            </TouchableWithoutFeedback>
+            
 
             <View style={styles.cardContent}>
                 <Text 
                     style={[styles.cardContentText, styles.cardContentTitle]}
                     numberOfLines={1}
+                    onPress={openMediaPage}
                 >
                     {media.title.romaji}
                 </Text>

@@ -11,17 +11,14 @@ import {
     FlatList,
 } from 'react-native';
 import  BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import { useNavigation } from '@react-navigation/native';
 import { Paragraph, Text, Colors, Button, IconButton, ActivityIndicator } from 'react-native-paper';
-import DropDown from 'react-native-paper-dropdown';
-import InputSpinner from 'react-native-input-spinner';
 import { Shadow } from 'react-native-shadow-2';
 import * as Clipboard from 'expo-clipboard';
+import { useSelector } from 'react-redux';
 import { Media, MediaList, Character, MediaListEntryFull, MediaListStatus } from '../model/anilist';
 import { fetchMediaCharacters, fetchMediaListEntry } from '../api/anilist';
 import CharacterCard from '../components/CharacterCard';
 import BottomSheetContent from '../components/BottomSheetContent';
-import { useSelector } from 'react-redux';
 import { StoreState } from '../store/store';
 
 interface Props {
@@ -62,7 +59,7 @@ export default function MediaScreen({ route }: Props): JSX.Element {
 
         let startDateText = null;
         let endDateText = null;
-        if (startDate.day != null && startDate.month != null && startDate.year != null) {
+        if (startDate?.day != null && startDate?.month != null && startDate?.year != null) {
             const date = new Date(
                 startDate.year, 
                 startDate.month - 1, // january is month 0, december is month 11
@@ -71,7 +68,7 @@ export default function MediaScreen({ route }: Props): JSX.Element {
             
             startDateText = dateTimeFormat.format(date);
         }
-        if (endDate.day != null && endDate.month != null && endDate.year != null) {
+        if (endDate?.day != null && endDate?.month != null && endDate?.year != null) {
             const date = new Date(
                 endDate.year, 
                 endDate.month - 1, // january is month 0, december is month 11
