@@ -46,6 +46,8 @@ interface MediaSectionProps {
 
 export default function HomeTabScreen({}) {
     const anilist = useSelector((state: StoreState) => state.anilist);
+    const dispatch = useDispatch();
+
     const [hasFetchedData, setHasFetchedData] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -55,25 +57,59 @@ export default function HomeTabScreen({}) {
     const [mangaInProgress, setMangaInProgress] = useState<MediaList[]>([]);
     const [activities, setActivities] = useState<ActivityUnion[]>([]);
 
-    const fetchData = async (accessToken: string, user: User) => {
+    const fetchData = async (accessToken: string, user: User, shouldFetchActivities = true) => {
         const animeInProgressResponse = await fetchAnimeInProgress(accessToken, user.id);
         const mangaInProgressResponse = await fetchMangaInProgress(accessToken, user.id);
-        const activitiesResponse = await fetchActivities(accessToken);
+        let activitiesResponse: ActivityUnion[] | null = null;
+        if (shouldFetchActivities) {
+            activitiesResponse = await fetchActivities(accessToken);
+        }
 
-        if (animeAiring.length === 0 && animeFinishedAiring.length === 0) {
-            const airing = animeInProgressResponse.filter(m => m.media.status === MediaStatus.RELEASING);
-            const finished = animeInProgressResponse.filter(m => m.media.status === MediaStatus.FINISHED);
-            setAnimeAiring(airing);
-            setAnimeFinishedAiring(finished);
-        }
-        if (mangaInProgress.length === 0) {
-            setMangaInProgress(mangaInProgressResponse);
-        }
-        if (activities.length === 0) {
-            setActivities(activitiesResponse);
-        }
+        setAnimeAiring((animeAiring) => {
+            if (animeAiring.length === 0) {
+                return animeInProgressResponse.filter(m => m.media.status === MediaStatus.RELEASING);
+            }
+            else {
+                return animeAiring;
+            }
+        });
+        setAnimeFinishedAiring((animeFinishedAiring) => {
+            if (animeFinishedAiring.length === 0) {
+                return animeInProgressResponse.filter(m => m.media.status === MediaStatus.FINISHED);
+            } else {
+                return animeFinishedAiring;
+            }
+        });
+        setMangaInProgress((mangaInProgress) => {
+            if (mangaInProgress.length === 0) {
+                return mangaInProgressResponse;
+            } else {
+                return mangaInProgress;
+            }
+        });
+        setActivities((activities) => {
+            if (activities.length === 0 && activitiesResponse !== null) {
+                return activitiesResponse;
+            } else {
+                return activities;
+            }
+        });
 
         setIsLoading(false);
+    };
+
+    const refresh = async () => {
+        if (anilist.token == null || anilist.user == null) {
+            return;
+        }
+
+        setIsLoading(true);
+        setAnimeAiring([]);
+        setAnimeFinishedAiring([]);
+        setMangaInProgress([]);
+        //setActivities([]);
+        
+        await fetchData(anilist.token, anilist.user, false);
     };
 
     const handleLogInBtnPress = () => {
@@ -112,6 +148,17 @@ export default function HomeTabScreen({}) {
             setHasFetchedData(true);
             fetchData(anilist.token, anilist.user)
                 .catch((err) => console.error(err));
+        }
+    });
+
+    useEffect(() => {
+        if (anilist?.shouldHomeScreenUpdate) {
+            dispatch(anilistSlice.actions.setShouldHomeScreenUpdate(false));
+            refresh()
+                .then(() => console.log('Recarregado'))
+                .catch(err => {
+                    console.error(err);
+                });
         }
     });
 

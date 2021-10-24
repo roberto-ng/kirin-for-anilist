@@ -281,13 +281,8 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
     useEffect(() => {
         // update the screen if something has changed
         if (anilist?.shouldMediaListScreenUpdate) {
-            handleRefresh()
-                .then(() => {
-                    dispatch(anilistSlice.actions.setShouldMediaListScreenUpdate(false));
-                })
-                .catch(() => {
-                    dispatch(anilistSlice.actions.setShouldMediaListScreenUpdate(false));
-                });
+            dispatch(anilistSlice.actions.setShouldMediaListScreenUpdate(false));
+            handleRefresh();
         }
     });
 
