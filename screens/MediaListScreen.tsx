@@ -71,6 +71,8 @@ const INITIAL_SECTIONS = [
 
 export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.Element {
     const anilist = useSelector((state: StoreState) => state.anilist); 
+    const dispatch = useDispatch();
+    
     const [refreshing, setRefreshing] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isListComplete, setIsListComplete] = useState<boolean>(false);
@@ -275,6 +277,19 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
             handleEndReached();
         }
     }, [lastDownloaded]);
+
+    useEffect(() => {
+        // update the screen if something has changed
+        if (anilist?.shouldMediaListScreenUpdate) {
+            handleRefresh()
+                .then(() => {
+                    dispatch(anilistSlice.actions.setShouldMediaListScreenUpdate(false));
+                })
+                .catch(() => {
+                    dispatch(anilistSlice.actions.setShouldMediaListScreenUpdate(false));
+                });
+        }
+    });
 
     if (!hasFetchedInitialData) {
         if (refreshing) {

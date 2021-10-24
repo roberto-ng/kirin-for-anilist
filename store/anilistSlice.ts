@@ -5,6 +5,8 @@ export interface AnilistSlice {
     isLoggedIn: boolean,
     token?: string,
     user?: User,
+    shouldMediaListScreenUpdate: boolean,
+    shouldHomeScreenUpdate: boolean,
 }
 
 interface ActionEditMediaList {
@@ -16,6 +18,8 @@ const initialState: AnilistSlice = {
     isLoggedIn: false,
     token: undefined,
     user: undefined,
+    shouldHomeScreenUpdate: false,
+    shouldMediaListScreenUpdate: false,
 };
 
 export const anilistSlice = createSlice({
@@ -36,6 +40,14 @@ export const anilistSlice = createSlice({
 
         setUser(state, action: PayloadAction<User | undefined>) {
             state.user = action.payload;
+        },
+
+        setShouldHomeScreenUpdate(state, action: PayloadAction<boolean>) {
+            state.shouldHomeScreenUpdate = action.payload;
+        },
+
+        setShouldMediaListScreenUpdate(state, action: PayloadAction<boolean>) {
+            state.shouldMediaListScreenUpdate = action.payload;
         },
     },
 });

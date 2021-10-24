@@ -14,12 +14,13 @@ import  BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { Paragraph, Text, Colors, Button, IconButton, ActivityIndicator } from 'react-native-paper';
 import { Shadow } from 'react-native-shadow-2';
 import * as Clipboard from 'expo-clipboard';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Media, MediaList, Character, MediaListEntryFull, MediaListStatus } from '../model/anilist';
 import { fetchMediaCharacters, fetchMediaListEntry } from '../api/anilist';
 import CharacterCard from '../components/CharacterCard';
 import BottomSheetContent from '../components/BottomSheetContent';
-import { StoreState } from '../store/store';
+import { StoreState, anilistSlice } from '../store/store';
+
 
 interface Props {
     route: {
@@ -36,6 +37,7 @@ interface Information {
 
 export default function MediaScreen({ route }: Props): JSX.Element {
     const anilist = useSelector((state: StoreState) => state.anilist); 
+    const dispatch = useDispatch();
     const [characters, setCharacters] = useState<Character[]>([]);
     const [errorLoadingCharacters, setErrorLoadingCharacters] = useState<boolean>(false);
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -327,6 +329,8 @@ export default function MediaScreen({ route }: Props): JSX.Element {
                             token={anilist.token}
                             onSaveFinished={(updatedListEntry) => {
                                 setListEntry(updatedListEntry);
+                                dispatch(anilistSlice.actions.setShouldHomeScreenUpdate(true));
+                                dispatch(anilistSlice.actions.setShouldMediaListScreenUpdate(true));
                                 onCloseBottomSheet();
                             }}
                         />
