@@ -165,6 +165,27 @@ export async function fetchActivities(accessToken: string): Promise<ActivityUnio
                                 large
                                 extraLarge
                             }    
+                            averageScore
+                            meanScore
+                            popularity
+                            isLocked
+                            nextAiringEpisode {
+                                id
+                                airingAt
+                                timeUntilAiring
+                                episode
+                                mediaId
+                            }
+                            startDate {
+                                year
+                                month
+                                day
+                            }
+                            endDate {
+                                year
+                                month
+                                day
+                            }
                         }
                         isLocked
                         likeCount
