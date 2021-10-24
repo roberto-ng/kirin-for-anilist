@@ -186,6 +186,7 @@ export async function fetchActivities(accessToken: string): Promise<ActivityUnio
                                 month
                                 day
                             }
+                            bannerImage
                         }
                         isLocked
                         likeCount
