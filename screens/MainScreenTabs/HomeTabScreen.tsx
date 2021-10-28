@@ -15,7 +15,7 @@ import {
     ScrollView,
     Linking,
 } from 'react-native';
-import { Button, Text, ActivityIndicator, Colors, Snackbar } from 'react-native-paper';
+import { Button, Text, ActivityIndicator, Colors, Snackbar, FAB } from 'react-native-paper';
 import { StoreState, anilistSlice } from '../../store/store';
 import HomeMediaListCard from '../../components/HomeMediaListCard';
 import TextActivityCard from '../../components/TextActivityCard';
@@ -213,9 +213,10 @@ export default function HomeTabScreen({}) {
                                     {activities.map((activity, index) => {
                                         const ActivityCard = getActivityCard(activity);
                                         return (
-                                            <ActivityCard 
-                                                activity={activity as any} 
-                                                key={index}                                             />
+                                                <ActivityCard 
+                                                    activity={activity as any} 
+                                                    key={index}                                             
+                                                />
                                             );
                                         })
                                     }     
@@ -232,6 +233,7 @@ export default function HomeTabScreen({}) {
                 )}
                 <StatusBar style="light" />
             </ScrollView>
+
             <Snackbar
                 visible={showError}
                 onDismiss={() => {
@@ -248,6 +250,11 @@ export default function HomeTabScreen({}) {
             >
                 {errorMsg}
             </Snackbar>
+
+            <FAB 
+                icon="magnify"
+                style={styles.fab}
+            />
         </>
     );
 };
@@ -315,5 +322,12 @@ const styles = StyleSheet.create({
         height: '100%',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    fab: {
+        position: 'absolute',
+        margin: 16,
+        right: 0,
+        bottom: 0,
+        backgroundColor: '#174a97',
     },
 });

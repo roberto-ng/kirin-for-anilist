@@ -3,7 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, RefreshControl, SectionList,  } from 'react-native';
 import { ActivityIndicator, Button, Colors, Divider } from 'react-native-paper';
-import { Text } from 'react-native-paper';
+import { Text, FAB } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { NavigationContainer } from '@react-navigation/native';
@@ -341,6 +341,11 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
                 }
             />
 
+            <FAB 
+                icon="magnify"
+                style={styles.fab}
+            />
+
             <StatusBar style="light" />
         </View>
     );
@@ -381,6 +386,13 @@ const styles = StyleSheet.create({
         color: 'rgb(159,173,189)',
         marginBottom: 4,
         textAlign: 'center',
+    },
+    fab: {
+        position: 'absolute',
+        margin: 16,
+        right: 0,
+        bottom: 0,
+        backgroundColor: '#174a97',
     },
 });
 
