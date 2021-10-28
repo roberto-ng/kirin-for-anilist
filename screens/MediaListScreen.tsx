@@ -5,6 +5,7 @@ import { StyleSheet, View, RefreshControl, SectionList,  } from 'react-native';
 import { ActivityIndicator, Button, Colors, Divider } from 'react-native-paper';
 import { Text, FAB } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { 
@@ -70,6 +71,7 @@ const INITIAL_SECTIONS = [
 ];
 
 export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.Element {
+    const navigation = useNavigation();
     const anilist = useSelector((state: StoreState) => state.anilist); 
     const dispatch = useDispatch();
     
@@ -246,6 +248,11 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
         setSections(INITIAL_SECTIONS);
     };
 
+    const openSearchScreen = () => {
+        // @ts-ignore
+        navigation.navigate('Search');
+    }
+
     useEffect(() => {
         if (anilist.token == null || anilist.user == null) {
             return;
@@ -344,6 +351,7 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
             <FAB 
                 icon="magnify"
                 style={styles.fab}
+                onPress={openSearchScreen}
             />
 
             <StatusBar style="light" />

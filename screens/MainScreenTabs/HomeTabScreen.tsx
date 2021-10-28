@@ -16,6 +16,7 @@ import {
     Linking,
 } from 'react-native';
 import { Button, Text, ActivityIndicator, Colors, Snackbar, FAB } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 import { StoreState, anilistSlice } from '../../store/store';
 import HomeMediaListCard from '../../components/HomeMediaListCard';
 import TextActivityCard from '../../components/TextActivityCard';
@@ -46,6 +47,7 @@ interface MediaSectionProps {
 
 export default function HomeTabScreen({}) {
     const anilist = useSelector((state: StoreState) => state.anilist);
+    const navigation = useNavigation();
     const dispatch = useDispatch();
 
     const [hasFetchedData, setHasFetchedData] = useState<boolean>(false);
@@ -138,6 +140,11 @@ export default function HomeTabScreen({}) {
         console.log(err);
         setShowError(true);
     };
+
+    const openSearchScreen = () => {
+        // @ts-ignore
+        navigation.navigate('Search');
+    }
 
     useEffect(() => {
         if (anilist.token == null || anilist.user == null) {
@@ -254,6 +261,7 @@ export default function HomeTabScreen({}) {
             <FAB 
                 icon="magnify"
                 style={styles.fab}
+                onPress={openSearchScreen}
             />
         </>
     );

@@ -26,6 +26,7 @@ import { Provider } from 'react-redux';
 import { useSelector, useDispatch } from 'react-redux';
 import MainScreen from './screens/MainScreen';
 import MediaScreen from './screens/MediaScreen';
+import SearchScreen from './screens/SearchScreen';
 import { store, StoreState, anilistSlice } from './store/store';
 import { 
     fetchViewer, 
@@ -114,6 +115,16 @@ function AppContent() {
                             component={MediaScreen}
                             options={{ 
                                 title: 'Details',
+                                headerShown: true,
+                                headerTintColor: 'white',
+                                animationEnabled: true,
+                            }}
+                        />
+                        <Stack.Screen 
+                            name="Search" 
+                            component={SearchScreen}
+                            options={{ 
+                                title: 'Search',
                                 headerShown: true,
                                 headerTintColor: 'white',
                                 animationEnabled: true,
