@@ -535,3 +535,105 @@ export async function saveListEntry(
         throw new Error(await res.text());
     }
 }
+
+export async function fetchMediaWithTitle(
+    searchQuery: string, 
+    mediaType: MediaType,
+    pageNumber: number = 0,
+): Promise< Media[] > {
+    const query = `
+        query ($searchQuery: String, $page: Int, $perPage: Int, $mediaType: MediaType, $sort: [MediaSort]) {
+            Page (page: $page, perPage: $perPage) {
+                pageInfo {
+                    total
+                    currentPage
+                    lastPage
+                    hasNextPage
+                    perPage
+                }
+                media (search: $searchQuery, type: $mediaType, sort: $sort) {
+                    id
+                    episodes
+                    chapters
+                    volumes
+                    status
+                    type
+                    description
+                    format
+                    averageScore
+                    meanScore
+                    popularity
+                    isLocked
+                    nextAiringEpisode {
+                        id
+                        airingAt
+                        timeUntilAiring
+                        episode
+                        mediaId
+                    }
+                    startDate {
+                        year
+                        month
+                        day
+                    }
+                    endDate {
+                        year
+                        month
+                        day
+                    }
+                    title {
+                        romaji
+                        english
+                        native
+                    }
+                    coverImage {
+                        medium
+                        large
+                        extraLarge
+                    }
+                    bannerImage
+                    mediaListEntry {
+                        score
+                        status
+                    }
+                }
+            }
+        }
+    `;
+
+    const options = {
+        method: 'POST',
+        headers: {
+            //'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+            query,
+            variables: {
+                searchQuery: searchQuery,
+                page: pageNumber,
+                perPage: 10,
+                sort: 'POPULARITY_DESC',
+                mediaType,
+            },
+        }),
+    };
+
+    const res = await fetch(url, options);
+    const json = await res.json();
+    if (json.data == null) {
+        if (json.errors != null && json.errors.length > 0) {
+            throw new Error(json.errors[0].message);
+        } else {
+            throw new Error('data is null');
+        }
+    }
+
+    const page = json.data.Page as Page;
+    if (page.media == null) {
+        throw new Error('page object has no mediaList member');
+    }
+
+    return page.media;
+}
