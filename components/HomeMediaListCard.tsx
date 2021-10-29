@@ -8,6 +8,7 @@ import {
     ImageBackground,
     TouchableWithoutFeedback,
 } from 'react-native';
+import { Trans } from '@lingui/macro';
 import { useNavigation } from '@react-navigation/native';
 import { IconButton, Snackbar, Text } from 'react-native-paper';
 import { MediaList } from '../model/anilist';
@@ -97,7 +98,10 @@ export default function HomeMediaListCard({
             
                 <View style={styles.cardContentInfo}>
                     <Text style={[styles.cardContentText, styles.cardContentInfoText]}>
-                        Progress: {formatProgress()}
+                        <Trans 
+                            id="progress.label"
+                            values={{ progress: formatProgress() }}
+                        />
                     </Text>
                     <IconButton 
                         icon="plus" 

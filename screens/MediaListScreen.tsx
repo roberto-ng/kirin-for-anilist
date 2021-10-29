@@ -1,14 +1,13 @@
 import Constants from 'expo-constants';
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, RefreshControl, SectionList,  } from 'react-native';
+import { StyleSheet, View, RefreshControl, SectionList } from 'react-native';
 import { ActivityIndicator, Button, Colors, Divider } from 'react-native-paper';
 import { Text, FAB } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { NavigationContainer } from '@react-navigation/native';
-import { 
+import { t } from "@lingui/macro";
+import {
     MediaListStatus, 
     MediaType, 
     MediaList, 
@@ -45,27 +44,27 @@ interface LastDownloaded {
 
 const INITIAL_SECTIONS = [
     {
-        title: 'Watching',
+        title: t`watching.label`,
         data: [],
     },
     {
-        title: 'Rewatching',
+        title: t`rewatching.label`,
         data: [],
     },
     {
-        title: 'Completed',
+        title: t`completed.label`,
         data: [],
     },
     {
-        title: 'Paused',
+        title: t`paused.label`,
         data: [],
     },
     {
-        title: 'Dropped',
+        title: t`dropped.label`,
         data: [],
     },
     {
-        title: 'Planning',
+        title: t`planning.label`,
         data: [],
     },
 ];
@@ -120,8 +119,8 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
                 break;
         }
 
-        const currentTitle = (mediaType === MediaType.ANIME) ? 'Watching' : 'Reading';
-        const repeatingTitle = (mediaType === MediaType.ANIME) ? 'Rewatching' : 'Rereading';
+        const currentTitle   = (mediaType === MediaType.ANIME) ? t`watching.label`   : t`reading.label`;
+        const repeatingTitle = (mediaType === MediaType.ANIME) ? t`rewatching.label` : t`rereading.label`;
 
         return [
             {
@@ -133,19 +132,19 @@ export default function AnimeTabScreen({ mediaType}: MediaListScreenProps): JSX.
                 data: repeating,
             },
             {
-                title: 'Completed',
+                title: t`completed.label`,
                 data: completed,
             },
             {
-                title: 'Paused',
+                title: t`paused.label`,
                 data: paused,
             },
             {
-                title: 'Dropped',
+                title: t`dropped.label`,
                 data: dropped,
             },
             {
-                title: 'Planning',
+                title: t`planning.label`,
                 data: planning,
             },
         ];

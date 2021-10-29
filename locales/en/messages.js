@@ -1,1 +1,1 @@
-/*eslint-disable*/module.exports={messages:{"results label":"results label","results.label":"results.label"}};
+/*eslint-disable*/module.exports={messages:{"completed.label":"Completed","dropped.label":"Dropped","paused.label":"Paused","planning.label":"Planning","progress.label":["Progress: ",["progress"]],"reading.label":"Reading","rereading.label":"Rereading","results label":"results label","results.label":"Results: ","rewatching.label":"Rewatching","watching.label":"Watching"}};

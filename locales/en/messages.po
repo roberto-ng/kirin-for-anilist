@@ -13,10 +13,52 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: screens/MediaListScreen.tsx:55
+#: screens/MediaListScreen.tsx:135
+msgid "completed.label"
+msgstr "Completed"
+
+#: screens/MediaListScreen.tsx:63
+#: screens/MediaListScreen.tsx:143
+msgid "dropped.label"
+msgstr "Dropped"
+
+#: screens/MediaListScreen.tsx:59
+#: screens/MediaListScreen.tsx:139
+msgid "paused.label"
+msgstr "Paused"
+
+#: screens/MediaListScreen.tsx:67
+#: screens/MediaListScreen.tsx:147
+msgid "planning.label"
+msgstr "Planning"
+
+#: components/HomeMediaListCard.tsx:101
+msgid "progress.label"
+msgstr "Progress: {progress}"
+
+#: screens/MediaListScreen.tsx:122
+msgid "reading.label"
+msgstr "Reading"
+
+#: screens/MediaListScreen.tsx:123
+msgid "rereading.label"
+msgstr "Rereading"
+
 #: screens/SearchScreen.tsx:88
 #~ msgid "results label"
 #~ msgstr ""
 
 #: screens/SearchScreen.tsx:88
 msgid "results.label"
-msgstr ""
+msgstr "Results: "
+
+#: screens/MediaListScreen.tsx:51
+#: screens/MediaListScreen.tsx:123
+msgid "rewatching.label"
+msgstr "Rewatching"
+
+#: screens/MediaListScreen.tsx:47
+#: screens/MediaListScreen.tsx:122
+msgid "watching.label"
+msgstr "Watching"

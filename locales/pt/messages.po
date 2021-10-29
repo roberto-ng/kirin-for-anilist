@@ -16,10 +16,52 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: screens/MediaListScreen.tsx:55
+#: screens/MediaListScreen.tsx:135
+msgid "completed.label"
+msgstr "Completo"
+
+#: screens/MediaListScreen.tsx:63
+#: screens/MediaListScreen.tsx:143
+msgid "dropped.label"
+msgstr "Largado"
+
+#: screens/MediaListScreen.tsx:59
+#: screens/MediaListScreen.tsx:139
+msgid "paused.label"
+msgstr "Pausado"
+
+#: screens/MediaListScreen.tsx:67
+#: screens/MediaListScreen.tsx:147
+msgid "planning.label"
+msgstr "Planejado"
+
+#: components/HomeMediaListCard.tsx:101
+msgid "progress.label"
+msgstr "Progresso: {progress}"
+
+#: screens/MediaListScreen.tsx:122
+msgid "reading.label"
+msgstr "Lendo"
+
+#: screens/MediaListScreen.tsx:123
+msgid "rereading.label"
+msgstr "Relendo"
+
 #: screens/SearchScreen.tsx:88
 #~ msgid "results label"
 #~ msgstr "Resultados:"
 
 #: screens/SearchScreen.tsx:88
 msgid "results.label"
-msgstr "Resultados:"
+msgstr "Resultados: "
+
+#: screens/MediaListScreen.tsx:51
+#: screens/MediaListScreen.tsx:123
+msgid "rewatching.label"
+msgstr "Revendo"
+
+#: screens/MediaListScreen.tsx:47
+#: screens/MediaListScreen.tsx:122
+msgid "watching.label"
+msgstr "Vendo"
