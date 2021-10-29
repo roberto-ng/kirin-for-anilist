@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { View, StyleSheet, ScrollView, TouchableWithoutFeedback, ImageBackground } from 'react-native';
-import { TextInput, Button, RadioButton, Text } from 'react-native-paper';
+import { TextInput, Button, RadioButton, Text, Searchbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { fetchMediaWithTitle } from '../api/anilist';
@@ -13,6 +13,8 @@ export default function SearchScreen() {
     const [mediaType, setMediaType] = useState<MediaType>(MediaType.ANIME);
     const [result, setResult] = useState<Media[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
+
+    const onChangeSearch = (query: string) => setSearchQuery(query);
     
     const handleSearch = async () => {
         if (searchQuery.trim().length === 0) {
@@ -41,21 +43,21 @@ export default function SearchScreen() {
         <ScrollView style={styles.container}>
             <View style={styles.form}>
                 <View style={{ alignItems: 'center' }}>
-                    <View style={{ width: 300, height: 120, top: 30 }}>
-                        <TextInput
-                            label="Title"
-                            style={styles.textInput}
-                            value={searchQuery}
-                            onChangeText={value => setSearchQuery(value)}
-                        />
-                    </View>
+                    <Searchbar
+                        placeholder="Search"
+                        onChangeText={onChangeSearch}
+                        value={searchQuery}
+                        style={{ backgroundColor: '#174a97' }}
+                    />
                     
-                    <View style={{ bottom: 12 }}>
+                    <View>
                         <RadioButton.Group 
                             onValueChange={value => setMediaType(value as MediaType)} value={mediaType}
                         >
-                            <RadioButton.Item label="Anime" value={MediaType.ANIME} color="white" />
-                            <RadioButton.Item label="Manga" value={MediaType.MANGA} color="white" />
+                            <View style={{ flexDirection: 'row' }}>
+                                <RadioButton.Item label="Anime" value={MediaType.ANIME} color="white" />
+                                <RadioButton.Item label="Manga" value={MediaType.MANGA} color="white" />
+                            </View>
                         </RadioButton.Group>
                     </View>
 
