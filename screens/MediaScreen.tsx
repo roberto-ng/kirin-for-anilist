@@ -112,7 +112,7 @@ export default function MediaScreen({ route }: Props): JSX.Element {
         ];
 
         // remove items with a null value
-        return infos.filter(info => info.value != null);
+        return infos.filter(info => info.value != null && info.value != 'null%');
     }, []);
 
 
