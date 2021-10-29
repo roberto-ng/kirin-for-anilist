@@ -94,7 +94,7 @@ export default function SearchScreen() {
 
                         <Text 
                             style={styles.text} 
-                            numberOfLines={1}
+                            numberOfLines={3}
                             onPress={() => openMediaPage(media)}
                         >
                             {media.title.romaji}
