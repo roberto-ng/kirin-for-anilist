@@ -15,7 +15,7 @@ import '@formatjs/intl-datetimeformat/locale-data/en';
 import '@formatjs/intl-datetimeformat/locale-data/pt';
 import '@formatjs/intl-datetimeformat/add-all-tz';
 import React, { useEffect } from 'react';
-import { StyleSheet, View, Linking } from 'react-native';
+import { StyleSheet, View, Linking, NativeModules } from 'react-native';
 import { Provider as PaperProvider, DarkTheme as PaperDefaultTheme } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as WebBrowser from 'expo-web-browser';
@@ -24,6 +24,10 @@ import { NavigationContainer, DarkTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Provider } from 'react-redux';
 import { useSelector, useDispatch } from 'react-redux';
+import { I18nProvider } from '@lingui/react';
+import { Trans } from '@lingui/macro';
+import { i18n } from "@lingui/core";
+import { en, pt } from 'make-plural';
 import MainScreen from './screens/MainScreen';
 import MediaScreen from './screens/MediaScreen';
 import SearchScreen from './screens/SearchScreen';
@@ -31,8 +35,18 @@ import { store, StoreState, anilistSlice } from './store/store';
 import { 
     fetchViewer, 
 } from './api/anilist';
+import { messages as messagesEn } from './locales/en/messages';
+import { messages as messagesPt } from './locales/pt/messages';
+
 
 WebBrowser.maybeCompleteAuthSession();
+
+const locale = getSystemLocale();
+i18n.loadLocaleData('en', { plurals: en });
+i18n.load('en', messagesEn);
+i18n.loadLocaleData('pt', { plurals: pt });
+i18n.load('pt', messagesPt);
+i18n.activate(locale);
 
 const backgroundColor = '#0B1622';
 const MyTheme = {
@@ -98,41 +112,43 @@ function AppContent() {
 
     return (
         <View style={{ flex: 1, backgroundColor }}>
-            <PaperProvider theme={MyPaperTheme}>
-                <NavigationContainer theme={MyTheme}>
-                    <Stack.Navigator 
-                        initialRouteName="Main"
-                    >
-                        <Stack.Screen 
-                            name="Main" 
-                            component={MainScreen}
-                            options={{
-                                headerShown: false,
-                            }}
-                        />
-                        <Stack.Screen 
-                            name="Media" 
-                            component={MediaScreen}
-                            options={{ 
-                                title: 'Details',
-                                headerShown: true,
-                                headerTintColor: 'white',
-                                animationEnabled: true,
-                            }}
-                        />
-                        <Stack.Screen 
-                            name="Search" 
-                            component={SearchScreen}
-                            options={{ 
-                                title: 'Search',
-                                headerShown: true,
-                                headerTintColor: 'white',
-                                animationEnabled: true,
-                            }}
-                        />
-                    </Stack.Navigator>
-                </NavigationContainer>
-            </PaperProvider>
+            <I18nProvider i18n={i18n}>
+                <PaperProvider theme={MyPaperTheme}>
+                    <NavigationContainer theme={MyTheme}>
+                        <Stack.Navigator 
+                            initialRouteName="Main"
+                        >
+                            <Stack.Screen 
+                                name="Main" 
+                                component={MainScreen}
+                                options={{
+                                    headerShown: false,
+                                }}
+                            />
+                            <Stack.Screen 
+                                name="Media" 
+                                component={MediaScreen}
+                                options={{ 
+                                    title: 'Details',
+                                    headerShown: true,
+                                    headerTintColor: 'white',
+                                    animationEnabled: true,
+                                }}
+                            />
+                            <Stack.Screen 
+                                name="Search" 
+                                component={SearchScreen}
+                                options={{ 
+                                    title: 'Search',
+                                    headerShown: true,
+                                    headerTintColor: 'white',
+                                    animationEnabled: true,
+                                }}
+                            />
+                        </Stack.Navigator>
+                    </NavigationContainer>
+                </PaperProvider>
+            </I18nProvider>
         </View>
     );
 }
@@ -143,4 +159,34 @@ export default function App() {
             <AppContent />
         </Provider>
     );
+}
+
+function getSystemLocale(): string {
+    let locale: string | undefined = undefined;
+    if (
+        NativeModules.SettingsManager &&
+        NativeModules.SettingsManager.settings &&
+        NativeModules.SettingsManager.settings.AppleLanguages
+    ) {
+        // iOS
+        locale = NativeModules.SettingsManager.settings.AppleLanguages[0];
+    } else if (NativeModules.I18nManager) {
+        // Android
+        locale = NativeModules.I18nManager.localeIdentifier;
+    }
+  
+    if (typeof locale === 'undefined') {
+        console.log('Couldnt get locale');
+        return 'en';
+    }
+
+    if (locale.trim() === 'pt' || locale.startsWith('pt-')) {
+        return 'pt';
+    }
+    if (locale.trim() === 'en' || locale.startsWith('en-')) {
+        return 'en';
+    }
+  
+    // fallback locale
+    return 'en';
 }

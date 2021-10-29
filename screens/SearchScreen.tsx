@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { fetchMediaWithTitle } from '../api/anilist';
 import { MediaType, Media } from '../model/anilist';
 import { StoreState } from '../store/store';
+import { Trans } from '@lingui/macro';
 
 export default function SearchScreen() {
     const anilist = useSelector((state: StoreState) => state.anilist); 
@@ -52,11 +53,20 @@ export default function SearchScreen() {
                     
                     <View>
                         <RadioButton.Group 
-                            onValueChange={value => setMediaType(value as MediaType)} value={mediaType}
+                            onValueChange={value => setMediaType(value as MediaType)} 
+                            value={mediaType}
                         >
                             <View style={{ flexDirection: 'row' }}>
-                                <RadioButton.Item label="Anime" value={MediaType.ANIME} color="white" />
-                                <RadioButton.Item label="Manga" value={MediaType.MANGA} color="white" />
+                                <RadioButton.Item 
+                                    label="Anime" 
+                                    value={MediaType.ANIME} 
+                                    color="white" 
+                                />
+                                <RadioButton.Item 
+                                    label="Manga" 
+                                    value={MediaType.MANGA} 
+                                    color="white" 
+                                />
                             </View>
                         </RadioButton.Group>
                     </View>
@@ -75,7 +85,9 @@ export default function SearchScreen() {
             <View style={styles.resultsContainer}>
                 {(result.length > 0) && (
                     <Text style={{ fontSize: 19 }}>
-                        Results: 
+                        <Trans id="results.label">
+                            Results: 
+                        </Trans>
                     </Text>
                 )}
 

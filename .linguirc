@@ -1,0 +1,8 @@
+{
+   "locales": ["en", "pt"],
+   "catalogs": [{
+      "path": "locales/{locale}/messages",
+      "include": ["components", "screens"]
+   }],
+   "format": "po"
+}

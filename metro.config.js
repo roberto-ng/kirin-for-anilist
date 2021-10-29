@@ -1,4 +1,11 @@
 // Learn more https://docs.expo.io/guides/customizing-metro
 const { getDefaultConfig } = require('expo/metro-config');
 
-module.exports = getDefaultConfig(__dirname);
+let config = getDefaultConfig(__dirname);
+
+module.exports = {
+    ...config,
+    resolver: {
+        sourceExts: ['js', 'ts', 'tsx', 'mjs'],
+    },
+};

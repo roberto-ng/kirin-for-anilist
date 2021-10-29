@@ -1,0 +1,1 @@
+/*eslint-disable*/module.exports={messages:{"results label":"results label","results.label":"results.label"}};
