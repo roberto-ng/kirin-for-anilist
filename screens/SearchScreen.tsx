@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { View, StyleSheet, ScrollView, TouchableWithoutFeedback, ImageBackground } from 'react-native';
 import { TextInput, Button, RadioButton, Text } from 'react-native-paper';
-import { Item } from 'react-native-paper/lib/typescript/components/List/List';
+import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { fetchMediaWithTitle } from '../api/anilist';
 import { MediaType, Media } from '../model/anilist';
@@ -9,6 +9,7 @@ import { StoreState } from '../store/store';
 
 export default function SearchScreen() {
     const anilist = useSelector((state: StoreState) => state.anilist); 
+    const navigation = useNavigation();
     const [mediaType, setMediaType] = useState<MediaType>(MediaType.ANIME);
     const [result, setResult] = useState<Media[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -26,6 +27,14 @@ export default function SearchScreen() {
         } catch(e) {
             console.error(e);
         }
+    };
+
+    const openMediaPage = (media: Media) => {
+        //@ts-ignore
+        navigation.navigate('Media', {
+            media: media,
+            title: media.title.romaji,
+        });
     };
 
     return (
@@ -75,7 +84,7 @@ export default function SearchScreen() {
                     >
                         <TouchableWithoutFeedback 
                             style={styles.cardCoverImage}
-                            //onPress={openMediaPage}
+                            onPress={() => openMediaPage(media)}
                         >
                             <ImageBackground
                                 style={styles.cardCoverImage} 
@@ -83,7 +92,11 @@ export default function SearchScreen() {
                             />
                         </TouchableWithoutFeedback>
 
-                        <Text style={styles.text} numberOfLines={1}>
+                        <Text 
+                            style={styles.text} 
+                            numberOfLines={1}
+                            onPress={() => openMediaPage(media)}
+                        >
                             {media.title.romaji}
                         </Text>
                     </View>
