@@ -21,7 +21,7 @@ import { fetchMediaCharacters, fetchMediaListEntry } from '../api/anilist';
 import CharacterCard from '../components/CharacterCard';
 import BottomSheetContent from '../components/BottomSheetContent';
 import { StoreState, anilistSlice } from '../store/store';
-
+import { locale } from '../utils';
 
 interface Props {
     route: {
@@ -54,7 +54,7 @@ export default function MediaScreen({ route }: Props): JSX.Element {
 
     const informations = useMemo((): Information[] => {
         const { startDate, endDate } = media;
-        const dateTimeFormat = new Intl.DateTimeFormat('en', {
+        const dateTimeFormat = new Intl.DateTimeFormat(locale, {
             month: 'long',
             day: 'numeric',
             year: 'numeric',
