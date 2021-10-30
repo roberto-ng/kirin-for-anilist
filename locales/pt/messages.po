@@ -12,7 +12,7 @@ msgstr ""
 "Language: en\n"
 "Project-Id-Version: unnamed project\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2021-10-30 17:17-0300\n"
+"PO-Revision-Date: 2021-10-30 17:22-0300\n"
 "Last-Translator: Roberto <>\n"
 "Language-Team: English <>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -161,6 +161,10 @@ msgstr "Data de início"
 #: components/BottomSheetContent.tsx:242 screens/MediaScreen.tsx:90
 msgid "status"
 msgstr "Estado"
+
+#: components/BottomSheetContent.tsx:139 components/BottomSheetContent.tsx:164
+msgid "unknown_date"
+msgstr "Data desconhecida"
 
 #: components/ListActivityCard.tsx:33
 msgid "watched_episode_{progress}"

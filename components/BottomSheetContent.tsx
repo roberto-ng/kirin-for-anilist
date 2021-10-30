@@ -14,6 +14,7 @@ import DateTimePicker, { Event } from '@react-native-community/datetimepicker';
 import { t, Trans } from '@lingui/macro';
 import { Media, MediaListEntryFull, MediaListStatus, FuzzyDate, MediaType } from '../model/anilist';
 import { saveListEntry } from '../api/anilist';
+import { locale } from '../utils';
 
 interface Props {
     media: Media,
@@ -58,7 +59,7 @@ export default function BottomSheetContent({
     );
 
     const dateTimeFormat = useMemo(() => {
-        return new Intl.DateTimeFormat('en', {
+        return new Intl.DateTimeFormat(locale, {
             month: 'long',
             day: 'numeric',
             year: 'numeric',
@@ -136,7 +137,7 @@ export default function BottomSheetContent({
 
     useEffect(() => {
         if (startDate == null) {
-            setStartDateText('Unknown date');
+            setStartDateText(t`unknown_date`);
 
             const newListEntry: MediaListEntryFull = { 
                 ...listEntry,
@@ -161,7 +162,7 @@ export default function BottomSheetContent({
 
     useEffect(() => {
         if (finishDate == null) {
-            setFinishDateText('Unknown date');
+            setFinishDateText(t`unknown_date`);
 
             const newListEntry: MediaListEntryFull = { 
                 ...listEntry,
@@ -266,7 +267,7 @@ export default function BottomSheetContent({
                         <Trans id="start_date" />:
                     </Text>
 
-                    <View style={{ alignItems: 'center', flexDirection: 'row', width: 200 }}>
+                    <View style={{ alignItems: 'center', flexDirection: 'row', width: 200, }}>
                         <Button 
                             mode="contained"
                             icon="calendar-month"
@@ -275,7 +276,9 @@ export default function BottomSheetContent({
                             onPress={() => setShowStartDatePicker(true)}
                             disabled={isSaving}
                         >
-                            {startDateText}
+                            <Text style={{ fontSize: 11 }}>
+                                {startDateText}
+                            </Text>
                         </Button>
 
                         {(startDate) && (
@@ -305,7 +308,9 @@ export default function BottomSheetContent({
                             onPress={() => setShowFinishDatePicker(true)}
                             disabled={isSaving}
                         >
-                            {finishDateText}
+                            <Text style={{ fontSize: 11 }}>
+                                {finishDateText}
+                            </Text>
                         </Button>
 
                         {(finishDate) && (

@@ -55,7 +55,6 @@ function getSystemLocale(): string {
         return 'en';
     }
   
-    console.log(locale);
     // fallback locale
     return 'en';
 }
