@@ -11,10 +11,18 @@ msgstr ""
 "Language: en\n"
 "Project-Id-Version: unnamed project\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2021-10-30 15:40-0300\n"
+"PO-Revision-Date: 2021-10-30 16:02-0300\n"
 "Last-Translator: Roberto <>\n"
 "Language-Team: English <>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: components/BottomSheetContent.tsx:313
+msgid "Save"
+msgstr "Save"
+
+#: components/BottomSheetContent.tsx:198
+msgid "Score"
+msgstr "Score"
 
 #: screens/MainScreenTabs/HomeTabScreen.tsx:218
 msgid "activity"
@@ -27,6 +35,14 @@ msgstr "Airing"
 #: screens/MainScreenTabs/HomeTabScreen.tsx:199
 msgid "anime_in_progress"
 msgstr "Anime in progress"
+
+#: screens/MediaScreen.tsx:102
+msgid "average_score"
+msgstr "Average score"
+
+#: screens/MediaScreen.tsx:286
+msgid "characters"
+msgstr "Characters"
 
 #: components/ListActivityCard.tsx:57
 msgid "completed"
@@ -48,9 +64,25 @@ msgstr "Dropped"
 msgid "dropped.label"
 msgstr "Dropped"
 
+#: screens/MediaScreen.tsx:224
+msgid "edit.button"
+msgstr "Edit"
+
+#: components/BottomSheetContent.tsx:278 screens/MediaScreen.tsx:98
+msgid "end_date"
+msgstr "End date"
+
+#: screens/MediaScreen.tsx:86
+msgid "format"
+msgstr "Format"
+
 #: screens/MainScreenTabs/HomeTabScreen.tsx:208
 msgid "manga_in_progress"
 msgstr "Manga in progress"
+
+#: screens/MediaScreen.tsx:106
+msgid "mean_score"
+msgstr "Mean score"
 
 #: screens/MediaListScreen.tsx:59 screens/MediaListScreen.tsx:139
 msgid "paused.label"
@@ -76,6 +108,14 @@ msgstr "Plans to read"
 msgid "plans_to_watch"
 msgstr "Plans to watch"
 
+#: screens/MediaScreen.tsx:110
+msgid "popularity"
+msgstr "Popularity"
+
+#: components/BottomSheetContent.tsx:174
+msgid "progress"
+msgstr "Progress"
+
 #: components/HomeMediaListCard.tsx:101 components/MediaListCard.tsx:62
 msgid "progress.label"
 msgstr "Progress: {progress}"
@@ -100,9 +140,17 @@ msgstr "Results: "
 msgid "rewatching.label"
 msgstr "Rewatching"
 
-#: App.tsx:140
+#: App.tsx:140 screens/SearchScreen.tsx:48 screens/SearchScreen.tsx:80
 msgid "search"
 msgstr "Search"
+
+#: components/BottomSheetContent.tsx:248 screens/MediaScreen.tsx:94
+msgid "start_date"
+msgstr "Start date"
+
+#: components/BottomSheetContent.tsx:224 screens/MediaScreen.tsx:90
+msgid "status"
+msgstr "Status"
 
 #: components/ListActivityCard.tsx:33
 msgid "watched_episode_{progress}"

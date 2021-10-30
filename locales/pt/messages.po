@@ -12,10 +12,18 @@ msgstr ""
 "Language: en\n"
 "Project-Id-Version: unnamed project\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2021-10-30 15:40-0300\n"
+"PO-Revision-Date: 2021-10-30 16:00-0300\n"
 "Last-Translator: Roberto <>\n"
 "Language-Team: English <>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: components/BottomSheetContent.tsx:313
+msgid "Save"
+msgstr "Salvar"
+
+#: components/BottomSheetContent.tsx:198
+msgid "Score"
+msgstr "Nota"
 
 #: screens/MainScreenTabs/HomeTabScreen.tsx:218
 msgid "activity"
@@ -28,6 +36,14 @@ msgstr "No ar"
 #: screens/MainScreenTabs/HomeTabScreen.tsx:199
 msgid "anime_in_progress"
 msgstr "Assistindo"
+
+#: screens/MediaScreen.tsx:102
+msgid "average_score"
+msgstr "Nota média"
+
+#: screens/MediaScreen.tsx:286
+msgid "characters"
+msgstr "Personagens"
 
 #: components/ListActivityCard.tsx:57
 msgid "completed"
@@ -49,9 +65,25 @@ msgstr "Largou"
 msgid "dropped.label"
 msgstr "Largado"
 
+#: screens/MediaScreen.tsx:224
+msgid "edit.button"
+msgstr "Editar"
+
+#: components/BottomSheetContent.tsx:278 screens/MediaScreen.tsx:98
+msgid "end_date"
+msgstr "Data de término"
+
+#: screens/MediaScreen.tsx:86
+msgid "format"
+msgstr "Formato"
+
 #: screens/MainScreenTabs/HomeTabScreen.tsx:208
 msgid "manga_in_progress"
 msgstr "Lendo"
+
+#: screens/MediaScreen.tsx:106
+msgid "mean_score"
+msgstr "Nota média"
 
 #: screens/MediaListScreen.tsx:59 screens/MediaListScreen.tsx:139
 msgid "paused.label"
@@ -77,6 +109,14 @@ msgstr "Planeja ler"
 msgid "plans_to_watch"
 msgstr "Planeja assistir"
 
+#: screens/MediaScreen.tsx:110
+msgid "popularity"
+msgstr "Popularidade"
+
+#: components/BottomSheetContent.tsx:174
+msgid "progress"
+msgstr "Progresso"
+
 #: components/HomeMediaListCard.tsx:101 components/MediaListCard.tsx:62
 msgid "progress.label"
 msgstr "Progresso: {progress}"
@@ -101,9 +141,17 @@ msgstr "Resultados: "
 msgid "rewatching.label"
 msgstr "Revendo"
 
-#: App.tsx:140
+#: App.tsx:140 screens/SearchScreen.tsx:48 screens/SearchScreen.tsx:80
 msgid "search"
 msgstr "Procurar"
+
+#: components/BottomSheetContent.tsx:248 screens/MediaScreen.tsx:94
+msgid "start_date"
+msgstr "Data de início"
+
+#: components/BottomSheetContent.tsx:224 screens/MediaScreen.tsx:90
+msgid "status"
+msgstr "Estado"
 
 #: components/ListActivityCard.tsx:33
 msgid "watched_episode_{progress}"

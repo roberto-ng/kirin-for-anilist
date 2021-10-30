@@ -15,6 +15,7 @@ import { Paragraph, Text, Colors, Button, IconButton, ActivityIndicator } from '
 import { Shadow } from 'react-native-shadow-2';
 import * as Clipboard from 'expo-clipboard';
 import { useSelector, useDispatch } from 'react-redux';
+import { t, Trans } from '@lingui/macro';
 import { Media, MediaList, Character, MediaListEntryFull, MediaListStatus } from '../model/anilist';
 import { fetchMediaCharacters, fetchMediaListEntry } from '../api/anilist';
 import CharacterCard from '../components/CharacterCard';
@@ -82,31 +83,31 @@ export default function MediaScreen({ route }: Props): JSX.Element {
 
         const infos = [
             {
-                title: 'Format',
+                title: t`format`,
                 value: media.format,
             },
             {
-                title: 'Status',
+                title: t`status`,
                 value: media.status,
             },
             {
-                title: 'Start Date',
+                title: t`start_date`,
                 value: startDateText,
             },
             {
-                title: 'End Date',
+                title: t`end_date`,
                 value: endDateText,
             },
             {
-                title: 'Average Score',
+                title: t`average_score`,
                 value: `${media.averageScore}%`
             },
             {
-                title: 'Mean Score',
+                title: t`mean_score`,
                 value: `${media.meanScore}%`
             },
             {
-                title: 'Popularity',
+                title: t`popularity`,
                 value: `${media.popularity}`
             },
         ];
@@ -220,7 +221,7 @@ export default function MediaScreen({ route }: Props): JSX.Element {
                             color="#174a97"
                             style={{ flex: 1, marginTop: 12, margin: 10, marginBottom: 0 }}
                         >
-                            {(listEntry == null) ? 'Add' : 'Edit'}
+                            <Trans id="edit.button" />
                         </Button>
                     ) : (
                         <View style={{ flex: 1, marginTop: 12, margin: 10, marginBottom: 0 }}>
@@ -282,7 +283,7 @@ export default function MediaScreen({ route }: Props): JSX.Element {
                     {(characters.length > 0) && (
                         <View style={styles.charactersContainer}>
                             <Text style={[styles.sectionTitle, styles.text]}>
-                                Characters:
+                                <Trans id="characters" /> :
                             </Text>
 
                             <FlatList 
@@ -329,8 +330,13 @@ export default function MediaScreen({ route }: Props): JSX.Element {
                             token={anilist.token}
                             onSaveFinished={(updatedListEntry) => {
                                 setListEntry(updatedListEntry);
+
+                                // update home screen
                                 dispatch(anilistSlice.actions.setShouldHomeScreenUpdate(true));
+                                // update media list screen
                                 dispatch(anilistSlice.actions.setShouldMediaListScreenUpdate(true));
+                                
+                                // close this bottom sheet
                                 onCloseBottomSheet();
                             }}
                         />

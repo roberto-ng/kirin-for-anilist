@@ -11,6 +11,7 @@ import DropDown from 'react-native-paper-dropdown';
 import InputSpinner from 'react-native-input-spinner';
 import { Text, Button, DefaultTheme, DarkTheme, IconButton, } from 'react-native-paper';
 import DateTimePicker, { Event } from '@react-native-community/datetimepicker';
+import { t, Trans } from '@lingui/macro';
 import { Media, MediaListEntryFull, MediaListStatus, FuzzyDate } from '../model/anilist';
 import { saveListEntry } from '../api/anilist';
 
@@ -170,7 +171,7 @@ export default function BottomSheetContent({
             <View style={styles.spinnersArea}>
                 <View style={[styles.spinnerWrapper, { marginRight: 10 }]}>
                     <Text style={styles.spinnerLabel}>
-                        Progress:
+                        <Trans id="progress" />:
                     </Text>
 
                     <InputSpinner
@@ -194,7 +195,7 @@ export default function BottomSheetContent({
 
                 <View style={styles.spinnerWrapper}>
                     <Text style={styles.spinnerLabel}>
-                        Score:
+                        <Trans id="Score"/>:
                     </Text>
 
                     <InputSpinner
@@ -220,7 +221,7 @@ export default function BottomSheetContent({
             <View style={{ alignItems: 'center', }}>
                 <View style={styles.dropDownWrapper}>
                     <Text style={styles.dateLabel}>
-                        Status:
+                        <Trans id="status" />:
                     </Text>
                     <DropDown 
                         //label="Status"
@@ -244,7 +245,7 @@ export default function BottomSheetContent({
             <View style={{ margin: 10, alignItems: 'center',  }}>
                 <View>
                     <Text style={styles.dateLabel}>
-                        Start date:
+                        <Trans id="start_date" />:
                     </Text>
 
                     <View style={{ alignItems: 'center', flexDirection: 'row', width: 200 }}>
@@ -274,7 +275,7 @@ export default function BottomSheetContent({
             <View style={{ alignItems: 'center' }}>
                 <View>
                     <Text style={styles.dateLabel}>
-                        Finish date:
+                        <Trans id="end_date" />:
                     </Text>
 
                     <View style={{ alignItems: 'center', flexDirection: 'row', width: 200 }}>
@@ -309,7 +310,7 @@ export default function BottomSheetContent({
                     disabled={isSaving}
                     onPress={handleSavePress}
                 >
-                    Save
+                    <Trans id="Save" />
                 </Button>
             </View>
             
