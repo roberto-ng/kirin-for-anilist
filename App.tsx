@@ -25,7 +25,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { Provider } from 'react-redux';
 import { useSelector, useDispatch } from 'react-redux';
 import { I18nProvider } from '@lingui/react';
-import { Trans } from '@lingui/macro';
+import { Trans, t } from '@lingui/macro';
 import { i18n } from "@lingui/core";
 import { en, pt } from 'make-plural';
 import MainScreen from './screens/MainScreen';
@@ -127,7 +127,7 @@ function AppContent() {
                                 name="Media" 
                                 component={MediaScreen}
                                 options={{ 
-                                    title: 'Details',
+                                    title: t`details`,
                                     headerShown: true,
                                     headerTintColor: 'white',
                                     animationEnabled: true,
@@ -137,7 +137,7 @@ function AppContent() {
                                 name="Search" 
                                 component={SearchScreen}
                                 options={{ 
-                                    title: 'Search',
+                                    title: t`search`,
                                     headerShown: true,
                                     headerTintColor: 'white',
                                     animationEnabled: true,

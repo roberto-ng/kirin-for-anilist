@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { fetchMediaWithTitle } from '../api/anilist';
 import { MediaType, Media } from '../model/anilist';
 import { StoreState } from '../store/store';
-import { Trans } from '@lingui/macro';
+import { Trans, t } from '@lingui/macro';
 
 export default function SearchScreen() {
     const anilist = useSelector((state: StoreState) => state.anilist); 
@@ -18,7 +18,7 @@ export default function SearchScreen() {
     const onChangeSearch = (query: string) => setSearchQuery(query);
     
     const handleSearch = async () => {
-        if (searchQuery.trim().length === 0) {
+        if (searchQuery.trim().length < 2) {
             // do nothing if the query is empty
             setResult([]);
             return;
@@ -45,7 +45,7 @@ export default function SearchScreen() {
             <View style={styles.form}>
                 <View style={{ alignItems: 'center' }}>
                     <Searchbar
-                        placeholder="Search"
+                        placeholder={t`search`}
                         onChangeText={onChangeSearch}
                         value={searchQuery}
                         style={{ backgroundColor: '#174a97' }}
@@ -77,7 +77,7 @@ export default function SearchScreen() {
                         color="#174a97"
                         style={styles.searchButton}
                     >
-                        Search
+                        <Trans id="search" />
                     </Button>
                 </View>
             </View>
