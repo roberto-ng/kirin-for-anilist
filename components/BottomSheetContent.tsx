@@ -12,7 +12,7 @@ import InputSpinner from 'react-native-input-spinner';
 import { Text, Button, DefaultTheme, DarkTheme, IconButton, } from 'react-native-paper';
 import DateTimePicker, { Event } from '@react-native-community/datetimepicker';
 import { t, Trans } from '@lingui/macro';
-import { Media, MediaListEntryFull, MediaListStatus, FuzzyDate } from '../model/anilist';
+import { Media, MediaListEntryFull, MediaListStatus, FuzzyDate, MediaType } from '../model/anilist';
 import { saveListEntry } from '../api/anilist';
 
 interface Props {
@@ -67,12 +67,30 @@ export default function BottomSheetContent({
 
     const statusList = useMemo(() => {
         return [
-            { label: 'Current', value: MediaListStatus.CURRENT },
-            { label: 'Planning', value: MediaListStatus.PLANNING },
-            { label: 'Completed', value: MediaListStatus.COMPLETED },
-            { label: 'Repeating', value: MediaListStatus.REPEATING },
-            { label: 'Paused', value: MediaListStatus.PAUSED },
-            { label: 'Dropped', value: MediaListStatus.DROPPED },
+            { 
+                label: (media.type === MediaType.ANIME) ? t`watching.label` : t`reading.label`, 
+                value: MediaListStatus.CURRENT, 
+            },
+            { 
+                label: t`planning.label`, 
+                value: MediaListStatus.PLANNING 
+            },
+            { 
+                label: t`completed.label`, 
+                value: MediaListStatus.COMPLETED, 
+            },
+            { 
+                label: (media.type === MediaType.ANIME) ? t`rewatching.label` : t`rereading.label`, 
+                value: MediaListStatus.REPEATING, 
+            },
+            { 
+                label: t`paused.label`, 
+                value: MediaListStatus.PAUSED, 
+            },
+            { 
+                label: t`dropped.label`, 
+                value: MediaListStatus.DROPPED, 
+            },
         ];
     }, []);
 
