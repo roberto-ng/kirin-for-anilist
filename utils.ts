@@ -48,13 +48,14 @@ function getSystemLocale(): string {
         return 'en';
     }
 
-    if (locale.trim() === 'pt' || locale.startsWith('pt-')) {
+    if (locale.trim() === 'pt' || locale.startsWith('pt-') || locale.startsWith('pt_')) {
         return 'pt';
     }
-    if (locale.trim() === 'en' || locale.startsWith('en-')) {
+    if (locale.trim() === 'en' || locale.startsWith('en-') || locale.startsWith('en_')) {
         return 'en';
     }
   
+    console.log(locale);
     // fallback locale
     return 'en';
 }
