@@ -11,16 +11,16 @@ msgstr ""
 "Language: en\n"
 "Project-Id-Version: unnamed project\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2021-10-30 16:02-0300\n"
+"PO-Revision-Date: 2021-10-30 17:16-0300\n"
 "Last-Translator: Roberto <>\n"
 "Language-Team: English <>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: components/BottomSheetContent.tsx:313
+#: components/BottomSheetContent.tsx:331
 msgid "Save"
 msgstr "Save"
 
-#: components/BottomSheetContent.tsx:198
+#: components/BottomSheetContent.tsx:216
 msgid "Score"
 msgstr "Score"
 
@@ -48,9 +48,14 @@ msgstr "Characters"
 msgid "completed"
 msgstr "Completed"
 
-#: screens/MediaListScreen.tsx:55 screens/MediaListScreen.tsx:135
+#: components/BottomSheetContent.tsx:79 screens/MediaListScreen.tsx:55
+#: screens/MediaListScreen.tsx:135
 msgid "completed.label"
 msgstr "Completed"
+
+#: screens/MediaScreen.tsx:246
+msgid "description"
+msgstr "Description"
 
 #: App.tsx:130
 msgid "details"
@@ -60,7 +65,8 @@ msgstr "Details"
 msgid "dropped"
 msgstr "Dropped"
 
-#: screens/MediaListScreen.tsx:63 screens/MediaListScreen.tsx:143
+#: components/BottomSheetContent.tsx:91 screens/MediaListScreen.tsx:63
+#: screens/MediaListScreen.tsx:143
 msgid "dropped.label"
 msgstr "Dropped"
 
@@ -68,7 +74,7 @@ msgstr "Dropped"
 msgid "edit.button"
 msgstr "Edit"
 
-#: components/BottomSheetContent.tsx:278 screens/MediaScreen.tsx:98
+#: components/BottomSheetContent.tsx:296 screens/MediaScreen.tsx:98
 msgid "end_date"
 msgstr "End date"
 
@@ -84,7 +90,8 @@ msgstr "Manga in progress"
 msgid "mean_score"
 msgstr "Mean score"
 
-#: screens/MediaListScreen.tsx:59 screens/MediaListScreen.tsx:139
+#: components/BottomSheetContent.tsx:87 screens/MediaListScreen.tsx:59
+#: screens/MediaListScreen.tsx:139
 msgid "paused.label"
 msgstr "Paused"
 
@@ -96,7 +103,8 @@ msgstr "Paused reading"
 msgid "paused_watching"
 msgstr "Paused watching"
 
-#: screens/MediaListScreen.tsx:67 screens/MediaListScreen.tsx:147
+#: components/BottomSheetContent.tsx:75 screens/MediaListScreen.tsx:67
+#: screens/MediaListScreen.tsx:147
 msgid "planning.label"
 msgstr "Planning"
 
@@ -112,7 +120,7 @@ msgstr "Plans to watch"
 msgid "popularity"
 msgstr "Popularity"
 
-#: components/BottomSheetContent.tsx:174
+#: components/BottomSheetContent.tsx:192
 msgid "progress"
 msgstr "Progress"
 
@@ -124,11 +132,11 @@ msgstr "Progress: {progress}"
 msgid "read_chapter_{progress}"
 msgstr "Read chapter {progress} of "
 
-#: screens/MediaListScreen.tsx:122
+#: components/BottomSheetContent.tsx:71 screens/MediaListScreen.tsx:122
 msgid "reading.label"
 msgstr "Reading"
 
-#: screens/MediaListScreen.tsx:123
+#: components/BottomSheetContent.tsx:83 screens/MediaListScreen.tsx:123
 msgid "rereading.label"
 msgstr "Rereading"
 
@@ -136,7 +144,8 @@ msgstr "Rereading"
 msgid "results.label"
 msgstr "Results: "
 
-#: screens/MediaListScreen.tsx:51 screens/MediaListScreen.tsx:123
+#: components/BottomSheetContent.tsx:83 screens/MediaListScreen.tsx:51
+#: screens/MediaListScreen.tsx:123
 msgid "rewatching.label"
 msgstr "Rewatching"
 
@@ -144,11 +153,11 @@ msgstr "Rewatching"
 msgid "search"
 msgstr "Search"
 
-#: components/BottomSheetContent.tsx:248 screens/MediaScreen.tsx:94
+#: components/BottomSheetContent.tsx:266 screens/MediaScreen.tsx:94
 msgid "start_date"
 msgstr "Start date"
 
-#: components/BottomSheetContent.tsx:224 screens/MediaScreen.tsx:90
+#: components/BottomSheetContent.tsx:242 screens/MediaScreen.tsx:90
 msgid "status"
 msgstr "Status"
 
@@ -156,6 +165,7 @@ msgstr "Status"
 msgid "watched_episode_{progress}"
 msgstr "Watched episode {progress} of"
 
-#: screens/MediaListScreen.tsx:47 screens/MediaListScreen.tsx:122
+#: components/BottomSheetContent.tsx:71 screens/MediaListScreen.tsx:47
+#: screens/MediaListScreen.tsx:122
 msgid "watching.label"
 msgstr "Watching"

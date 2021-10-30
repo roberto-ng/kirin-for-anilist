@@ -243,7 +243,7 @@ export default function MediaScreen({ route }: Props): JSX.Element {
                     {(media.description != null && media.description.trim().length > 0) && (
                         <View style={styles.descriptionContainer}>
                             <Text style={[styles.text, styles.descriptionLabel]}>
-                                Description:
+                                <Trans id="description"/>:
                             </Text>
 
                             <Paragraph 
