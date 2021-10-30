@@ -17,6 +17,8 @@ import {
 } from 'react-native';
 import { Button, Text, ActivityIndicator, Colors, Snackbar, FAB } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
+import { t } from "@lingui/macro";
+import { Trans } from '@lingui/macro';
 import { StoreState, anilistSlice } from '../../store/store';
 import HomeMediaListCard from '../../components/HomeMediaListCard';
 import TextActivityCard from '../../components/TextActivityCard';
@@ -162,7 +164,7 @@ export default function HomeTabScreen({}) {
         if (anilist?.shouldHomeScreenUpdate) {
             dispatch(anilistSlice.actions.setShouldHomeScreenUpdate(false));
             refresh()
-                .then(() => console.log('Recarregado'))
+                .then(() => {})
                 .catch(err => {
                     console.error(err);
                 });
@@ -185,7 +187,7 @@ export default function HomeTabScreen({}) {
                     <>
                         {(animeAiring.length > 0) && (
                             <MediaSection 
-                                name="Airing" 
+                                name={t`airing`} // "Airing" 
                                 list={animeAiring} 
                                 token={anilist.token} 
                                 onError={onError}
@@ -194,7 +196,7 @@ export default function HomeTabScreen({}) {
 
                         {(animeFinishedAiring.length > 0) && (
                             <MediaSection 
-                                name="Anime in Progress" 
+                                name={t`anime_in_progress`} // "Anime in Progress" 
                                 list={animeFinishedAiring} 
                                 token={anilist.token} 
                                 onError={onError}
@@ -203,7 +205,7 @@ export default function HomeTabScreen({}) {
 
                         {(mangaInProgress.length > 0) && (
                             <MediaSection 
-                                name="Manga in Progress" 
+                                name={t`manga_in_progress`} // "Manga in Progress" 
                                 list={mangaInProgress} 
                                 token={anilist.token} 
                                 onError={onError}
@@ -213,7 +215,9 @@ export default function HomeTabScreen({}) {
                         {(activities.length > 0) && (
                             <>
                                 <Text style={[styles.text, { margin: 15, color: 'rgb(159,173,189)', }]}>
-                                    Activity
+                                    <Trans id="activity">
+                                        Activity
+                                    </Trans>
                                 </Text>
 
                                 <View style={styles.activities}>

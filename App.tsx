@@ -32,16 +32,14 @@ import MainScreen from './screens/MainScreen';
 import MediaScreen from './screens/MediaScreen';
 import SearchScreen from './screens/SearchScreen';
 import { store, StoreState, anilistSlice } from './store/store';
-import { 
-    fetchViewer, 
-} from './api/anilist';
+import { fetchViewer, } from './api/anilist';
+import { locale } from './utils';
 import { messages as messagesEn } from './locales/en/messages';
 import { messages as messagesPt } from './locales/pt/messages';
 
 
 WebBrowser.maybeCompleteAuthSession();
 
-const locale = getSystemLocale();
 i18n.loadLocaleData('en', { plurals: en });
 i18n.load('en', messagesEn);
 i18n.loadLocaleData('pt', { plurals: pt });
@@ -159,34 +157,4 @@ export default function App() {
             <AppContent />
         </Provider>
     );
-}
-
-function getSystemLocale(): string {
-    let locale: string | undefined = undefined;
-    if (
-        NativeModules.SettingsManager &&
-        NativeModules.SettingsManager.settings &&
-        NativeModules.SettingsManager.settings.AppleLanguages
-    ) {
-        // iOS
-        locale = NativeModules.SettingsManager.settings.AppleLanguages[0];
-    } else if (NativeModules.I18nManager) {
-        // Android
-        locale = NativeModules.I18nManager.localeIdentifier;
-    }
-  
-    if (typeof locale === 'undefined') {
-        console.log('Couldnt get locale');
-        return 'en';
-    }
-
-    if (locale.trim() === 'pt' || locale.startsWith('pt-')) {
-        return 'pt';
-    }
-    if (locale.trim() === 'en' || locale.startsWith('en-')) {
-        return 'en';
-    }
-  
-    // fallback locale
-    return 'en';
 }

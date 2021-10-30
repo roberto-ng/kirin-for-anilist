@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
+import { t } from "@lingui/macro";
+import { Trans } from '@lingui/macro';
 import { ActivityType, ActivityUnion, ListActivity } from '../model/anilist';
 import { getRelativeTime } from '../utils';
 
@@ -16,52 +18,43 @@ interface ListActivityCardProps {
     activity: ListActivity,
 }
 
-const DIVISIONS = [
-    { amount: 60, name: 'seconds' },
-    { amount: 60, name: 'minutes' },
-    { amount: 24, name: 'hours' },
-    { amount: 7, name: 'days' },
-    { amount: 4.34524, name: 'weeks' },
-    { amount: 12, name: 'months' },
-    { amount: Number.POSITIVE_INFINITY, name: 'years' }
-]
-
 export default function ListActivityCard({ activity }: ListActivityCardProps) {
     const navigation = useNavigation();
     const title = activity.media.title.romaji;
 
     let text = null;
+    let { progress } = activity;
     switch (activity.status) {
         case 'read chapter':
-            text = `Read chapter ${activity.progress} of `;
+            text = t`read_chapter_${progress}`;
             break;
         
         case 'watched episode':
-            text = `Watched episode ${activity.progress} of `;
+            text = t`watched_episode_${progress}`; // `Watched episode ${progress} of `;
             break;
         
         case 'plans to watch':
-            text = `Plans to watch `;
+            text = t`plans_to_watch`; // `Plans to watch `;
             break;
 
         case 'plans to read':
-            text = `Plans to read `;
+            text = t`plans_to_read`; // `Plans to read `;
             break;
         
         case 'paused watching':
-            text = `Paused watching `;
+            text = t`paused_watching`; // `Paused watching `;
             break;
         
         case 'paused reading':
-            text = `Paused reading `;
+            text = t`paused_reading`; // `Paused reading `;
             break;
         
         case 'dropped':
-            text = `Dropped `;
+            text = t`dropped`; // `Dropped `;
             break;
 
         case 'completed':
-            text = `Completed `;
+            text = t`completed`; // `Completed `;
             break;
 
         default:
@@ -109,7 +102,7 @@ export default function ListActivityCard({ activity }: ListActivityCardProps) {
                             numberOfLines={3}
                             onPress={openMediaPage}
                         >
-                            {title}
+                            {' ' + title}
                         </Text>
                     </Text>
                 </View>

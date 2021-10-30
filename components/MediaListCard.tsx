@@ -6,6 +6,7 @@ import {
     ImageBackground,
     Pressable,
 } from 'react-native';
+import { Trans } from '@lingui/macro';
 import { Text, TouchableRipple } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { MediaList, MediaListStatus } from '../model/anilist';
@@ -58,7 +59,10 @@ function MediaListCard({ item }: MediaListCardProps): JSX.Element {
                     {(status !== MediaListStatus.PLANNING) && (
                         <View style={styles.mediaDetailsBottom}>
                             <Text style={styles.progress}>
-                                Progress: {progress}
+                                <Trans 
+                                    id="progress.label"
+                                    values={{ progress }}
+                                />
                             </Text>
 
                             {(score != null && score > 0) && (
