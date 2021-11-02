@@ -1,8 +1,9 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect} from 'react';
 import { StyleSheet, View } from 'react-native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { TouchableWithoutFeedback } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useNavigation } from '@react-navigation/core';
 import HomeTabScreen from './MainScreenTabs/HomeTabScreen';
 import AnimeTabScreen from './MainScreenTabs/AnimeTabScreen';
 import MangaTabScreen from './MainScreenTabs/MangaTabScreen';
@@ -12,6 +13,15 @@ const backgroundColor = '#151F2E';
 const iconSize = 26;
 
 export default function MainScreen() {
+    const navigation = useNavigation();
+    
+    useEffect(() => {
+        navigation.addListener('beforeRemove', (e) => {
+            // prevent user from going back
+            e.preventDefault();
+        });
+    }, [])
+    
     return (
         <Tab.Navigator
             initialRouteName="Home"

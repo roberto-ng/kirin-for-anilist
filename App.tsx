@@ -31,6 +31,7 @@ import { en, pt } from 'make-plural';
 import MainScreen from './screens/MainScreen';
 import MediaScreen from './screens/MediaScreen';
 import SearchScreen from './screens/SearchScreen';
+import LoadingScreen from './screens/LoadingScreen';
 import { store, StoreState, anilistSlice } from './store/store';
 import { fetchViewer, } from './api/anilist';
 import { locale } from './utils';
@@ -70,51 +71,13 @@ const MyPaperTheme = {
 const Stack = createStackNavigator();
 
 function AppContent() {
-    const dispatch = useDispatch();
-    const state = useSelector((state: StoreState) => state);
-
-    const fetchData = async (accessToken: string) => {
-        const user = await fetchViewer(accessToken);        
-        dispatch(anilistSlice.actions.setUser(user));
-        dispatch(anilistSlice.actions.setToken(accessToken));
-    };
-
-    useEffect(() => {
-        Linking.addEventListener('url', async (e) => {
-            if (state.anilist.token == null) {
-                try {
-                    const parsedURL = ExpoLinking.parse(e.url.replace('#', '?'));
-                    const accessToken = parsedURL.queryParams['access_token']
-                    if (typeof accessToken !== 'string') {
-                        throw new Error('Redirect URL does not contain an access_token param\n');
-                    }
-                
-                    await AsyncStorage.setItem('anilist_token', accessToken);
-                    await fetchData(accessToken);
-                } catch (err) {
-                    console.error(err);
-                }
-            }
-        });
-
-        AsyncStorage.getItem('anilist_token').then(async (accessToken) => {
-            if (accessToken !== null) {
-                try {
-                    await fetchData(accessToken);
-                } catch (err) {
-                    console.error(err);
-                }
-            }
-        });
-    }, []);
-
     return (
         <View style={{ flex: 1, backgroundColor }}>
             <I18nProvider i18n={i18n}>
                 <PaperProvider theme={MyPaperTheme}>
                     <NavigationContainer theme={MyTheme}>
                         <Stack.Navigator 
-                            initialRouteName="Main"
+                            initialRouteName="Loading"
                         >
                             <Stack.Screen 
                                 name="Main" 
@@ -141,6 +104,13 @@ function AppContent() {
                                     headerShown: true,
                                     headerTintColor: 'white',
                                     animationEnabled: true,
+                                }}
+                            />
+                            <Stack.Screen
+                                name="Loading"
+                                component={LoadingScreen}
+                                options={{
+                                    headerShown: false,
                                 }}
                             />
                         </Stack.Navigator>
