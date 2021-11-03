@@ -283,7 +283,7 @@ export default function MediaScreen({ route }: Props): JSX.Element {
                     {(characters.length > 0) && (
                         <View style={styles.charactersContainer}>
                             <Text style={[styles.sectionTitle, styles.text]}>
-                                <Trans id="characters" /> :
+                                <Trans id="characters" />:
                             </Text>
 
                             <FlatList 
