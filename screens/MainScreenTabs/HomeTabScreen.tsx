@@ -166,7 +166,11 @@ export default function HomeTabScreen({}) {
                         dispatch(anilistSlice.actions.setToken(undefined));
                         dispatch(anilistSlice.actions.setIsLoggedIn(false));
 
-                        navigation.removeListener('beforeRemove', () => {});
+                        navigation.removeListener('beforeRemove', () => {
+                            // @ts-ignore
+                            navigation.navigate('Loading');
+                        });
+
                         // @ts-ignore
                         navigation.navigate('Loading');
                     },
@@ -223,7 +227,7 @@ export default function HomeTabScreen({}) {
                             mode="contained"
                             onPress={handleLogInBtnPress}
                         >
-                            Log in
+                            <Trans>login</Trans>
                         </Button>
                     </>
                 ) : (

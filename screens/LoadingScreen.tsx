@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Linking } from 'react-native';
 import * as ExpoLinking from 'expo-linking';
 import Constants from 'expo-constants';
-
+import { Trans } from '@lingui/macro';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/core';
@@ -99,7 +99,7 @@ export default function LoadingScreen({ navigation }: any) {
                     onPress={handleLogInBtnPress}
                     color="#174a97"
                 >
-                    Log in
+                    <Trans>login</Trans>
                 </Button>
             </View>
         );

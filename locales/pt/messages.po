@@ -25,11 +25,11 @@ msgstr "Salvar"
 msgid "Score"
 msgstr "Nota"
 
-#: screens/MainScreenTabs/HomeTabScreen.tsx:248
+#: screens/MainScreenTabs/HomeTabScreen.tsx:261
 msgid "activity"
 msgstr "Atividade"
 
-#: screens/MainScreenTabs/HomeTabScreen.tsx:220
+#: screens/MainScreenTabs/HomeTabScreen.tsx:233
 msgid "airing"
 msgstr "No ar"
 
@@ -37,7 +37,7 @@ msgstr "No ar"
 msgid "alert.logout"
 msgstr "Tem certeza que você quer sair?"
 
-#: screens/MainScreenTabs/HomeTabScreen.tsx:229
+#: screens/MainScreenTabs/HomeTabScreen.tsx:242
 msgid "anime_in_progress"
 msgstr "Assistindo"
 
@@ -94,7 +94,11 @@ msgstr "Data de término"
 msgid "format"
 msgstr "Formato"
 
-#: screens/MainScreenTabs/HomeTabScreen.tsx:238
+#: screens/MainScreenTabs/HomeTabScreen.tsx:226
+msgid "login"
+msgstr "Fazer login"
+
+#: screens/MainScreenTabs/HomeTabScreen.tsx:251
 msgid "manga_in_progress"
 msgstr "Lendo"
 
