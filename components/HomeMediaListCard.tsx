@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
     StyleSheet, 
     View, 
@@ -33,6 +32,19 @@ export default function HomeMediaListCard({
     const [isUpdating, setIsUpdating] = useState<boolean>(false);
     const [item, setItem] = useState<MediaList>(mediaListItem);
     const { media } = mediaListItem;
+
+    // calculate how many episodes behind the user is
+    const episodesBehind = useMemo<number>(() => {
+        const nextEpisode: number | undefined = media?.nextAiringEpisode?.episode;
+        if (nextEpisode != null) {
+            const difference = nextEpisode - (item.progress ?? 0);
+            if (difference >= 1) {
+                return difference - 1;
+            }
+        }
+
+        return 0;
+    }, []);
     
     const formatProgress = (): string => {
         const total = media.episodes ?? media.chapters;
@@ -96,20 +108,28 @@ export default function HomeMediaListCard({
                     {media.title.romaji}
                 </Text>
             
-                <View style={styles.cardContentInfo}>
-                    <Text style={[styles.cardContentText, styles.cardContentInfoText]}>
-                        <Trans 
-                            id="progress.label"
-                            values={{ progress: formatProgress() }}
-                        />
+                {(episodesBehind > 0) && (
+                    <Text style={styles.episodesBehind}>
+                        <Trans>episodes_behind.{episodesBehind}</Trans>
                     </Text>
-                    <IconButton 
-                        icon="plus" 
-                        color="rgb(159,173,189)" 
-                        size={23}
-                        disabled={isUpdating} // disable the button if the media progress is being updated
-                        onPress={handleIncrementButtonPress}
-                    />
+                )}
+                
+                <View style={styles.cardContentInfo}>    
+                    <View style={styles.progress}>
+                        <Text style={[styles.cardContentText, styles.cardContentInfoText]}>
+                            <Trans 
+                                id="progress.label"
+                                values={{ progress: formatProgress() }}
+                            />
+                        </Text>
+                        <IconButton 
+                            icon="plus" 
+                            color="rgb(159,173,189)" 
+                            size={23}
+                            disabled={isUpdating} // disable the button if the media progress is being updated
+                            onPress={handleIncrementButtonPress}
+                        />
+                    </View>
                 </View>
             </View>
         </View>
@@ -137,11 +157,21 @@ const styles = StyleSheet.create({
     cardContentText: {
         color: 'rgb(159,173,189)',
     },
+    episodesBehind: {
+        top: 14,
+        textAlign: 'left',
+        marginLeft: 9,
+        color: 'rgb(61,180,242)',
+    },
     cardContentTitle: {
         fontSize: 16,
     },
     cardContentInfo: {
-        top: 10,
+        top: 5,
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    progress: {
         flexDirection: 'row',
         alignItems: 'center',
     },

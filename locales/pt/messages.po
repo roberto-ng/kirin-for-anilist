@@ -25,11 +25,11 @@ msgstr "Salvar"
 msgid "Score"
 msgstr "Nota"
 
-#: screens/MainScreenTabs/HomeTabScreen.tsx:261
+#: screens/MainScreenTabs/HomeTabScreen.tsx:265
 msgid "activity"
 msgstr "Atividade"
 
-#: screens/MainScreenTabs/HomeTabScreen.tsx:233
+#: screens/MainScreenTabs/HomeTabScreen.tsx:237
 msgid "airing"
 msgstr "No ar"
 
@@ -37,7 +37,7 @@ msgstr "No ar"
 msgid "alert.logout"
 msgstr "Tem certeza que você quer sair?"
 
-#: screens/MainScreenTabs/HomeTabScreen.tsx:242
+#: screens/MainScreenTabs/HomeTabScreen.tsx:246
 msgid "anime_in_progress"
 msgstr "Assistindo"
 
@@ -90,15 +90,24 @@ msgstr "Editar"
 msgid "end_date"
 msgstr "Data de término"
 
+#: components/HomeMediaListCard.tsx:112
+msgid "episodes_behind.{episodesBehind}"
+msgstr "{episodesBehind} episódios novos"
+
+#: components/HomeMediaListCard.tsx:112
+#~ msgid "episodes_behinds.{episodesBehind}"
+#~ msgstr "{episodesBehind} episódios novos"
+
 #: screens/MediaScreen.tsx:86
 msgid "format"
 msgstr "Formato"
 
-#: screens/MainScreenTabs/HomeTabScreen.tsx:226
+#: screens/LoadingScreen.tsx:102
+#: screens/MainScreenTabs/HomeTabScreen.tsx:230
 msgid "login"
 msgstr "Fazer login"
 
-#: screens/MainScreenTabs/HomeTabScreen.tsx:251
+#: screens/MainScreenTabs/HomeTabScreen.tsx:255
 msgid "manga_in_progress"
 msgstr "Lendo"
 
@@ -142,7 +151,7 @@ msgstr "Popularidade"
 msgid "progress"
 msgstr "Progresso"
 
-#: components/HomeMediaListCard.tsx:101
+#: components/HomeMediaListCard.tsx:119
 #: components/MediaListCard.tsx:62
 msgid "progress.label"
 msgstr "Progresso: {progress}"
