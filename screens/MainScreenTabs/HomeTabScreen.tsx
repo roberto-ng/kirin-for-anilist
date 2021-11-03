@@ -1,7 +1,7 @@
 import Constants from 'expo-constants';
 import { StatusBar } from 'expo-status-bar';
 import React, { FC, useEffect, useState } from 'react';
-import { useAsyncStorage } from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
 import { useSelector, useDispatch } from 'react-redux';
@@ -14,11 +14,11 @@ import {
     Platform,
     ScrollView,
     Linking,
+    Alert,
 } from 'react-native';
-import { Button, Text, ActivityIndicator, Colors, Snackbar, FAB } from 'react-native-paper';
+import { Button, Text, ActivityIndicator, Colors, Snackbar, FAB, IconButton } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import { t } from "@lingui/macro";
-import { Trans } from '@lingui/macro';
+import { t, Trans } from "@lingui/macro";
 import { StoreState, anilistSlice } from '../../store/store';
 import HomeMediaListCard from '../../components/HomeMediaListCard';
 import TextActivityCard from '../../components/TextActivityCard';
@@ -146,10 +146,39 @@ export default function HomeTabScreen({}) {
     const openSearchScreen = () => {
         // @ts-ignore
         navigation.navigate('Search');
-    }
+    };
+
+    const logOut = () => {
+        Alert.alert(
+            t`alert.logout`,
+            '',
+            [
+                {
+                    text: t`cancel`,
+                    onPress: () => { },
+                    style: "cancel"
+                },
+                { 
+                    text: "OK", 
+                    onPress: async () => {
+                        await AsyncStorage.removeItem('anilist_token');
+                        dispatch(anilistSlice.actions.setUser(undefined));
+                        dispatch(anilistSlice.actions.setToken(undefined));
+                        dispatch(anilistSlice.actions.setIsLoggedIn(false));
+
+                        navigation.removeListener('beforeRemove', () => {});
+                        // @ts-ignore
+                        navigation.navigate('Loading');
+                    },
+                },
+            ]
+        );
+    };
 
     useEffect(() => {
         if (anilist.token == null || anilist.user == null) {
+            // @ts-ignore
+            navigation.navigate('Loading');
             return;
         }
 
@@ -171,9 +200,23 @@ export default function HomeTabScreen({}) {
         }
     });
 
+    useEffect(() => {
+        navigation.addListener('beforeRemove', (e) => {
+            // prevent user from going back
+            e.preventDefault();
+        });
+    }, []);
+
     return (
         <>
             <ScrollView contentContainerStyle={styles.container}>
+                <View style={{ paddingLeft: 10, paddingTop: 10 }}>
+                    <IconButton
+                        icon="logout"
+                        onPress={logOut}
+                    />
+                </View>
+
                 {(anilist.token == null) ? (
                     <>
                         <Button 

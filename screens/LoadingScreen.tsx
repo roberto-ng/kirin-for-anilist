@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Linking } from 'react-native';
-import ExpoLinking from 'expo-linking';
+import * as ExpoLinking from 'expo-linking';
 import Constants from 'expo-constants';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -13,23 +13,24 @@ import { anilistSlice, StoreState } from '../store/store';
 const authUrl = `https://anilist.co/api/v2/oauth/authorize`;
 const clientId: string = Constants.manifest?.extra?.anilistClientId;
 
-export default function LoadingScreen() {
+export default function LoadingScreen({ navigation }: any) {
     const dispatch = useDispatch();
-    const navigation = useNavigation();
     const state = useSelector((state: StoreState) => state);
 
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [isLoggedIn, setisLoggedIn] = useState(false);
 
     const openHomeScreen = () => {
         // @ts-ignore
         navigation.navigate('Main');
+        setisLoggedIn(true);
     };
 
     const logOut = async () => {
         await AsyncStorage.removeItem('anilist_token');
         dispatch(anilistSlice.actions.setUser(undefined));
         dispatch(anilistSlice.actions.setToken(undefined));
+        dispatch(anilistSlice.actions.setIsLoggedIn(false));
     };
 
     const fetchData = async (accessToken: string) => {
@@ -55,7 +56,6 @@ export default function LoadingScreen() {
                 
                     await AsyncStorage.setItem('anilist_token', accessToken);
                     await fetchData(accessToken);
-                    setisLoggedIn(true);
                     openHomeScreen();
                 } catch (err) {
                     await logOut();
@@ -70,23 +70,28 @@ export default function LoadingScreen() {
             if (accessToken !== null) {
                 try {
                     await fetchData(accessToken);
-                    setisLoggedIn(true);
                     openHomeScreen();
                 } catch (err) {
                     await logOut();
-                    setisLoggedIn(false);
                     console.error(err);
                 }
             } else {
                 await logOut();
-                setisLoggedIn(false);
             }
 
             setIsLoading(false);
         });
     }, []);
 
-    if (!isLoading && !isLoggedIn) {
+    useEffect(() => {
+        if (isLoggedIn && (state.anilist.token == null || state.anilist.user == null)) {
+            // reset component
+            setIsLoading(false);
+            setisLoggedIn(false);
+        }
+    });
+
+    if (!isLoading && !isLoggedIn && (state.anilist.token == null || state.anilist.user == null)) {
         return (
             <View style={styles.container}>
                 <Button 

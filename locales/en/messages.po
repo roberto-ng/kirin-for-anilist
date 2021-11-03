@@ -16,29 +16,37 @@ msgstr ""
 "Language-Team: English <>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: components/BottomSheetContent.tsx:331
+#: components/BottomSheetContent.tsx:336
 msgid "Save"
 msgstr "Save"
 
-#: components/BottomSheetContent.tsx:216
+#: components/BottomSheetContent.tsx:217
 msgid "Score"
 msgstr "Score"
 
-#: screens/MainScreenTabs/HomeTabScreen.tsx:218
+#: screens/MainScreenTabs/HomeTabScreen.tsx:248
 msgid "activity"
 msgstr "Activity"
 
-#: screens/MainScreenTabs/HomeTabScreen.tsx:190
+#: screens/MainScreenTabs/HomeTabScreen.tsx:220
 msgid "airing"
 msgstr "Airing"
 
-#: screens/MainScreenTabs/HomeTabScreen.tsx:199
+#: screens/MainScreenTabs/HomeTabScreen.tsx:153
+msgid "alert.logout"
+msgstr "Are you sure you want to logout?"
+
+#: screens/MainScreenTabs/HomeTabScreen.tsx:229
 msgid "anime_in_progress"
 msgstr "Anime in progress"
 
 #: screens/MediaScreen.tsx:102
 msgid "average_score"
 msgstr "Average score"
+
+#: screens/MainScreenTabs/HomeTabScreen.tsx:157
+msgid "cancel"
+msgstr "Cancel"
 
 #: screens/MediaScreen.tsx:286
 msgid "characters"
@@ -48,7 +56,8 @@ msgstr "Characters"
 msgid "completed"
 msgstr "Completed"
 
-#: components/BottomSheetContent.tsx:79 screens/MediaListScreen.tsx:55
+#: components/BottomSheetContent.tsx:80
+#: screens/MediaListScreen.tsx:55
 #: screens/MediaListScreen.tsx:135
 msgid "completed.label"
 msgstr "Completed"
@@ -57,7 +66,7 @@ msgstr "Completed"
 msgid "description"
 msgstr "Description"
 
-#: App.tsx:130
+#: App.tsx:93
 msgid "details"
 msgstr "Details"
 
@@ -65,7 +74,8 @@ msgstr "Details"
 msgid "dropped"
 msgstr "Dropped"
 
-#: components/BottomSheetContent.tsx:91 screens/MediaListScreen.tsx:63
+#: components/BottomSheetContent.tsx:92
+#: screens/MediaListScreen.tsx:63
 #: screens/MediaListScreen.tsx:143
 msgid "dropped.label"
 msgstr "Dropped"
@@ -74,7 +84,8 @@ msgstr "Dropped"
 msgid "edit.button"
 msgstr "Edit"
 
-#: components/BottomSheetContent.tsx:296 screens/MediaScreen.tsx:98
+#: components/BottomSheetContent.tsx:299
+#: screens/MediaScreen.tsx:98
 msgid "end_date"
 msgstr "End date"
 
@@ -82,7 +93,7 @@ msgstr "End date"
 msgid "format"
 msgstr "Format"
 
-#: screens/MainScreenTabs/HomeTabScreen.tsx:208
+#: screens/MainScreenTabs/HomeTabScreen.tsx:238
 msgid "manga_in_progress"
 msgstr "Manga in progress"
 
@@ -90,7 +101,8 @@ msgstr "Manga in progress"
 msgid "mean_score"
 msgstr "Mean score"
 
-#: components/BottomSheetContent.tsx:87 screens/MediaListScreen.tsx:59
+#: components/BottomSheetContent.tsx:88
+#: screens/MediaListScreen.tsx:59
 #: screens/MediaListScreen.tsx:139
 msgid "paused.label"
 msgstr "Paused"
@@ -103,7 +115,8 @@ msgstr "Paused reading"
 msgid "paused_watching"
 msgstr "Paused watching"
 
-#: components/BottomSheetContent.tsx:75 screens/MediaListScreen.tsx:67
+#: components/BottomSheetContent.tsx:76
+#: screens/MediaListScreen.tsx:67
 #: screens/MediaListScreen.tsx:147
 msgid "planning.label"
 msgstr "Planning"
@@ -120,11 +133,12 @@ msgstr "Plans to watch"
 msgid "popularity"
 msgstr "Popularity"
 
-#: components/BottomSheetContent.tsx:192
+#: components/BottomSheetContent.tsx:193
 msgid "progress"
 msgstr "Progress"
 
-#: components/HomeMediaListCard.tsx:101 components/MediaListCard.tsx:62
+#: components/HomeMediaListCard.tsx:101
+#: components/MediaListCard.tsx:62
 msgid "progress.label"
 msgstr "Progress: {progress}"
 
@@ -132,11 +146,13 @@ msgstr "Progress: {progress}"
 msgid "read_chapter_{progress}"
 msgstr "Read chapter {progress} of "
 
-#: components/BottomSheetContent.tsx:71 screens/MediaListScreen.tsx:122
+#: components/BottomSheetContent.tsx:72
+#: screens/MediaListScreen.tsx:122
 msgid "reading.label"
 msgstr "Reading"
 
-#: components/BottomSheetContent.tsx:83 screens/MediaListScreen.tsx:123
+#: components/BottomSheetContent.tsx:84
+#: screens/MediaListScreen.tsx:123
 msgid "rereading.label"
 msgstr "Rereading"
 
@@ -144,24 +160,30 @@ msgstr "Rereading"
 msgid "results.label"
 msgstr "Results: "
 
-#: components/BottomSheetContent.tsx:83 screens/MediaListScreen.tsx:51
+#: components/BottomSheetContent.tsx:84
+#: screens/MediaListScreen.tsx:51
 #: screens/MediaListScreen.tsx:123
 msgid "rewatching.label"
 msgstr "Rewatching"
 
-#: App.tsx:140 screens/SearchScreen.tsx:48 screens/SearchScreen.tsx:80
+#: App.tsx:103
+#: screens/SearchScreen.tsx:48
+#: screens/SearchScreen.tsx:80
 msgid "search"
 msgstr "Search"
 
-#: components/BottomSheetContent.tsx:266 screens/MediaScreen.tsx:94
+#: components/BottomSheetContent.tsx:267
+#: screens/MediaScreen.tsx:94
 msgid "start_date"
 msgstr "Start date"
 
-#: components/BottomSheetContent.tsx:242 screens/MediaScreen.tsx:90
+#: components/BottomSheetContent.tsx:243
+#: screens/MediaScreen.tsx:90
 msgid "status"
 msgstr "Status"
 
-#: components/BottomSheetContent.tsx:139 components/BottomSheetContent.tsx:164
+#: components/BottomSheetContent.tsx:140
+#: components/BottomSheetContent.tsx:165
 msgid "unknown_date"
 msgstr "Unknown date"
 
@@ -169,7 +191,8 @@ msgstr "Unknown date"
 msgid "watched_episode_{progress}"
 msgstr "Watched episode {progress} of"
 
-#: components/BottomSheetContent.tsx:71 screens/MediaListScreen.tsx:47
+#: components/BottomSheetContent.tsx:72
+#: screens/MediaListScreen.tsx:47
 #: screens/MediaListScreen.tsx:122
 msgid "watching.label"
 msgstr "Watching"
