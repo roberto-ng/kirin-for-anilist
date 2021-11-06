@@ -523,7 +523,7 @@ export async function saveListEntry(
                 status: listEntry.status,
                 score: listEntry.score,
                 progress: listEntry.progress,
-                progressVolumes: listEntry.progressVolumes,
+                progressVolumes: listEntry.progressVolumes ?? undefined,
                 repeat: listEntry.repeat,
                 startedAt: listEntry.startedAt,
                 completedAt: listEntry.completedAt,                
