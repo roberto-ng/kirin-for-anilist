@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Linking } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import * as ExpoLinking from 'expo-linking';
 import Constants from 'expo-constants';
 import { Trans } from '@lingui/macro';
@@ -101,6 +102,8 @@ export default function LoadingScreen({ navigation }: any) {
                 >
                     <Trans>login</Trans>
                 </Button>
+
+                <StatusBar style="light" />
             </View>
         );
     }
@@ -113,6 +116,7 @@ export default function LoadingScreen({ navigation }: any) {
                 animating={true} 
                 color={Colors.white} 
             />
+            <StatusBar style="light" />
         </View>
     );
 }

@@ -27,7 +27,7 @@ export default {
         adaptiveIcon: {
             foregroundImage: "./assets/adaptive-icon.png",
             backgroundColor: "#FFFFFF"
-        }
+        },
     },
     web: {
         favicon: "./assets/favicon.png"
@@ -42,5 +42,8 @@ export default {
     // @ts-ignore 
     ios: {
         bundleIdentifier: 'com.kirin.a',
+    },
+    androidNavigationBar: {
+        barStyle: 'dark-content',
     },
 };

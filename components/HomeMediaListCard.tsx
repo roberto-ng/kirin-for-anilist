@@ -160,16 +160,16 @@ const styles = StyleSheet.create({
     episodesBehind: {
         top: 14,
         textAlign: 'left',
-        marginLeft: 9,
+        //marginLeft: 9,
         color: 'rgb(61,180,242)',
     },
     cardContentTitle: {
         fontSize: 16,
     },
     cardContentInfo: {
-        top: 5,
-        flexDirection: 'column',
-        alignItems: 'center',
+        top: 8,
+        //flexDirection: 'column',
+        //alignItems: 'center',
     },
     progress: {
         flexDirection: 'row',

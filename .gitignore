@@ -47,6 +47,10 @@ build/
 local.properties
 *.iml
 *.hprof
+android/app/anilist-key.keystore
+android/build
+android/app/build
+android/app/release
 
 # node.js
 #

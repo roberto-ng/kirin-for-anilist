@@ -92,7 +92,7 @@ msgstr "Data de término"
 
 #: components/HomeMediaListCard.tsx:112
 msgid "episodes_behind.{episodesBehind}"
-msgstr "{episodesBehind} episódios novos"
+msgstr "{episodesBehind} episódio(s) novo(s)"
 
 #: components/HomeMediaListCard.tsx:112
 #~ msgid "episodes_behinds.{episodesBehind}"

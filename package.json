@@ -72,5 +72,6 @@
   },
   "private": true,
   "name": "kirin-for-anilist",
+  "displayName": "Kirin for Anilist",
   "version": "1.0.0"
 }

@@ -91,7 +91,7 @@ msgstr "End date"
 
 #: components/HomeMediaListCard.tsx:112
 msgid "episodes_behind.{episodesBehind}"
-msgstr "{episodesBehind} episodes behind"
+msgstr "{episodesBehind} episode(s) behind"
 
 #: components/HomeMediaListCard.tsx:112
 #~ msgid "episodes_behinds.{episodesBehind}"
