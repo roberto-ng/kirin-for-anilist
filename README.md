@@ -2,6 +2,8 @@
 
 An unofficial [Anilist API](https://anilist.co/) client for Android made with React Native.
 
+[Este README também está disponível em Português](https://github.com/roberto-ng/kirin-for-anilist/blob/main/README_PT-BR.md)
+
 ## Build instructions
 
 ### Getting a client ID
