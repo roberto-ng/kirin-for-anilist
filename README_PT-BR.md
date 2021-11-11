@@ -2,7 +2,7 @@
 
 Um cliente não oficial do [Anilist API](https://anilist.co/) para Android feito com React Native. 
 
-## Build instructions
+## Instruções
 
 ### Conseguindo um client ID
 
